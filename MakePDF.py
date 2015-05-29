@@ -13,13 +13,16 @@ from array import array
 
 class MakePDF:
 
-	def makeWorkspace(self, channelCode, templateFile, on_off_Code):
+	def makeWorkspace(self, channelCode, categoryCode, templateFile, on_off_Code, templatename_SM, templatename_PS, templatename_mix):
 
 		#Placeholder for Inputs
 		self.channel = channelCode # 0 = 2e2mu, 1 = 4mu, 2 = 4e
 		self.category = categoryCode # 0 = ggH, 1 = VH, 2 = VBF
 		self.on_off = on_off_Code  # 0 = on-shell, 1 = off-shell
-		self.tempalteFile = templateFile # Input Templates		
+		self.templateFile = templateFile # Input Templates
+		self.templatename_SM = templatename_SM
+		self.templatename_PS = templatename_PS
+		self.templatename_mix = templatename_mix
 
 
 		#Variables
@@ -68,22 +71,22 @@ class MakePDF:
 		#Build Signal PDF
 		InputFileName = "{0}".format(self.templateFile)
 		InputRootFile = ROOT.TFile(InputFileName)
-		SMtemplate = InputRootFile.Get("")
-		PStemplate = InputRootFile.Get("")
-		MIXtemplate = InputRootFile.Get("")
+		SMtemplate = InputRootFile.Get(self.templatename_SM)
+		PStemplate = InputRootFile.Get(self.templatename_PS)
+		MIXtemplate = InputRootFile.Get(self.templatename_mix)
 
 		dBins0 = SMtemplate.GetXaxis().GetNbins()
 		dLow0 = SMtemplate.GetXaxis().GetXmin()
-		dHigh0 = SMtempalte.GetXaxis().GetXmax()
+		dHigh0 = SMtemplate.GetXaxis().GetXmax()
 		
 		dBins1 = SMtemplate.GetYaxis().GetNbins()
 		dLow1 = SMtemplate.GetYaxis().GetXmin()
-		dHigh1 = SMtempalte.GetYaxis().GetXmax()
+		dHigh1 = SMtemplate.GetYaxis().GetXmax()
 
-		if Disc2 is not None:
+		if Disc2_name is not None:
 			dBins2 = SMtemplate.GetZaxis().GetNbins()
 			dLow2 = SMtemplate.GetZaxis().GetXmin()
-			dHigh2 = SMtempalte.GetZaxis().GetXmax()
+			dHigh2 = SMtemplate.GetZaxis().GetXmax()
 		else:
 			dBins2 = 1
 			dLow2 = 0
@@ -94,9 +97,11 @@ class MakePDF:
 		Disc0.setBins(dBins0)
 		Disc1 = ROOT.RooRealVar(Disc1_name,Disc1_name,dLow1,dHigh1)
 		Disc1.setBins(dBins1)
-		if Disc2 is not None:
+		if Disc2_name is not None:
 			Disc2 = ROOT.RooRealVar(Disc2_name,Disc2_name,dLow2,dHigh2)
 			Disc2.setBins(dBins2)
+		else:
+			Disc2 = None
 
 		if Disc2 is not None:
 			DiscArgSet = ROOT.RooArgSet(Disc0,Disc1,Disc2)
