@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-----------------------------------------------
 # Latest update: 2015.05.29
-# by Chris & Hshey for StandAlone fa3 Sum 2015
+# by Chris & Heshy for StandAlone fa3 Sum 2015
 #-----------------------------------------------
 import sys, os, pwd, commands
 import optparse, shlex, re
@@ -36,7 +36,7 @@ class MakePDF:
 			if self.category == 0:
 				Disc1_name = "D0-_dec"
 				Disc2_name = "Dcp_dec"
-			elif self.category == 1:	
+			elif self.category == 1:
 				Disc1_name = "D0-_VH"
 				Disc2_name = "Dcp_VH"
 			elif self.category == 2:
@@ -44,22 +44,25 @@ class MakePDF:
 				Disc2_name = "Dcp_VBF"
 			else:
 				print "INVALID ANALYSIS CATEGORY!"
+				assert(0)
 		elif self.on_off == 1:
-                        Disc0_name = "zz4l_mass"
-                        if self.category == 0:
-                                Disc1_name = "Dgg"  
-                                Disc2_name = "D0-_dec"
-                        elif self.category == 1:        
-                                Disc1_name = "D0-_VH"
-                                #Disc2_name = "Dcp_VH"
-                        elif self.category == 2:
-                                Disc1_name = "D0-_VBF"
-                                #Disc2_name = "Dcp_VBF"
-                        else:
-                                print "INVALID ANALYSIS CATEGORY!"
+			Disc0_name = "zz4l_mass"
+			if self.category == 0:
+				Disc1_name = "Dgg"
+				Disc2_name = "D0-_dec"
+			elif self.category == 1:
+				Disc1_name = "D0-_VH"
+				#Disc2_name = "Dcp_VH"
+			elif self.category == 2:
+				Disc1_name = "D0-_VBF"
+				#Disc2_name = "Dcp_VBF"
+			else:
+				print "INVALID ANALYSIS CATEGORY!"
+				assert(0)
 
 		else:
 			print "INVALID ON-OFF SHELL CATEGORY!"
+			assert(0)
 
 		
 		#Build Signal PDF
@@ -74,70 +77,61 @@ class MakePDF:
 		dHigh0 = SMtempalte.GetXaxis().GetXmax()
 		
 		dBins1 = SMtemplate.GetYaxis().GetNbins()
-                dLow1 = SMtemplate.GetYaxis().GetXmin()
-                dHigh1 = SMtempalte.GetYaxis().GetXmax()
+		dLow1 = SMtemplate.GetYaxis().GetXmin()
+		dHigh1 = SMtempalte.GetYaxis().GetXmax()
 
-		dBins2 = 1
-		dLow2 = 0
-		dHigh2 = 1
-		if self.on_off != 1 and self.category > 0:
+		if Disc2 is not None:
 			dBins2 = SMtemplate.GetZaxis().GetNbins()
-                	dLow2 = SMtemplate.GetZaxis().GetXmin()
-                	dHigh2 = SMtempalte.GetZaxis().GetXmax()
+			dLow2 = SMtemplate.GetZaxis().GetXmin()
+			dHigh2 = SMtempalte.GetZaxis().GetXmax()
+		else:
+			dBins2 = 1
+			dLow2 = 0
+			dHigh2 = 1
 
 
 		Disc0 = ROOT.RooRealVar(Disc0_name,Disc0_name,dLow0,dHigh0)
 		Disc0.setBins(dBins0)
 		Disc1 = ROOT.RooRealVar(Disc1_name,Disc1_name,dLow1,dHigh1)
-                Disc1.setBins(dBins1)
-		Disc2 = ROOT.RooRealVar(Disc2_name,Disc2_name,dLow2,dHigh2)
-                Disc2.setBins(dBins2)
+		Disc1.setBins(dBins1)
+		if Disc2 is not None:
+			Disc2 = ROOT.RooRealVar(Disc2_name,Disc2_name,dLow2,dHigh2)
+			Disc2.setBins(dBins2)
 
-		DiscArgSet = ROOT.RooArgSet()
-		if self.on_off == 0:
-                       DiscArgSet = ROOT.RooArgSet(Disc0,Disc1,Disc2) 
-                elif self.on_off == 1:
-                        if self.category == 0:
-                                DiscArgSet = ROOT.RooArgSet(Disc0,Disc1,Disc2)
-                        elif self.category == 1:
-                                DiscArgSet = ROOT.RooArgSet(Disc0,Disc1)
-                        elif self.category == 2:
-                                DiscArgSet = ROOT.RooArgSet(Disc0,Disc1)
-                        else:
-                                print "INVALID ANALYSIS CATEGORY!"
-
-                else:
-                        print "INVALID ON-OFF SHELL CATEGORY!"
+		if Disc2 is not None:
+			DiscArgSet = ROOT.RooArgSet(Disc0,Disc1,Disc2)
+		else:
+			DiscArgSet = ROOT.RooArgSet(Disc0,Disc1)
 
 
 
 		TemplateName = "SM_{0}_{1}_{2}_dataHist".format(self.channel,self.category,self.on_off)
 		SMdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgSet, SMtemplate)
 		TemplateName = "PS_{0}_{1}_{2}_dataHist".format(self.channel,self.category,self.on_off)
-                PSdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgSet, PStemplate)
+		PSdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgSet, PStemplate)
 		TemplateName = "MIX_{0}_{1}_{2}_dataHist".format(self.channel,self.category,self.on_off)
-                MIXdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgSet, MIXtemplate)		
+		MIXdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgSet, MIXtemplate)
 
 		TemplateName = "SM_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)	
 		SMhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, SMdataHist)
-                TemplateName = "PS_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)  
-                PShistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, PSdataHist)
-                TemplateName = "MIX_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)  
-                MIXhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, MIXdataHist)
+		TemplateName = "PS_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)
+		PShistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, PSdataHist)
+		TemplateName = "MIX_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)
+		MIXhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, MIXdataHist)
 
 		TemplateName = "SM_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 		SMnorm = ROOT.RooFormulaVar(TemplateName, "(1-@0)",ROOT.RooArgList(fa3))
-		TemplateName = "MIX_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)   
-                MIXnorm = ROOT.RooFormulaVar(TemplateName, "sqrt(@0*(1-@0))",ROOT.RooArgList(fa3))
-		TemplateName = "PS_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)   
-                PSnorm = ROOT.RooFormulaVar(TemplateName, "@0",ROOT.RooArgList(fa3))
+		TemplateName = "MIX_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
+		MIXnorm = ROOT.RooFormulaVar(TemplateName, "sqrt(@0*(1-@0))",ROOT.RooArgList(fa3))
+		TemplateName = "PS_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
+		PSnorm = ROOT.RooFormulaVar(TemplateName, "@0",ROOT.RooArgList(fa3))
 		
 
 		TemplateName = "Signal_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
 		SignalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgSet(SMnorm,MIXnorm,PSnorm))
 
-		TemplateName = "fa3_{0}_{1}_{2}_workspace.root".format(self.channel,self.category,self.on_off) 
+		TemplateName = "fa3_{0}_{1}_{2}_workspace.root".format(self.channel,self.category,self.on_off)
 		w = ROOT.RooWorkspace("workspace","workspace")
 		getattr(w, 'import')(SignalPDF, ROOT.RooFit.RecycleConflictNodes())
 
-		w.writeToFile(TemplateName)  
+		w.writeToFile(TemplateName)
