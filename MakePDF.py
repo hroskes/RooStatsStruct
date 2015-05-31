@@ -27,7 +27,7 @@ class MakePDF:
 
 		#Variables
 		mu = ROOT.RooRealVar("mu","mu",0.,15.)
-		fa3 = ROOT.RooRealVar("fa3","fa3",0.,1.)	
+		fa3 = ROOT.RooRealVar("fa3","fa3",0.,1.)
 
 
 		#if statements to make Discriminants
@@ -67,7 +67,7 @@ class MakePDF:
 			print "INVALID ON-OFF SHELL CATEGORY!"
 			assert(0)
 
-		
+
 		#Build Signal PDF
 		InputFileName = "{0}".format(self.templateFile)
 		InputRootFile = ROOT.TFile(InputFileName)
@@ -78,7 +78,7 @@ class MakePDF:
 		dBins0 = SMtemplate.GetXaxis().GetNbins()
 		dLow0 = SMtemplate.GetXaxis().GetXmin()
 		dHigh0 = SMtemplate.GetXaxis().GetXmax()
-		
+
 		dBins1 = SMtemplate.GetYaxis().GetNbins()
 		dLow1 = SMtemplate.GetYaxis().GetXmin()
 		dHigh1 = SMtemplate.GetYaxis().GetXmax()
@@ -104,20 +104,22 @@ class MakePDF:
 			Disc2 = None
 
 		if Disc2 is not None:
+			DiscArgList = ROOT.RooArgList(Disc0,Disc1,Disc2)
 			DiscArgSet = ROOT.RooArgSet(Disc0,Disc1,Disc2)
 		else:
+			DiscArgList = ROOT.RooArgList(Disc0,Disc1)
 			DiscArgSet = ROOT.RooArgSet(Disc0,Disc1)
 
 
 
 		TemplateName = "SM_{0}_{1}_{2}_dataHist".format(self.channel,self.category,self.on_off)
-		SMdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgSet, SMtemplate)
+		SMdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, SMtemplate)
 		TemplateName = "PS_{0}_{1}_{2}_dataHist".format(self.channel,self.category,self.on_off)
-		PSdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgSet, PStemplate)
+		PSdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, PStemplate)
 		TemplateName = "MIX_{0}_{1}_{2}_dataHist".format(self.channel,self.category,self.on_off)
-		MIXdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgSet, MIXtemplate)
+		MIXdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, MIXtemplate)
 
-		TemplateName = "SM_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)	
+		TemplateName = "SM_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)
 		SMhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, SMdataHist)
 		TemplateName = "PS_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)
 		PShistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, PSdataHist)
@@ -130,10 +132,10 @@ class MakePDF:
 		MIXnorm = ROOT.RooFormulaVar(TemplateName, "sqrt(@0*(1-@0))",ROOT.RooArgList(fa3))
 		TemplateName = "PS_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 		PSnorm = ROOT.RooFormulaVar(TemplateName, "@0",ROOT.RooArgList(fa3))
-		
+
 
 		TemplateName = "Signal_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
-		SignalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgSet(SMnorm,MIXnorm,PSnorm))
+		SignalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgList(SMnorm,MIXnorm,PSnorm))
 
 		TemplateName = "fa3_{0}_{1}_{2}_workspace.root".format(self.channel,self.category,self.on_off)
 		w = ROOT.RooWorkspace("workspace","workspace")
