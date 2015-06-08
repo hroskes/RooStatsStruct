@@ -127,11 +127,11 @@ class MakePDF:
 		MIXhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, MIXdataHist)
 
 		TemplateName = "SM_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
-		SMnorm = ROOT.RooFormulaVar(TemplateName, "(1-@0)",ROOT.RooArgList(fa3))
+		SMnorm = ROOT.RooFormulaVar(TemplateName, "(1-abs(@0))",ROOT.RooArgList(fa3))
 		TemplateName = "MIX_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
-		MIXnorm = ROOT.RooFormulaVar(TemplateName, "sqrt(@0*(1-@0))",ROOT.RooArgList(fa3))
+		MIXnorm = ROOT.RooFormulaVar(TemplateName, "sqrt(abs(@0)*(1-abs(@0)))",ROOT.RooArgList(fa3))
 		TemplateName = "PS_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
-		PSnorm = ROOT.RooFormulaVar(TemplateName, "@0",ROOT.RooArgList(fa3))
+		PSnorm = ROOT.RooFormulaVar(TemplateName, "abs(@0)",ROOT.RooArgList(fa3))
 
 
 		TemplateName = "Signal_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
