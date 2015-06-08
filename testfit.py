@@ -17,18 +17,16 @@ D0minus = w.var("D0-_VBF")
 DCP = w.var("Dcp_VBF")
 
 testmu = 1
-testfa3 = .36
+testfa3 = 0
 ntoys = 1000000
 
 mu.setVal(testmu)
 fa3.setVal(testfa3)
 data = pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys)
 
-mu.setVal(random.random())
-fa3.setVal(random.random())
-pdf.fitTo(data)
-
-assert(0)
+#mu.setVal(random.random())
+#fa3.setVal(random.random())
+#pdf.fitTo(data)
 
 #https://twiki.cern.ch/twiki/bin/view/Main/LearningRoostats
 nll = pdf.createNLL(data)
