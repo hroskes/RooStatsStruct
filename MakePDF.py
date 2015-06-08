@@ -165,7 +165,7 @@ class MakePDF:
 		#NOTE BELOW INCLUDES MU AND SMrate Below NOT COMBINE COMPATABLE
 		SIGnorm = ROOT.RooFormulaVar(TempalteName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt (abs(@0)*(1-abs(@0)))*(cos(@4)*@2 +sin(@4)*@3))",RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
 		TemplateName = "Total_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
-		TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,Bkgrate))
+		TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
 
 
 		TemplateName = "fa3_{0}_{1}_{2}_workspace.root".format(self.channel,self.category,self.on_off)
