@@ -17,15 +17,12 @@ D0minus = w.var("D0-_VBF")
 DCP = w.var("Dcp_VBF")
 
 testmu = 1
-testfa3 = .21
+testfa3 = .36
 ntoys = 1000000
 
 mu.setVal(testmu)
-
-fa3.setVal(0)
-data = pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys*(1-testfa3))
-fa3.setVal(1)
-data.append(pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys*testfa3))
+fa3.setVal(testfa3)
+data = pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys)
 
 mu.setVal(random.random())
 fa3.setVal(random.random())
