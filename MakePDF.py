@@ -13,21 +13,37 @@ from array import array
 
 class MakePDF:
 
-	def makeWorkspace(self, channelCode, categoryCode, templateFile, on_off_Code, templatename_SM, templatename_PS, templatename_mix):
+	def makeWorkspace(self, channelCode, categoryCode, templateFile, templateFile_bkg, on_off_Code, templatename_SM, templatename_PS, templatename_mix, templatename_bkg):
 
 		#Placeholder for Inputs
 		self.channel = channelCode # 0 = 2e2mu, 1 = 4mu, 2 = 4e
 		self.category = categoryCode # 0 = ggH, 1 = VH, 2 = VBF
 		self.on_off = on_off_Code  # 0 = on-shell, 1 = off-shell
 		self.templateFile = templateFile # Input Templates
+		self.templateFile_bkg = templateFile_bkg
 		self.templatename_SM = templatename_SM
 		self.templatename_PS = templatename_PS
 		self.templatename_mix = templatename_mix
+		self.templatename_bkg = templatename_bkg
 
 
 		#Variables
-		mu = ROOT.RooRealVar("mu","mu",0.,15.)
+		mu = ROOT.RooRealVar("mu","mu",0.,100.)
 		fa3 = ROOT.RooRealVar("fa3","fa3",-1.,1.)
+
+		#These variables are fixed as const. THIS IS ONLY TEMPORARY
+		phi = ROOT.RooRealVar("phia3","phia3",0.,-math.pi,math.pi)
+		phi.setConstant(True)
+		r1 = ROOT.RooRealVar("r1","r1",0.966)
+		r1.setConstant(True)
+		r2 = ROOT.RooRealVar("r2","r2",1.968)
+		r2.setConstant(True)
+		r3 = ROOT.RooRealVar("r3","r3",1.968)
+		r3.setConstant(True)
+		BKGrate = ROOT.RooRealVar("BKGrate","BKGrate",13.6519)
+		BKGrate.setConstant(True)
+		SMrate = ROOT.RooRealVar("SMrate","SMrate",7.6807)
+		SMrate.setConstant(True)
 
 
 		#if statements to make Discriminants
@@ -74,6 +90,9 @@ class MakePDF:
 		SMtemplate = InputRootFile.Get(self.templatename_SM)
 		PStemplate = InputRootFile.Get(self.templatename_PS)
 		MIXtemplate = InputRootFile.Get(self.templatename_mix)
+		InputFileName_bkg = "{0}".format(self.templateFile_bkg)
+		InputRootFile_bkg = ROOT.TFile(InputFileName_bkg)
+		BKGtemplate = InputRootFile_bkg.Get(self.templatename_bkg)
 
 		dBins0 = SMtemplate.GetXaxis().GetNbins()
 		dLow0 = SMtemplate.GetXaxis().GetXmin()
@@ -118,6 +137,8 @@ class MakePDF:
 		PSdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, PStemplate)
 		TemplateName = "MIX_{0}_{1}_{2}_dataHist".format(self.channel,self.category,self.on_off)
 		MIXdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, MIXtemplate)
+		TemplateName = "BKG_{0}_{1}_{2}_dataHist".format(self.channel,self.category,self.on_off)
+                BKGdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, BKGtemplate)
 
 		TemplateName = "SM_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)
 		SMhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, SMdataHist)
@@ -125,6 +146,9 @@ class MakePDF:
 		PShistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, PSdataHist)
 		TemplateName = "MIX_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)
 		MIXhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, MIXdataHist)
+                TemplateName = "BKG_{0}_{1}_{2}_HistPDF".format(self.channel,self.category,self.on_off)
+                BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, BKGdataHist)
+
 
 		TemplateName = "SM_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 		SMnorm = ROOT.RooFormulaVar(TemplateName, "(1-abs(@0))",ROOT.RooArgList(fa3))
@@ -136,9 +160,16 @@ class MakePDF:
 
 		TemplateName = "Signal_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
 		SignalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgList(SMnorm,MIXnorm,PSnorm))
+		
+		TempalteName = "Signal_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
+		#NOTE BELOW INCLUDES MU AND SMrate Below NOT COMBINE COMPATABLE
+		SIGnorm = ROOT.RooFormulaVar(TempalteName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt (abs(@0)*(1-abs(@0)))*(cos(@4)*@2 +sin(@4)*@3))",RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
+		TemplateName = "Total_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
+		TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,Bkgrate))
+
 
 		TemplateName = "fa3_{0}_{1}_{2}_workspace.root".format(self.channel,self.category,self.on_off)
 		w = ROOT.RooWorkspace("workspace","workspace")
-		getattr(w, 'import')(SignalPDF, ROOT.RooFit.RecycleConflictNodes())
+		getattr(w, 'import')(TotalPDF, ROOT.RooFit.RecycleConflictNodes())
 
 		w.writeToFile(TemplateName)
