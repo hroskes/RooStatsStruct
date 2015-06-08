@@ -11,13 +11,13 @@ w = f.Get("workspace")
 fa3 = w.var("fa3")
 mu = w.var("mu")
 
-pdf = w.pdf("Signal_0_2_0_SumPDF")
+pdf = w.pdf("Total_0_2_0_SumPDF")
 sMELA = w.var("sMELA")
 D0minus = w.var("D0-_VBF")
 DCP = w.var("Dcp_VBF")
 
-testmu = 0
-testfa3 = 0
+testmu = 1
+testfa3 = .21
 ntoys = 1000000
 
 mu.setVal(testmu)
@@ -27,9 +27,11 @@ data = pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys*(1-testfa3))
 fa3.setVal(1)
 data.append(pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys*testfa3))
 
-#mu.setVal(random.random())
-#fa3.setVal(random.random())
-#pdf.fitTo(data)
+mu.setVal(random.random())
+fa3.setVal(random.random())
+pdf.fitTo(data)
+
+assert(0)
 
 #https://twiki.cern.ch/twiki/bin/view/Main/LearningRoostats
 nll = pdf.createNLL(data)
