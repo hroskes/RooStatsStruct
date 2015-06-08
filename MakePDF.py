@@ -27,7 +27,7 @@ class MakePDF:
 
 		#Variables
 		mu = ROOT.RooRealVar("mu","mu",0.,15.)
-		fa3 = ROOT.RooRealVar("fa3","fa3",0.,1.)
+		fa3 = ROOT.RooRealVar("fa3","fa3",-1.,1.)
 
 
 		#if statements to make Discriminants
