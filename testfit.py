@@ -18,10 +18,13 @@ DCP = w.var("Dcp_VBF")
 
 testmu = 1
 testfa3 = 0
-ntoys = 1000000
+ntoys = w.var("BKGrate").getVal() + w.var("SMrate").getVal()
+print ntoys
 
 mu.setVal(testmu)
 fa3.setVal(testfa3)
+
+ROOT.RooRandom.randomGenerator().SetSeed(random.randint(0,10000))
 data = pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys)
 
 #mu.setVal(random.random())
@@ -37,5 +40,5 @@ nll.plotOn(frame, ROOT.RooFit.ShiftToZero())
 c1 = ROOT.TCanvas.MakeDefCanvas()
 frame.Draw()
 #frame.GetYaxis().SetRangeUser(0, frame.GetYaxis().GetXmax())
-frame.GetYaxis().SetRangeUser(0, 10**5)
+frame.GetYaxis().SetRangeUser(0, 3)
 c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/TEST/test.png")
