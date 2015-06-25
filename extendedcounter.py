@@ -41,19 +41,18 @@ class ExtendedCounter(collections.Counter):
         return result
 
     def zero(self):
-        minvalue = min(self.values)
+        minvalue = min(self.values())
         for key in self:
             self[key] -= minvalue
 
     def TGraph(self):
         """make a TGraph with the data in self.  Keys and values have to be numbers."""
+        self.zero()
         items = self.items()
         items.sort(cmp = lambda x,y: cmp(x[0], y[0]))
         keysvalues = zip(*items)
         keys = keysvalues[0]
         values = keysvalues[1]
-        minvalue = min(values)
-        values = [value - minvalue for value in values]
         x = array.array("d", keys)
         y = array.array("d", values)
         return ROOT.TGraph(len(self), x, y)

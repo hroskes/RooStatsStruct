@@ -19,12 +19,9 @@ D0minus = w.var("D0-_VBF")
 DCP = w.var("Dcp_VBF")
 
 testmu = 1
-testfa3 = 0.5
+testfa3 = 0
 ntoys = w.var("BKGrate").getVal() + w.var("SMrate").getVal()
 print ntoys
-
-mu.setVal(testmu)
-fa3.setVal(testfa3)
 
 ROOT.RooRandom.randomGenerator().SetSeed(random.randint(0,10000))
 
@@ -42,6 +39,8 @@ averageNLL = ExtendedCounter()
 for j in range(nNLLs):
     if j % 25 == 0:
         print str(j) + " / " + str(nNLLs)
+    mu.setVal(testmu)
+    fa3.setVal(testfa3)
     data = pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys)
     nll = pdf.createNLL(data)
     result = ExtendedCounter()
@@ -55,6 +54,6 @@ averageNLL /= nNLLs
 graph = averageNLL.TGraph()
 
 c1 = ROOT.TCanvas.MakeDefCanvas()
-graph.Draw("AP")
+graph.Draw("AC")
 #frame.GetYaxis().SetRangeUser(0, frame.GetYaxis().GetXmax())
 c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/TEST/test.png")
