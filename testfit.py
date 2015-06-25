@@ -35,6 +35,9 @@ high = 1
 
 bincenters = [(i+.5)/nbins * high + (1-(i+.5)/nbins) * low for i in range(nbins)]
 
+c1 = ROOT.TCanvas.MakeDefCanvas()
+multigraph = ROOT.TMultiGraph()
+
 averageNLL = ExtendedCounter()
 for j in range(nNLLs):
     if j % 25 == 0:
@@ -48,12 +51,15 @@ for j in range(nNLLs):
         fa3.setVal(bincenter)
         result[bincenter] = nll.getVal()
     averageNLL += result
+    graph = result.TGraph()
+    graph.SetLineColor(17)
+    multigraph.Add(graph)
 
 averageNLL /= nNLLs
 
 graph = averageNLL.TGraph()
+multigraph.Add(graph)
 
-c1 = ROOT.TCanvas.MakeDefCanvas()
-graph.Draw("AC")
+multigraph.Draw("AC")
 #frame.GetYaxis().SetRangeUser(0, frame.GetYaxis().GetXmax())
-c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/TEST/test.png")
+c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/TEST/test2.png")
