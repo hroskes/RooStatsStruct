@@ -3,13 +3,24 @@ import array
 import ROOT
 
 class ExtendedCounter(collections.Counter):
-    def __init__(self, *args, **kwargs):
-        super(ExtendedCounter, self).__init__(*args, **kwargs)
+    """For one reason or another I can't get Counter.__add__ and __sub__
+       to work here"""
 
     def __add__(self, other):
-        return ExtendedCounter(super(ExtendedCounter, self).__add__(other))
+        result = ExtendedCounter(self)
+        for item in other:
+            if item not in result:
+                result[item] = 0
+            result[item] += other[item]
+        return result
+
     def __sub__(self, other):
-        return ExtendedCounter(super(ExtendedCounter, self).__sub__(other))
+        result = ExtendedCounter(self)
+        for item in other:
+            if item not in result:
+                result[item] = 0
+            result[item] -= other[item]
+        return result
 
     def __mul__(self, other):
         """multiply by a scalar"""
@@ -29,12 +40,20 @@ class ExtendedCounter(collections.Counter):
             result[item] /= other
         return result
 
+    def zero(self):
+        minvalue = min(self.values)
+        for key in self:
+            self[key] -= minvalue
+
     def TGraph(self):
         """make a TGraph with the data in self.  Keys and values have to be numbers."""
-        x = array.array("d", self.keys())
-        y = array.array("d", self.values())
-        print "=====TGraph====="
-        print self
-        print x
-        print y
+        items = self.items()
+        items.sort(cmp = lambda x,y: cmp(x[0], y[0]))
+        keysvalues = zip(*items)
+        keys = keysvalues[0]
+        values = keysvalues[1]
+        minvalue = min(values)
+        values = [value - minvalue for value in values]
+        x = array.array("d", keys)
+        y = array.array("d", values)
         return ROOT.TGraph(len(self), x, y)
