@@ -1,11 +1,22 @@
 import sys
-import random
-from extendedcounter import *
-
-
 sys.argv.insert(1, "-b")
 import ROOT
 del sys.argv[1]
+import random
+from extendedcounter import *
+import style
+
+
+########################################
+#parameters
+nNLLs = 100
+nbins = 1000
+low = -1
+high = 1
+testmu = 1
+testfa3 = 0
+ntoys = None  #default: BKGrate+SMrate
+########################################
 
 f = ROOT.TFile.Open("fa3_0_2_0_workspace.root")
 w = f.Get("workspace")
@@ -18,20 +29,14 @@ sMELA = w.var("sMELA")
 D0minus = w.var("D0-_VBF")
 DCP = w.var("Dcp_VBF")
 
-testmu = 1
-testfa3 = 0.5
-ntoys = w.var("BKGrate").getVal() + w.var("SMrate").getVal()
-print ntoys
+if ntoys is None:
+    ntoys = w.var("BKGrate").getVal() + w.var("SMrate").getVal()
+
+print "Number of toys:", ntoys
 
 ROOT.RooRandom.randomGenerator().SetSeed(random.randint(0,10000))
 
 fa3.setRange(-1, 1)
-#frame = fa3.frame()
-
-nNLLs = 100
-nbins = 1000
-low = -1
-high = 1
 
 bincenters = [(i+.5)/nbins * high + (1-(i+.5)/nbins) * low for i in range(nbins)]
 
@@ -50,6 +55,7 @@ for j in range(nNLLs):
     for bincenter in bincenters:
         fa3.setVal(bincenter)
         result[bincenter] = nll.getVal()
+    result *= 2
     averageNLL += result
     graph = result.TGraph()
     graph.SetLineColor(17)
@@ -58,10 +64,15 @@ for j in range(nNLLs):
 averageNLL /= nNLLs
 
 graph = averageNLL.TGraph()
+graph.SetLineWidth(3)
 multigraph.Add(graph)
 
 multigraph.Draw("AC")
-multigraph.GetYaxis().SetTitle("#DeltaNLL")
+multigraph.GetYaxis().SetTitle("-2#Deltaln L")
 multigraph.GetXaxis().SetTitle("f_{a_{3}}")
 #frame.GetYaxis().SetRangeUser(0, frame.GetYaxis().GetXmax())
+
+style.style()
+style.drawlines()
+
 c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/fa3=%s.png" % testfa3)
