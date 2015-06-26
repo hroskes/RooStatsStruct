@@ -19,7 +19,7 @@ D0minus = w.var("D0-_VBF")
 DCP = w.var("Dcp_VBF")
 
 testmu = 1
-testfa3 = 0
+testfa3 = 0.5
 ntoys = w.var("BKGrate").getVal() + w.var("SMrate").getVal()
 print ntoys
 
@@ -61,5 +61,7 @@ graph = averageNLL.TGraph()
 multigraph.Add(graph)
 
 multigraph.Draw("AC")
+multigraph.GetYaxis().SetTitle("#DeltaNLL")
+multigraph.GetXaxis().SetTitle("f_{a_{3}}")
 #frame.GetYaxis().SetRangeUser(0, frame.GetYaxis().GetXmax())
-c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/TEST/test2.png")
+c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/fa3=%s.png" % testfa3)
