@@ -35,11 +35,11 @@ def setTDRStyle(force):
       gStyle.SetHistLineColor(1)
       gStyle.SetHistLineStyle(0)
       gStyle.SetHistLineWidth(1)
-  
+
 
   gStyle.SetEndErrorSize(2)
   gStyle.SetErrorX(0.)
-  
+
   gStyle.SetMarkerStyle(20)
 
   gStyle.SetOptFit(1)
