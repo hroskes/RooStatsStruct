@@ -1,4 +1,4 @@
-from MakePDF import *
+import MakePDF
 
 templatedir = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/makeTemplates/templates/"
 channelnames = {
@@ -7,7 +7,7 @@ channelnames = {
     #2: "4e",
 }
 
-class MakePDF_Heshy(MakePDF):
+class MakePDF_Heshy(MakePDF.MakePDF):
 
     def __init__(self):
         for channel in channelnames:
@@ -22,10 +22,10 @@ class MakePDF_Heshy(MakePDF):
         templateName_PS = "template_VBFpseudoscalar"
         templateName_mix = "template_VBFinterference"
         templateName_bkg = "template_qqZZ"
-        MakePDF.makeWorkspace(self, channelCode, categoryCode, templateFile, templateFile_bkg, on_off_Code, templateName_SM, templateName_PS, templateName_mix, templateName_bkg)
+        MakePDF.MakePDF.makeWorkspace(self, channelCode, categoryCode, templateFile, templateFile_bkg, on_off_Code, templateName_SM, templateName_PS, templateName_mix, templateName_bkg)
 
-print turnoffbkg
-turnoffbkg = True
-MakePDF_Heshy()
-turnoffbkg = False
-MakePDF_Heshy()
+if __name__ == '__main__':
+    MakePDF.turnoffbkg = True
+    MakePDF_Heshy()
+    MakePDF.turnoffbkg = False
+    MakePDF_Heshy()
