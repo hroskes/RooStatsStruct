@@ -10,7 +10,7 @@ from ROOT import *
 import ROOT
 from array import array
 
-turnoffbkg = True
+turnoffbkg = False
 
 class MakePDF:
 
@@ -154,7 +154,7 @@ class MakePDF:
 		TemplateName = "SM_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 		SMnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1-abs(@0))",ROOT.RooArgList(fa3))
 		TemplateName = "MIX_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
-		MIXnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "sqrt(abs(@0)*(1-abs(@0)))",ROOT.RooArgList(fa3))
+		MIXnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))",ROOT.RooArgList(fa3))
 		TemplateName = "PS_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 		PSnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "abs(@0)",ROOT.RooArgList(fa3))
 
@@ -164,7 +164,7 @@ class MakePDF:
 
 		TemplateName = "Signal_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 		#NOTE BELOW INCLUDES MU AND SMrate Below NOT COMBINE COMPATIBLE
-		SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt (abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
+		SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
 		TemplateName = "Total_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
 		TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
 

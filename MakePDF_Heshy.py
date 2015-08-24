@@ -20,7 +20,7 @@ class MakePDF_Heshy(MakePDF):
         on_off_Code = 0
         templateName_SM = "template_VBFscalar"
         templateName_PS = "template_VBFpseudoscalar"
-        templateName_mix = "template_VBFmixture"
+        templateName_mix = "template_VBFinterference"
         templateName_bkg = "template_qqZZ"
         MakePDF.makeWorkspace(self, channelCode, categoryCode, templateFile, templateFile_bkg, on_off_Code, templateName_SM, templateName_PS, templateName_mix, templateName_bkg)
 
