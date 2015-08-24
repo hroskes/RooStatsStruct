@@ -24,4 +24,8 @@ class MakePDF_Heshy(MakePDF):
         templateName_bkg = "template_qqZZ"
         MakePDF.makeWorkspace(self, channelCode, categoryCode, templateFile, templateFile_bkg, on_off_Code, templateName_SM, templateName_PS, templateName_mix, templateName_bkg)
 
+print turnoffbkg
+turnoffbkg = True
+MakePDF_Heshy()
+turnoffbkg = False
 MakePDF_Heshy()
