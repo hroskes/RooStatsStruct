@@ -14,8 +14,9 @@ nbins = 1000
 low = -1
 high = 1
 testmu = 1
-testfa3 = -0.5
-ntoys = None  #default: BKGrate+SMrate
+testfa3 = 0
+zoomed = False
+ntoys = None  #default if None: BKGrate+SMrate
 ########################################
 
 f = ROOT.TFile.Open("fa3_0_2_0_workspace.root")
@@ -70,8 +71,9 @@ multigraph.Add(graph)
 multigraph.Draw("AC")
 multigraph.GetYaxis().SetTitle("-2#Deltaln L")
 multigraph.GetXaxis().SetTitle("f_{a_{3}}")
-multigraph.GetYaxis().SetRangeUser(0,.003)
+if zoomed:
+    multigraph.GetYaxis().SetRangeUser(0,.003)
 
 style.drawlines()
 
-[c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/fa3=%s_zoomed.%s" % (testfa3, format)) for format in ["png", "eps", "root", "pdf"]]
+[c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/fa3=%s%s.%s" % (testfa3, "_zoomed" if zoomed else "", format)) for format in ["png", "eps", "root", "pdf"]]
