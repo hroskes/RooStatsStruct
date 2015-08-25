@@ -70,11 +70,11 @@ def testfit(nNLLs = 100,
     multigraph.GetYaxis().SetTitle("-2#Deltaln L")
     multigraph.GetXaxis().SetTitle("f_{a_{3}}")
     if zoomed:
-        multigraph.GetYaxis().SetRangeUser(0,.003)
+        multigraph.GetYaxis().SetRangeUser(0,1)
 
     style.drawlines()
 
-    [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/fa3=%s%s.%s" % (testfa3, "_zoomed" if zoomed else "", format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/scan_fa3=%s%s.%s" % (testfa3, "_zoomed" if zoomed else "", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
     [testfit(testfa3=testfa3) for testfa3 in [-0.5, 0.5, 0, 1]]
