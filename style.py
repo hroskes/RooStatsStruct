@@ -51,7 +51,7 @@ def setTDRStyle(force):
   gStyle.SetOptDate(0)
 
   gStyle.SetOptFile(0)
-  gStyle.SetOptStat("mr")
+  gStyle.SetOptStat(0)
   gStyle.SetStatColor(kWhite)
   gStyle.SetStatFont(42)
   gStyle.SetStatFontSize(0.04)
