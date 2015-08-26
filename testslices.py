@@ -3,6 +3,7 @@ import ROOT
 import random
 from extendedcounter import *
 import style
+import itertools
 import os
 
 ########################################
@@ -12,14 +13,21 @@ varnames = ["sMELA", "D0-_VBF", "Dcp_VBF"]
 ########################################
 
 ROOT.gStyle.SetCanvasDefW(1000)
+ROOT.gErrorIgnoreLevel = 1001
 
 f = ROOT.TFile.Open("fa3_0_2_0_workspace_nobkg.root")
 w = f.Get("workspace")
 
 fa3 = w.var("fa3")
 
-pdf = w.pdf("Signal_0_2_0_SumPDF")
+SMhistFunc = w.function("SM_0_2_0_HistPDF")
+PShistFunc = w.function("PS_0_2_0_HistPDF")
+MIXhistFunc = w.function("MIX_0_2_0_HistPDF")
+SMnorm = w.function("SM_0_2_0_norm")
+PSnorm = w.function("PS_0_2_0_norm")
+MIXnorm = w.function("MIX_0_2_0_norm")
 
+pdf = ROOT.RooFormulaVar("SignalPdfAsFunction", "SignalPdfAsFunction", "(@0*@1 + @2*@3 + @4*@5)", ROOT.RooArgList(SMhistFunc, SMnorm, MIXhistFunc, MIXnorm, PShistFunc, PSnorm))
 c1 = ROOT.TCanvas.MakeDefCanvas()
 c1.SetRightMargin(0.2)
 #c1.SetLeftMargin(0.5)
@@ -35,18 +43,37 @@ for varname in varnames:
 
         fa3.setVal(testfa3)
 
-        bins = var.getBins()
-        minval = var.getMin()
-        maxval = var.getMax()
-        for i in range(bins):
-            value = (minval*(bins-i) + maxval*i)/bins
+        slicebins = var.getBins()
+        slicemin = var.getMin()
+        slicemax = var.getMax()
+        for i in range(slicebins):
+            value = (slicemin*(slicebins-i) + slicemax*i)/slicebins
             var.setVal(value)
 
-            print ",".join(othervarnames)
-            pdf.createHistogram(",".join(othervarnames)).Draw("colz")
+            xbins = othervars[0].getBins()
+            xmin = othervars[0].getMin()
+            xmax = othervars[0].getMax()
+            ybins = othervars[1].getBins()
+            ymin = othervars[1].getMin()
+            ymax = othervars[1].getMax()
+            h = ROOT.TH2F("h", "h", xbins, xmin, xmax, ybins, ymin, ymax)
+
+            for i, j in itertools.product(range(xbins), range(ybins)):
+                xvalue = (xmin*(xbins-i) + xmax*i)/xbins
+                othervars[0].setVal(xvalue)
+                yvalue = (ymin*(ybins-j) + ymax*j)/ybins
+                othervars[1].setVal(yvalue)
+                if pdf.getVal() >= 0:
+                    h.SetBinContent(i+1, j+1, pdf.getVal())
+                else:
+                    h.SetBinContent(i+1, j+1, -999)
+                    print "%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format), i, j, pdf.getVal()
+
+            h.Draw("colz")
 
             try:
                 os.mkdir("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/" % (varname, testfa3))
             except OSError:
                 pass
             [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
+            del h
