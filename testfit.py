@@ -37,7 +37,7 @@ def testfit(nNLLs = 100,
 
     fa3.setRange(-1, 1)
 
-    bincenters = [(i+.5)/nbins * high + (1-(i+.5)/nbins) * low for i in range(nbins)]
+    bincenters = [1.0*i/nbins * high + (1-(1.0*i)/nbins) * low for i in range(nbins+1)]
 
     c1 = ROOT.TCanvas.MakeDefCanvas()
     multigraph = ROOT.TMultiGraph()
