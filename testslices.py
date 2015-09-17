@@ -75,5 +75,9 @@ for varname in varnames:
                 os.mkdir("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/" % (varname, testfa3))
             except OSError:
                 pass
+            try:
+                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/index.php" % (varname, testfa3))
+            except OSError:
+                pass
             [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
             del h

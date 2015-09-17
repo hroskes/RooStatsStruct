@@ -8,12 +8,13 @@ import style
 
 ########################################
 #parameters
-testmu = 100000
+testmu = 1
 testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
 varnames = ["sMELA", "D0-_VBF", "Dcp_VBF"]
 ########################################
 
-f = ROOT.TFile.Open("fa3_0_2_0_workspace_nobkg.root")
+#f = ROOT.TFile.Open("fa3_0_2_0_workspace_nobkg.root")
+f = ROOT.TFile.Open("fa3_0_2_0_workspace.root")
 w = f.Get("workspace")
 
 fa3 = w.var("fa3")
