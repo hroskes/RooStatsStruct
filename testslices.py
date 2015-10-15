@@ -8,7 +8,7 @@ import os
 
 ########################################
 #parameters
-testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
+testfa3s = [-1 + a/4.0 for a in range(8,0,-1)]
 varnames = ["sMELA", "D0-_VBF", "Dcp_VBF"]
 ########################################
 
@@ -66,18 +66,18 @@ for varname in varnames:
                 if pdf.getVal() >= 0:
                     h.SetBinContent(i+1, j+1, pdf.getVal())
                 else:
-                    h.SetBinContent(i+1, j+1, -999)
+                    #h.SetBinContent(i+1, j+1, -999)
                     print "%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format), i, j, pdf.getVal()
 
             h.Draw("colz")
 
             try:
-                os.mkdir("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/" % (varname, testfa3))
+                os.mkdir("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/no-999/%sslices_fa3=%s/" % (varname, testfa3))
             except OSError:
                 pass
             try:
-                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/index.php" % (varname, testfa3))
+                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/no-999/%sslices_fa3=%s/index.php" % (varname, testfa3))
             except OSError:
                 pass
-            [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
+            [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/no-999/%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
             del h
