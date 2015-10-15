@@ -1,6 +1,7 @@
 import sys
 sys.argv.insert(1, "-b")
 import ROOT
+import loadlib
 del sys.argv[1]
 import random
 from extendedcounter import *
