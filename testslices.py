@@ -22,14 +22,9 @@ w = f.Get("workspace")
 
 fa3 = w.var("fa3")
 
-SMhistFunc = w.function("SM_0_2_0_HistPDF")
-PShistFunc = w.function("PS_0_2_0_HistPDF")
-MIXhistFunc = w.function("MIX_0_2_0_HistPDF")
-SMnorm = w.function("SM_0_2_0_norm")
-PSnorm = w.function("PS_0_2_0_norm")
-MIXnorm = w.function("MIX_0_2_0_norm")
+TotalPDF = w.pdf("Total_0_2_0_SumPDF")
 
-pdf = ROOT.RooFormulaVar("SignalPdfAsFunction", "SignalPdfAsFunction", "(@0*@1 + @2*@3 + @4*@5)", ROOT.RooArgList(SMhistFunc, SMnorm, MIXhistFunc, MIXnorm, PShistFunc, PSnorm))
+pdf = ROOT.RooFormulaVar("SignalPdfAsFunction", "SignalPdfAsFunction", "(@0)", ROOT.RooArgList(TotalPDF))
 c1 = ROOT.TCanvas.MakeDefCanvas()
 c1.SetRightMargin(0.2)
 #c1.SetLeftMargin(0.5)
@@ -42,6 +37,10 @@ for varname in varnames:
     othervars = [w.var(a) for a in othervarnames]
 
     for testfa3 in testfa3s:
+        toprint = "%s %s" % (varname, testfa3)
+        print "=" * len(toprint)
+        print toprint
+        print "=" * len(toprint)
 
         fa3.setVal(testfa3)
 
