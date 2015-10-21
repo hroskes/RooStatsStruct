@@ -8,7 +8,7 @@ from extendedcounter import *
 import style
 
 
-def testfit(nNLLs = 100,
+def testfit(nNLLs = 1,
             nbins = 1000,
             low = -1,
             high = 1,
@@ -73,11 +73,11 @@ def testfit(nNLLs = 100,
 
     style.drawlines()
 
-    [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/scan_fa3=%s%s.%s" % (testfa3, "",        format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("./scan_fa3=%s%s.%s" % (testfa3, "",        format)) for format in ["png", "eps", "root", "pdf"]]
 
     multigraph.GetYaxis().SetRangeUser(0,1)
 
-    [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/scan_fa3=%s%s.%s" % (testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("./scan_fa3=%s%s.%s" % (testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
     [testfit(testfa3=testfa3) for testfa3 in [-0.5, 0.5, 0, 1]]
