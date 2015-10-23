@@ -204,7 +204,7 @@ Double_t RooRealFlooredSumPdf::evaluate() const
 	}
 
 	// Introduce floor
-	if (value < 1.0e-15 && _doFloor) value = 1.0e-15; // Last IEEE double precision
+	if (value < 1.0e-8 && _doFloor) value = 1.0e-8; // Last IEEE double precision
 
 	return value;
 }

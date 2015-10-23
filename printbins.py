@@ -1,6 +1,7 @@
 import sys
 sys.argv.insert(1, "-b")
 import ROOT
+import loadlib
 del sys.argv[1]
 import random
 import style
@@ -39,4 +40,4 @@ for bin in itertools.product(*(range(bins[v]) for v in varnames)):
     for v in varnames:
         vars[v].setVal((mins[v]*(bins[v]-bin[v]) + maxes[v]*bin[v]) / bins[v])
 
-    print "(%s): %f" % (", ".join(str(vars[v].getVal()) for v in varnames), pdf.getVal())
+    print "(%s): %0.10f" % (", ".join(str(vars[v].getVal()) for v in varnames), pdf.getVal())
