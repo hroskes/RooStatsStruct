@@ -40,8 +40,8 @@ class MakePDF:
                 self.templatename_bkg = templatename_bkg
 
                 #Variables
-                mu = ROOT.RooRealVar("mu","mu",0.,100.)
-                fa3 = ROOT.RooRealVar("fa3","fa3",-1.,1.)
+                mu = ROOT.RooRealVar("mu","mu",1.,0.,100.)
+                fa3 = ROOT.RooRealVar("fa3","fa3",0.,-1.,1.)
 
                 #These variables are fixed as const. THIS IS ONLY TEMPORARY
                 phi = ROOT.RooRealVar("phia3","phia3",0.,-math.pi,math.pi)
@@ -57,7 +57,15 @@ class MakePDF:
                 SMrate = ROOT.RooRealVar("SMrate","SMrate",7.6807)
                 SMrate.setConstant(True)
 
-                FileName = "fa3_{0}_{1}_workspace.root".format(self.channel,self.on_off)
+                #fractions for ggH, VH, and VBF these values are 100% fake placeholders
+		x_ggH = ROOT.RooRealVar("x_ggH","x_ggH",0.56)
+		x_ggH.setConstant(True)
+                x_VH = ROOT.RooRealVar("x_VH","x_VH",0.25)
+                x_VH.setConstant(True)
+                x_VBF = ROOT.RooRealVar("x_VBF","x_VBF",0.06)
+                x_VBF.setConstant(True)
+
+		FileName = "fa3_{0}_{1}_workspace.root".format(self.channel,self.on_off)
                 if turnoffbkg:
                         FileName = FileName.replace(".root", "_nobkg.root")
                 w = ROOT.RooWorkspace("workspace","workspace")
@@ -176,9 +184,9 @@ class MakePDF:
 			
 
 			TemplateName = "SM_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
-			SMnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1-abs(@0))",ROOT.RooArgList(fa3))
+			SMnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1.-abs(@0))",ROOT.RooArgList(fa3))
 			TemplateName = "MIX_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
-			MIXnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))",ROOT.RooArgList(fa3))
+			MIXnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1.-abs(@0)))",ROOT.RooArgList(fa3))
 			TemplateName = "PS_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 			PSnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "abs(@0)",ROOT.RooArgList(fa3))
 
@@ -190,33 +198,44 @@ class MakePDF:
 			#NOTE BELOW INCLUDES MU AND SMrate 
 			#Below NOT COMBINE COMPATIBLE
 			SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
-			TemplateName = "Total_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
-			TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
-                	getattr(w, 'import')(TotalPDF, ROOT.RooFit.RecycleConflictNodes())
+			TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
+			TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
+                	#getattr(w, 'import')(TotalPDF, ROOT.RooFit.RecycleConflictNodes())
 
 			#combine categories
 			TemplateName = "Category_{0}_{1}_{2}_Norm".format(self.channel,self.category,self.on_off)
 
 			if self.category == self.ggH_category:
-                        	ggHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1.-abs(@0))",RooArgList(fa3))
+                        	ggHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_ggH,fa3))
 				getattr(w, 'import')(ggHnorm, ROOT.RooFit.RecycleConflictNodes())
-				ggHpdf = ROOT.RooRealSumPdf(TotalPDF)
+				ggHpdf = ROOT.RooAddPdf(TotalPDF)
 				print "Go There ggH"
                         elif self.category == self.VH_category:
-                                VHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1.-abs(@0))",RooArgList(fa3))
+                                VHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_VH,fa3))
                                 getattr(w, 'import')(VHnorm, ROOT.RooFit.RecycleConflictNodes())
-				VHpdf = ROOT.RooRealSumPdf(TotalPDF)
+				VHpdf = ROOT.RooAddPdf(TotalPDF)
 				print "Go There VH"
                         elif self.category == self.VBF_category:
-                                VBFnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1.-abs(@0))",RooArgList(fa3))
-                                getattr(w, 'import')(VBFnorm, ROOT.RooFit.RecycleConflictNodes())
-				VBFpdf = ROOT.RooRealSumPdf(TotalPDF)
+				VBFnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_VBF,fa3))
+				VBFpdf = ROOT.RooAddPdf(TotalPDF)
 				print "Go There VBF"
 			else:
                                 print "INVALID ANALYSIS CATEGORY!"
                                 assert(0)
 		
 		TemplateName = "Cat_{0}_{1}_SumPDF".format(self.channel,self.on_off)
-		CatSumPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf),ROOT.RooArgList(ggHnorm,VHnorm,VBFnorm))
-		getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
+		CatSumPDF = ROOT.RooGenericPdf(TemplateName, TemplateName, "@3*@0+@4*@1+@5*@2", ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf,ggHnorm,VHnorm,VBFnorm))
+		
+
+		canv_name = "test"
+                c_test = ROOT.TCanvas( canv_name, canv_name, 750, 700 )
+                c_test.cd()
+                frame_s = fa3.frame()
+                super(ROOT.RooAbsPdf, CatSumPDF).plotOn(frame_s, ROOT.RooFit.LineStyle(2), ROOT.RooFit.LineColor(6) )
+                frame_s.Draw()
+                figName = "test.png"
+                c_test.SaveAs(figName)
+                del c_test
+
+		getattr(w, 'import')(CatSumPDF, ROOT.Roo)
 		w.writeToFile(FileName)
