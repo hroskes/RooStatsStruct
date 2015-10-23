@@ -1,5 +1,6 @@
 import sys
 import ROOT
+import loadlib
 import random
 from extendedcounter import *
 import style
@@ -8,8 +9,9 @@ import os
 
 ########################################
 #parameters
-testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
+testfa3s = [-1 + a/4.0 for a in range(8,0,-1)]
 varnames = ["sMELA", "D0-_VBF", "Dcp_VBF"]
+floorminus999 = False
 ########################################
 
 ROOT.gStyle.SetCanvasDefW(1000)
@@ -20,14 +22,9 @@ w = f.Get("workspace")
 
 fa3 = w.var("fa3")
 
-SMhistFunc = w.function("SM_0_2_0_HistPDF")
-PShistFunc = w.function("PS_0_2_0_HistPDF")
-MIXhistFunc = w.function("MIX_0_2_0_HistPDF")
-SMnorm = w.function("SM_0_2_0_norm")
-PSnorm = w.function("PS_0_2_0_norm")
-MIXnorm = w.function("MIX_0_2_0_norm")
+TotalPDF = w.pdf("Total_0_2_0_SumPDF")
 
-pdf = ROOT.RooFormulaVar("SignalPdfAsFunction", "SignalPdfAsFunction", "(@0*@1 + @2*@3 + @4*@5)", ROOT.RooArgList(SMhistFunc, SMnorm, MIXhistFunc, MIXnorm, PShistFunc, PSnorm))
+pdf = ROOT.RooFormulaVar("SignalPdfAsFunction", "SignalPdfAsFunction", "(@0)", ROOT.RooArgList(TotalPDF))
 c1 = ROOT.TCanvas.MakeDefCanvas()
 c1.SetRightMargin(0.2)
 #c1.SetLeftMargin(0.5)
@@ -40,6 +37,10 @@ for varname in varnames:
     othervars = [w.var(a) for a in othervarnames]
 
     for testfa3 in testfa3s:
+        toprint = "%s %s" % (varname, testfa3)
+        print "=" * len(toprint)
+        print toprint
+        print "=" * len(toprint)
 
         fa3.setVal(testfa3)
 
@@ -66,18 +67,20 @@ for varname in varnames:
                 if pdf.getVal() >= 0:
                     h.SetBinContent(i+1, j+1, pdf.getVal())
                 else:
-                    h.SetBinContent(i+1, j+1, -999)
+                    if floorminus999:
+                        h.SetBinContent(i+1, j+1, -999)
                     print "%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format), i, j, pdf.getVal()
 
             h.Draw("colz")
 
+            dir = "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%s" % ("no-999" if floorminus999 else "")
             try:
-                os.mkdir("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/" % (varname, testfa3))
+                os.mkdir("%s/%sslices_fa3=%s/" % (dir, varname, testfa3))
             except OSError:
                 pass
             try:
-                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/index.php" % (varname, testfa3))
+                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "%s/%sslices_fa3=%s/index.php" % (dir, varname, testfa3))
             except OSError:
                 pass
-            [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
+            [c1.SaveAs("%s/%sslices_fa3=%s/slice_%s.%s" % (dir, varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
             del h

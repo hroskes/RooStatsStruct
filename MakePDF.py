@@ -192,7 +192,7 @@ class MakePDF:
 
 
 			TemplateName = "Signal_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
-			SignalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgList(SMnorm,MIXnorm,PSnorm))
+			SignalPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgList(SMnorm,MIXnorm,PSnorm))
 
 			TemplateName = "Signal_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 			#NOTE BELOW INCLUDES MU AND SMrate 

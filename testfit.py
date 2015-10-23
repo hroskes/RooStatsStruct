@@ -1,6 +1,7 @@
 import sys
 sys.argv.insert(1, "-b")
 import ROOT
+import loadlib
 del sys.argv[1]
 import random
 from extendedcounter import *
@@ -69,12 +70,14 @@ def testfit(nNLLs = 1,
     multigraph.Draw("AC")
     multigraph.GetYaxis().SetTitle("-2#Deltaln L")
     multigraph.GetXaxis().SetTitle("f_{a_{3}}")
-    if zoomed:
-        multigraph.GetYaxis().SetRangeUser(0,1)
 
     style.drawlines()
 
-    [c1.SaveAs("./scan_fa3=%s%s.%s" % (testfa3, "_zoomed" if zoomed else "", format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("./scan_fa3=%s%s.%s" % (testfa3, "",        format)) for format in ["png", "eps", "root", "pdf"]]
+
+    multigraph.GetYaxis().SetRangeUser(0,1)
+
+    [c1.SaveAs("./scan_fa3=%s%s.%s" % (testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
     [testfit(testfa3=testfa3) for testfa3 in [-0.5, 0.5, 0, 1]]
