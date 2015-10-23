@@ -8,6 +8,7 @@ import optparse, shlex, re
 import math
 from ROOT import *
 import ROOT
+import loadlib
 from array import array
 
 turnoffbkg = True
