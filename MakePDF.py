@@ -6,8 +6,11 @@
 import sys, os, pwd, commands
 import optparse, shlex, re
 import math
-from ROOT import *
-import ROOT
+import rootlog
+
+#import ROOT
+ROOT = rootlog.fakeroot()
+
 import loadlib
 from array import array
 
@@ -70,12 +73,6 @@ class MakePDF:
                 if turnoffbkg:
                         FileName = FileName.replace(".root", "_nobkg.root")
                 w = ROOT.RooWorkspace("workspace","workspace")
-		ggHnorm = ROOT.RooFormulaVar()
-		VHnorm = ROOT.RooFormulaVar()
-		VBFnorm = ROOT.RooFormulaVar()
-                ggHpdf = ROOT.RooRealSumPdf()
-                VHpdf = ROOT.RooRealSumPdf()
-                VBFpdf = ROOT.RooRealSumPdf()
 
 
 		for self.category in range(0,3): # 0 = ggH, 1 = VH, 2 = VBF
@@ -85,30 +82,34 @@ class MakePDF:
 			Disc1_name = None
 			Disc2_name = None
 			if self.on_off == self.on_shell:
-				Disc0_name = "sMELA"
 				if self.category == self.ggH_category:
+					Disc0_name = "sMELA_ggH"
 					Disc1_name = "D0-_dec"
 					Disc2_name = "Dcp_dec"
 				elif self.category == self.VH_category:
+					Disc0_name = "sMELA_VH"
 					Disc1_name = "D0-_VH"
 					Disc2_name = "Dcp_VH"
 				elif self.category == self.VBF_category:
+					Disc0_name = "sMELA_VBF"
 					Disc1_name = "D0-_VBF"
 					Disc2_name = "Dcp_VBF"
 				else:
 					print "INVALID ANALYSIS CATEGORY!"
 					assert(0)
 			elif self.on_off == self.off_shell:
-				Disc0_name = "zz4l_mass"
 				if self.category == self.ggH_category:
+					Disc0_name = "zz4l_mass_ggH"
 					Disc1_name = "Dgg"
-					Disc2_name = "D0-_dec"
+					Disc2_name = "D0-_dec_offshell"
 				elif self.category == self.VH_category:
-					Disc1_name = "D0-_VH"
-					#Disc2_name = "Dcp_VH"
+					Disc0_name = "zz4l_mass_VH"
+					Disc1_name = "D0-_VH_offshell"
+					#Disc2_name = "Dcp_VH_offshell"
 				elif self.category == self.VBF_category:
-					Disc1_name = "D0-_VBF"
-					#Disc2_name = "Dcp_VBF"
+					Disc0_name = "zz4l_mass_VBF"
+					Disc1_name = "D0-_VBF_offshell"
+					#Disc2_name = "Dcp_VBF_offshell"
 				else:
 					print "INVALID ANALYSIS CATEGORY!"
 					assert(0)
@@ -198,7 +199,7 @@ class MakePDF:
 			TemplateName = "Signal_{0}_{1}_{2}_norm".format(self.channel,self.category,self.on_off)
 			#NOTE BELOW INCLUDES MU AND SMrate 
 			#Below NOT COMBINE COMPATIBLE
-			SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
+			SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
 			TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,self.category,self.on_off)
 			TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
                 	#getattr(w, 'import')(TotalPDF, ROOT.RooFit.RecycleConflictNodes())
@@ -207,17 +208,17 @@ class MakePDF:
 			TemplateName = "Category_{0}_{1}_{2}_Norm".format(self.channel,self.category,self.on_off)
 
 			if self.category == self.ggH_category:
-                        	ggHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_ggH,fa3))
+				ggHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",ROOT.RooArgList(x_ggH,fa3))
 				getattr(w, 'import')(ggHnorm, ROOT.RooFit.RecycleConflictNodes())
 				ggHpdf = ROOT.RooAddPdf(TotalPDF)
 				print "Go There ggH"
                         elif self.category == self.VH_category:
-                                VHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_VH,fa3))
+                                VHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",ROOT.RooArgList(x_VH,fa3))
                                 getattr(w, 'import')(VHnorm, ROOT.RooFit.RecycleConflictNodes())
 				VHpdf = ROOT.RooAddPdf(TotalPDF)
 				print "Go There VH"
                         elif self.category == self.VBF_category:
-				VBFnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_VBF,fa3))
+				VBFnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",ROOT.RooArgList(x_VBF,fa3))
 				VBFpdf = ROOT.RooAddPdf(TotalPDF)
 				print "Go There VBF"
 			else:
@@ -232,7 +233,7 @@ class MakePDF:
                 c_test = ROOT.TCanvas( canv_name, canv_name, 750, 700 )
                 c_test.cd()
                 frame_s = fa3.frame()
-                super(ROOT.RooAbsPdf, CatSumPDF).plotOn(frame_s, ROOT.RooFit.LineStyle(2), ROOT.RooFit.LineColor(6) )
+                CatSumPDF.plotOn(frame_s, ROOT.RooFit.LineStyle(2), ROOT.RooFit.LineColor(6) )
                 frame_s.Draw()
                 figName = "test.png"
                 c_test.SaveAs(figName)
