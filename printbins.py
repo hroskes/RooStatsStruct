@@ -13,7 +13,7 @@ testfa3 = -.5
 varnames = ["Dcp_VBF", "D0-_VBF", "sMELA",]
 ########################################
 
-f = ROOT.TFile.Open("fa3_0_2_0_workspace_nobkg.root")
+f = ROOT.TFile.Open("fa3_0_0_workspace_nobkg.root")
 w = f.Get("workspace")
 
 fa3 = w.var("fa3")

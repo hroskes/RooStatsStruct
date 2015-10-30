@@ -8,10 +8,16 @@ import optparse, shlex, re
 import math
 from ROOT import *
 import ROOT
+from ROOT import gSystem
+gSystem.Load('libRooFit')
+from ROOT import RooFit, RooRealVar, RooGaussian, RooDataSet, RooArgList, RooTreeData
+from ROOT import RooCmdArg, RooArgSet, kFALSE, RooLinkedList
+from ROOT import gStyle
 import loadlib
 from array import array
 
 turnoffbkg = True
+dummylist = []
 
 class MakePDF:
 
@@ -70,15 +76,15 @@ class MakePDF:
                 if turnoffbkg:
                         FileName = FileName.replace(".root", "_nobkg.root")
                 w = ROOT.RooWorkspace("workspace","workspace")
-		ggHnorm = ROOT.RooFormulaVar()
-		VHnorm = ROOT.RooFormulaVar()
-		VBFnorm = ROOT.RooFormulaVar()
-                ggHpdf = ROOT.RooRealSumPdf()
-                VHpdf = ROOT.RooRealSumPdf()
-                VBFpdf = ROOT.RooRealSumPdf()
+                ggHpdf = ROOT.RooAddPdf()
+                VHpdf = ROOT.RooAddPdf()
+                VBFpdf = ROOT.RooAddPdf()
+		dummylist.append(ggHpdf)
+		dummylist.append(VHpdf)
+		dummylist.append(VBFpdf)
 
 
-		for self.category in range(0,3): # 0 = ggH, 1 = VH, 2 = VBF
+		for self.category in range(0, 3): # 0 = ggH, 1 = VH, 2 = VBF
 
 			#if statements to make Discriminants
 			Disc0_name = None
@@ -203,40 +209,32 @@ class MakePDF:
 			TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
                 	#getattr(w, 'import')(TotalPDF, ROOT.RooFit.RecycleConflictNodes())
 
-			#combine categories
-			TemplateName = "Category_{0}_{1}_{2}_Norm".format(self.channel,self.category,self.on_off)
-
 			if self.category == self.ggH_category:
-                        	ggHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_ggH,fa3))
-				getattr(w, 'import')(ggHnorm, ROOT.RooFit.RecycleConflictNodes())
-				ggHpdf = ROOT.RooAddPdf(TotalPDF)
+				ggHpdf = ROOT.RooAddPdf(TotalPDF,"ggH_{0}_{1}".format(self.channel,self.on_off))
+				getattr(w, 'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There ggH"
                         elif self.category == self.VH_category:
-                                VHnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_VH,fa3))
-                                getattr(w, 'import')(VHnorm, ROOT.RooFit.RecycleConflictNodes())
-				VHpdf = ROOT.RooAddPdf(TotalPDF)
-				print "Go There VH"
+                                VHpdf = ROOT.RooAddPdf(TotalPDF,"VH_{0}_{1}".format(self.channel,self.on_off))
+                                getattr(w, 'import')(VHpdf, ROOT.RooFit.RecycleConflictNodes())
+                                print "Go There VH"
                         elif self.category == self.VBF_category:
-				VBFnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0*abs(@1))",RooArgList(x_VBF,fa3))
-				VBFpdf = ROOT.RooAddPdf(TotalPDF)
-				print "Go There VBF"
+                                VBFpdf = ROOT.RooAddPdf(TotalPDF,"VBF_{0}_{1}".format(self.channel,self.on_off))
+                                getattr(w, 'import')(VBFpdf, ROOT.RooFit.RecycleConflictNodes())
+                                print "Go There VBF"
+
 			else:
                                 print "INVALID ANALYSIS CATEGORY!"
                                 assert(0)
 		
+		ggHpdf.Print()
+		VHpdf.Print()
+		VBFpdf.Print()
+		
 		TemplateName = "Cat_{0}_{1}_SumPDF".format(self.channel,self.on_off)
-		CatSumPDF = ROOT.RooGenericPdf(TemplateName, TemplateName, "@3*@0+@4*@1+@5*@2", ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf,ggHnorm,VHnorm,VBFnorm))
+		CatSumPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf))
 		
 
-		canv_name = "test"
-                c_test = ROOT.TCanvas( canv_name, canv_name, 750, 700 )
-                c_test.cd()
-                frame_s = fa3.frame()
-                super(ROOT.RooAbsPdf, CatSumPDF).plotOn(frame_s, ROOT.RooFit.LineStyle(2), ROOT.RooFit.LineColor(6) )
-                frame_s.Draw()
-                figName = "test.png"
-                c_test.SaveAs(figName)
-                del c_test
-
-		getattr(w, 'import')(CatSumPDF, ROOT.Roo)
+		w.Print()
+		CatSumPDF.Print()
+		#getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
 		w.writeToFile(FileName)
