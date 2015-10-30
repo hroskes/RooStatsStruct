@@ -60,9 +60,6 @@ public:
 	virtual std::list<Double_t>* plotSamplingHint(RooAbsRealLValue& /*obs*/, Double_t /*xlo*/, Double_t /*xhi*/) const;
 	Bool_t isBinnedDistribution(const RooArgSet& obs) const;
 
-
-protected:
-
 	class CacheElem : public RooAbsCacheElement {
 	public:
 		CacheElem()  {};
@@ -71,6 +68,9 @@ protected:
 		RooArgList _funcIntList;
 		RooArgList _funcNormList;
 	};
+
+protected:
+
 	mutable RooObjCacheManager _normIntMgr; // The integration cache manager
 
 
