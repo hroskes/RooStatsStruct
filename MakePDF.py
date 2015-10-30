@@ -10,6 +10,7 @@ import rootlog
 
 #import ROOT
 ROOT = rootlog.fakeroot()
+import ROOT as therealROOT
 
 import loadlib
 from array import array
@@ -228,16 +229,15 @@ class MakePDF:
 		TemplateName = "Cat_{0}_{1}_SumPDF".format(self.channel,self.on_off)
 		CatSumPDF = ROOT.RooGenericPdf(TemplateName, TemplateName, "@3*@0+@4*@1+@5*@2", ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf,ggHnorm,VHnorm,VBFnorm))
 		
-
 		canv_name = "test"
                 c_test = ROOT.TCanvas( canv_name, canv_name, 750, 700 )
                 c_test.cd()
                 frame_s = fa3.frame()
-                CatSumPDF.plotOn(frame_s, ROOT.RooFit.LineStyle(2), ROOT.RooFit.LineColor(6) )
+                super(therealROOT.RooAbsPdf, CatSumPDF).plotOn(frame_s, ROOT.RooFit.LineStyle(2), ROOT.RooFit.LineColor(6) )
                 frame_s.Draw()
                 figName = "test.png"
                 c_test.SaveAs(figName)
                 del c_test
 
-		getattr(w, 'import')(CatSumPDF, ROOT.Roo)
+		getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
 		w.writeToFile(FileName)

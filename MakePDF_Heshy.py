@@ -27,5 +27,6 @@ class MakePDF_Heshy(MakePDF.MakePDF):
 if __name__ == '__main__':
     MakePDF.turnoffbkg = True
     MakePDF_Heshy()
+    MakePDF.ROOT.reset()
     MakePDF.turnoffbkg = False
     MakePDF_Heshy()

@@ -17,6 +17,7 @@ to use:
 import ROOT
 
 names = set([])
+objects = []
 
 class fakeroot(object):
     def __getattr__(self, name):
@@ -25,6 +26,9 @@ class fakeroot(object):
         return getattr(ROOT, name)
     def __del__(self):
         print names
+    def reset(self):
+        names.clear()
+        del objects[:]
 
 class RooSomething(object):
     def __init__(self, classname):
@@ -34,6 +38,7 @@ class RooSomething(object):
             if args[0] in names:
                 raise ValueError(args[0] + " is already taken!")
             names.add(args[0])
-        return getattr(ROOT, self.classname)(*args)
+        objects.append(getattr(ROOT, self.classname)(*args))
+        return objects[-1]
     def __getattr__(self, name):
         return getattr(getattr(ROOT, self.classname), name)
