@@ -18,16 +18,16 @@ def testfit(nNLLs = 1,
             ntoys = 1000,  #default if None: BKGrate+SMrate
            ):
 
-    f = ROOT.TFile.Open("fa3_0_2_0_workspace.root")
+    f = ROOT.TFile.Open("fa3_0_0_workspace.root")
     w = f.Get("workspace")
 
     fa3 = w.var("fa3")
     mu = w.var("mu")
 
-    pdf = w.pdf("Total_0_2_0_SumPDF")
-    sMELA = w.var("sMELA")
-    D0minus = w.var("D0-_VBF")
-    DCP = w.var("Dcp_VBF")
+    pdf = w.pdf("Cat_0_0_SumPDF")
+    sMELA = w.var("sMELA_ggH")
+    D0minus = w.var("D0-_dec")
+    DCP = w.var("Dcp_dec")
 
     if ntoys is None:
         ntoys = (w.var("BKGrate").getVal() + w.var("SMrate").getVal())
@@ -47,6 +47,7 @@ def testfit(nNLLs = 1,
     for j in range(nNLLs):
         mu.setVal(testmu)
         fa3.setVal(testfa3)
+
         data = pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys)
         nll = pdf.createNLL(data)
         result = ExtendedCounter()
@@ -80,4 +81,4 @@ def testfit(nNLLs = 1,
     [c1.SaveAs("./scan_fa3=%s%s.%s" % (testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
-    [testfit(testfa3=testfa3) for testfa3 in [-0.5, 0.5, 0, 1]]
+    [testfit(nNLLs=30, testfa3=testfa3) for testfa3 in [-0.5, 0.5, 0, 1]]

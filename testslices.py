@@ -10,19 +10,19 @@ import os
 ########################################
 #parameters
 testfa3s = [-1 + a/4.0 for a in range(8,0,-1)]
-varnames = ["sMELA", "D0-_VBF", "Dcp_VBF"]
+varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
 floorminus999 = False
 ########################################
 
 ROOT.gStyle.SetCanvasDefW(1000)
 ROOT.gErrorIgnoreLevel = 1001
 
-f = ROOT.TFile.Open("fa3_0_2_0_workspace_nobkg.root")
+f = ROOT.TFile.Open("fa3_0_0_workspace_nobkg.root")
 w = f.Get("workspace")
 
 fa3 = w.var("fa3")
 
-TotalPDF = w.pdf("Total_0_2_0_SumPDF")
+TotalPDF = w.pdf("ggH_0_0")
 
 pdf = ROOT.RooFormulaVar("SignalPdfAsFunction", "SignalPdfAsFunction", "(@0)", ROOT.RooArgList(TotalPDF))
 c1 = ROOT.TCanvas.MakeDefCanvas()
