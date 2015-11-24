@@ -18,7 +18,7 @@ def testfit(nNLLs = 1,
             ntoys = 1000,  #default if None: BKGrate+SMrate
            ):
 
-    f = ROOT.TFile.Open("fa3_0_0_workspace.root")
+    f = ROOT.TFile.Open("fa3_0_0_workspace_nobkg.root")
     w = f.Get("workspace")
 
     fa3 = w.var("fa3")
@@ -63,6 +63,7 @@ def testfit(nNLLs = 1,
             print str(j+1) + " / " + str(nNLLs)
 
     averageNLL /= nNLLs
+    print bincenters[-1], averageNLL[bincenters[-1]]
 
     graph = averageNLL.TGraph()
     graph.SetLineWidth(3)
@@ -74,11 +75,11 @@ def testfit(nNLLs = 1,
 
     style.drawlines()
 
-    [c1.SaveAs("./scan_fa3=%s%s.%s" % (testfa3, "",        format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("plots/scan_fa3=%s%s.%s" % (testfa3, "",        format)) for format in ["png", "eps", "root", "pdf"]]
 
     multigraph.GetYaxis().SetRangeUser(0,1)
 
-    [c1.SaveAs("./scan_fa3=%s%s.%s" % (testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("plots/scan_fa3=%s%s.%s" % (testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
-    [testfit(nNLLs=30, testfa3=testfa3) for testfa3 in [-0.5, 0.5, 0, 1]]
+    [testfit(testfa3=testfa3) for testfa3 in [-0.5, 0.5, 0, 1]]
