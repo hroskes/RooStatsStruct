@@ -24,8 +24,6 @@ class fakeroot(object):
         if name.startswith("Roo") and "RooArg" not in name and name != "RooFit":
             return RooSomething(name)
         return getattr(ROOT, name)
-    def __del__(self):
-        print names
     def reset(self):
         names.clear()
         del objects[:]
