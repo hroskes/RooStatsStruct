@@ -12,18 +12,16 @@ class EnumItem(object):
         return format(int(self), format_spec)
 
     def __eq__(self, other):
-        if type(other) == int:
-            return int(self) == other
-        if type(other) == str:
-            return str(self) == other
+        if type(other) == int or type(other) == str:
+            return other in self.names
         return str(self) == str(other) and int(self) == int(other)
     def __ne__(self, other):
         return not self == other
 
 class MyEnum(object):
     def __init__(self, value):
-        if isinstance(value, type(self)):
-            onoff = str(value)
+        if isinstance(value, (MyEnum, EnumItem)):
+            value = str(value)
         for item in self.enumitems:
             if value in item.names:
                 self.item = item
@@ -49,31 +47,33 @@ class MyEnum(object):
 
 class OnOffShell(MyEnum):
     enumitems = (
-                 EnumItem("onshell",  0, "on"),
-                 EnumItem("offshell", 1, "off"),
+                 EnumItem("onshell",  0, "on", "on-shell", "on_shell"),
+                 EnumItem("offshell", 1, "off", "off-shell", "off_shell"),
                 )
 
 class Category(MyEnum):
     enumitems = (
                  EnumItem("ggH", 0),
-                 EnumItem("VH",  1),
+                 EnumItem("VH", 1),
                  EnumItem("VBF", 2),
                 )
 
 class Channel(MyEnum):
     enumitems = (
                  EnumItem("2e2mu", 0, "2mu2e"),
-                 EnumItem("4mu",   1),
-                 EnumItem("4e",    2),
+                 EnumItem("4mu", 1),
+                 EnumItem("4e", 2),
                 )
 
-on_shell  = OnOffShell("onshell")
-off_shell = OnOffShell("offshell")
+class TemplateType(MyEnum):
+    enumitems = (
+                 EnumItem("0+", 0, "SM", "scalar"),
+                 EnumItem("0-", 1, "PS", "pseudoscalar"),
+                 EnumItem("interference", 2, "interf", "fa30.5"),
+                 EnumItem("qqZZ", 3, "background", "bkg"),
+                )
 
-ggH_category = Category("ggH")
-VH_category  = Category("VH")
-VBF_category = Category("VBF")
-
-TwoETwoMu = Channel("2e2mu")
-FourMu    = Channel("4mu")
-FourE     = Channel("4e")
+onoffshell = OnOffShell.enumitems
+categories = Category.enumitems
+channels = Channel.enumitems
+templatetypes = TemplateType.enumitems

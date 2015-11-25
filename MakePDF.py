@@ -7,6 +7,7 @@ import sys, os, pwd, commands
 import optparse, shlex, re
 import math
 import rootlog
+import templatefiles
 from enums import *
 
 #import ROOT
@@ -21,19 +22,11 @@ turnoffbkg = True
 
 class MakePDF:
 
-	def makeWorkspace(self, channelCode, templateFile, templateFile_bkg, on_off_Code, templatename_SM, templatename_PS, templatename_mix, templatename_bkg):
+	def makeWorkspace(self, channelCode, on_off_Code):
 
 		#Placeholder for Inputs
 		self.channel = Channel(channelCode) # 0 = 2e2mu, 1 = 4mu, 2 = 4e
 		self.on_off = OnOffShell(on_off_Code)  # 0 = on-shell, 1 = off-shell
-
-		#libraries for template names
-		self.templateFile = templateFile # Input Templates
-		self.templateFile_bkg = templateFile_bkg
-		self.templatename_SM = templatename_SM
-		self.templatename_PS = templatename_PS
-		self.templatename_mix = templatename_mix
-		self.templatename_bkg = templatename_bkg
 
 		#Variables
 		mu = ROOT.RooRealVar("mu","mu",1.,0.,100.)
@@ -55,44 +48,43 @@ class MakePDF:
 
 
 		FileName = "fa3_{0}_{1}_workspace.root".format(self.channel,self.on_off)
-		print FileName
 		if turnoffbkg:
 			FileName = FileName.replace(".root", "_nobkg.root")
 		w = ROOT.RooWorkspace("workspace","workspace")
 
 
-		for category in range(0, 3): # 0 = ggH, 1 = VH, 2 = VBF
+		for category in categories:
 
 			#if statements to make Discriminants
 			Disc0_name = None
 			Disc1_name = None
 			Disc2_name = None
-			if self.on_off == on_shell:
-				if category == ggH_category:
+			if self.on_off == "onshell":
+				if category == "ggH":
 					Disc0_name = "sMELA_ggH"
 					Disc1_name = "D0-_dec"
 					Disc2_name = "Dcp_dec"
-				elif category == VH_category:
+				elif category == "VH":
 					Disc0_name = "sMELA_VH"
 					Disc1_name = "D0-_VH"
 					Disc2_name = "Dcp_VH"
-				elif category == VBF_category:
+				elif category == "VBF":
 					Disc0_name = "sMELA_VBF"
 					Disc1_name = "D0-_VBF"
 					Disc2_name = "Dcp_VBF"
 				else:
 					print "INVALID ANALYSIS CATEGORY!"
 					assert(0)
-			elif self.on_off == off_shell:
-				if category == ggH_category:
+			elif self.on_off == "offshell":
+				if category == "ggH":
 					Disc0_name = "zz4l_mass_ggH"
 					Disc1_name = "Dgg"
 					Disc2_name = "D0-_dec_offshell"
-				elif category == VH_category:
+				elif category == "VH":
 					Disc0_name = "zz4l_mass_VH"
 					Disc1_name = "D0-_VH_offshell"
 					#Disc2_name = "Dcp_VH_offshell"
-				elif category == VBF_category:
+				elif category == "VBF":
 					Disc0_name = "zz4l_mass_VBF"
 					Disc1_name = "D0-_VBF_offshell"
 					#Disc2_name = "Dcp_VBF_offshell"
@@ -106,14 +98,10 @@ class MakePDF:
 
 
 			#Build Signal PDF
-			InputFileName = "{0}".format(self.templateFile)
-			InputRootFile = ROOT.TFile(InputFileName)
-			SMtemplate = InputRootFile.Get(self.templatename_SM)
-			PStemplate = InputRootFile.Get(self.templatename_PS)
-			MIXtemplate = InputRootFile.Get(self.templatename_mix)
-			InputFileName_bkg = "{0}".format(self.templateFile_bkg)
-			InputRootFile_bkg = ROOT.TFile(InputFileName_bkg)
-			BKGtemplate = InputRootFile_bkg.Get(self.templatename_bkg)
+			SMtemplate = templatefiles.template(category, self.channel, self.on_off, "SM")
+			PStemplate = templatefiles.template(category, self.channel, self.on_off, "PS")
+			MIXtemplate = templatefiles.template(category, self.channel, self.on_off, "interference")
+			BKGtemplate = templatefiles.template(category, self.channel, self.on_off, "qqZZ")
 
 			dBins0 = SMtemplate.GetXaxis().GetNbins()
 			dLow0 = SMtemplate.GetXaxis().GetXmin()
@@ -186,21 +174,21 @@ class MakePDF:
 			#NOTE BELOW INCLUDES MU AND SMrate
 			#Below NOT COMBINE COMPATIBLE
 
-			if category == ggH_category:
+			if category == "ggH":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
 				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
 				ggHpdf = ROOT.RooAddPdf(TotalPDF,"ggH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There ggH"
-			elif category == VH_category:
+			elif category == "VH":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
 				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
 				VHpdf = ROOT.RooAddPdf(TotalPDF,"VH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(VHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There VH"
-			elif category == VBF_category:
+			elif category == "VBF":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
 				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
@@ -220,7 +208,5 @@ class MakePDF:
 		CatSumPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf))
 
 
-		w.Print()
-		CatSumPDF.Print()
 		getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
 		w.writeToFile(FileName)

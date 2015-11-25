@@ -18,15 +18,21 @@ import ROOT
 
 names = set([])
 objects = []
+files = {}
 
 class fakeroot(object):
     def __getattr__(self, name):
         if name.startswith("Roo") and "RooArg" not in name and name != "RooFit":
             return RooSomething(name)
-        return getattr(ROOT, name)
+        elif name == "TFile":
+            return TFile()
+        else:
+            return getattr(ROOT, name)
     def reset(self):
         names.clear()
         del objects[:]
+        [f.Close() for f in files.values()]
+        files.clear()
 
 class RooSomething(object):
     def __init__(self, classname):
@@ -40,3 +46,15 @@ class RooSomething(object):
         return objects[-1]
     def __getattr__(self, name):
         return getattr(getattr(ROOT, self.classname), name)
+
+class TFile(object):
+    def __call__(self, *args):
+        if len(args) == 0:
+            raise TypeError("Who uses the TFile default constructor?")
+        if args[0] not in files:
+            files.update({args[0]: ROOT.TFile.Open(*args)})
+        return files[args[0]]
+    def __getattr__(self, name):
+        if name == "Open":
+            return self
+        return getattr(ROOT.TFile, name)
