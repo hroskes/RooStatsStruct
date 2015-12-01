@@ -3,6 +3,7 @@ import rootlog
 ROOT = rootlog.fakeroot()
 
 basedir = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/makeTemplates/templates/"
+basedirmeng = "/afs/cern.ch/work/x/xiaomeng/public/forChris/"
 
 class TemplateGetter(object):
     def __init__(self, *args):
@@ -35,16 +36,16 @@ class TemplateGetter(object):
 
         if self.on_off == "onshell" and self.category == "ggH" and self.channel == "2e2mu":
             if self.templatetype == "SM":
-                self.file = basedir + "2e2mu_templates.root"
-                self.name = "template_VBFscalar"
+                self.file = basedirmeng + "2e2mu_fa3Adap_new.root"
+                self.name = "template0PlusAdapSmoothMirror"
             elif self.templatetype == "PS":
-                self.file = basedir + "2e2mu_templates.root"
-                self.name = "template_VBFpseudoscalar"
+                self.file = basedirmeng + "2e2mu_fa3Adap_new.root"
+                self.name = "template0MinusAdapSmoothMirror"
             elif self.templatetype == "interference":
-                self.file = basedir + "2e2mu_templates.root"
-                self.name = "template_VBFinterference"
+                self.file = basedirmeng + "2e2mu_fa3Adap_new.root"
+                self.name = "templateIntAdapSmoothMirror"
             elif self.templatetype == "qqZZ":
-                self.file = basedir + "2e2mu_templates_bkg.root"
+                self.file = basedirmeng + "2e2mu_fa3Adap_new_bkg.root"
                 self.name = "template_qqZZ"
             else:
                 raise ValueError("Bad templatetype! %s" % self.templatetype)
@@ -53,7 +54,13 @@ class TemplateGetter(object):
             self.name = "empty"
 
     def template(self):
-        return ROOT.TFile(self.file).Get(self.name)
+        tfile = ROOT.TFile.Open(self.file)
+        if not tfile:
+            raise IOError(self.file + " does not exist!")
+        template = tfile.Get(self.name)
+        if not template:
+            raise IOError(self.file + " does not contain " + self.name + "!")
+        return template
 
 def template(*args):
     return TemplateGetter(*args).template()

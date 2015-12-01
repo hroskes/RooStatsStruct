@@ -8,7 +8,7 @@ from extendedcounter import *
 import style
 
 
-def testfit(nNLLs = 1,
+def testfit(nNLLs = 100,
             nbins = 1000,
             low = -1,
             high = 1,

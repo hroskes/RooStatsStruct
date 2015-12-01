@@ -73,7 +73,7 @@ for varname in varnames:
 
             h.Draw("colz")
 
-            dir = "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%s" % ("no-999" if floorminus999 else "")
+            dir = "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/%s" % ("no-999" if floorminus999 else "")
             try:
                 os.mkdir("%s/%sslices_fa3=%s/" % (dir, varname, testfa3))
             except OSError:
