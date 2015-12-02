@@ -41,4 +41,4 @@ for varname in varnames:
         pdf.createProjection(ROOT.RooArgSet(*othervars)).plotOn(frame, ROOT.RooFit.LineColor(testfa3s[testfa3]))
 
     frame.Draw()
-    [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/projection_%s.%s" % (varname, format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("plots/projection_%s.%s" % (varname, format)) for format in ["png", "eps", "root", "pdf"]]

@@ -1,7 +1,5 @@
 import MakePDF
 
-templatedir = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/makeTemplates/templates/"
-
 flavors = (
            "2e2mu",
 #           "4e",

@@ -25,4 +25,4 @@ SIGnorm.plotOn(frame)
 frame.GetYaxis().SetRangeUser(7.4, 7.7)
 
 frame.Draw()
-[c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/signorm.%s" % (format)) for format in ["png", "eps", "root", "pdf"]]
+[c1.SaveAs("plots/signorm.%s" % (format)) for format in ["png", "eps", "root", "pdf"]]

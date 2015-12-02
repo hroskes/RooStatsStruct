@@ -8,7 +8,7 @@ from extendedcounter import *
 import style
 
 
-def testfit(nNLLs = 100,
+def testfit(nNLLs = 1,
             nbins = 1000,
             low = -1,
             high = 1,
@@ -25,9 +25,12 @@ def testfit(nNLLs = 100,
     mu = w.var("mu")
 
     pdf = w.pdf("Cat_0_0_SumPDF")
-    sMELA = w.var("sMELA_ggH")
-    D0minus = w.var("D0-_dec")
-    DCP = w.var("Dcp_dec")
+    sMELA_ggH = w.var("sMELA_ggH")
+    D0minus_ggH = w.var("D0-_dec")
+    DCP_ggH = w.var("Dcp_dec")
+    sMELA_VBF = w.var("sMELA_VBF")
+    D0minus_VBF = w.var("D0-_VBF")
+    DCP_VBF = w.var("Dcp_VBF")
 
     if ntoys is None:
         ntoys = (w.var("BKGrate").getVal() + w.var("SMrate").getVal())
@@ -48,7 +51,7 @@ def testfit(nNLLs = 100,
         mu.setVal(testmu)
         fa3.setVal(testfa3)
 
-        data = pdf.generate(ROOT.RooArgSet(sMELA, D0minus, DCP), ntoys)
+        data = pdf.generate(ROOT.RooArgSet(sMELA_ggH, D0minus_ggH, DCP_ggH, sMELA_VBF, D0minus_VBF, DCP_VBF), ntoys)
         nll = pdf.createNLL(data)
         result = ExtendedCounter()
         for bincenter in bincenters:
@@ -82,4 +85,4 @@ def testfit(nNLLs = 100,
     [c1.SaveAs("plots/scan_fa3=%s%s.%s" % (testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
-    [testfit(testfa3=testfa3) for testfa3 in [-0.5, 0.5, 0, 1]]
+    [testfit(testfa3=testfa3, ntoys = 5) for testfa3 in [-0.5, 0.5, 0, 1]]
