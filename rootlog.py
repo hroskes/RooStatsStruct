@@ -40,7 +40,8 @@ class RooSomething(object):
     def __call__(self, *args):
         if len(args) >= 0 and isinstance(args[0], basestring):
             if args[0] in names:
-                raise ValueError(args[0] + " is already taken!")
+                #raise ValueError(args[0] + " is already taken!")
+                print "Warning: " + args[0] + " used as a name twice!"
             names.add(args[0])
         objects.append(getattr(ROOT, self.classname)(*args))
         return objects[-1]

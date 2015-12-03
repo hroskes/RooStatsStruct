@@ -8,6 +8,7 @@ import optparse, shlex, re
 import math
 import rootlog
 import templatefiles
+import config
 from enums import *
 
 #import ROOT
@@ -47,7 +48,7 @@ class MakePDF:
 		SMrate.setConstant(True)
 
 
-		FileName = "fa3_{0}_{1}_workspace.root".format(self.channel,self.on_off)
+		FileName = "{0}_fa3_{1}_{2}_workspace.root".format(config.whichtemplates, self.channel, self.on_off)
 		if turnoffbkg:
 			FileName = FileName.replace(".root", "_nobkg.root")
 		w = ROOT.RooWorkspace("workspace","workspace")

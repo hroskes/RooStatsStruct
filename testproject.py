@@ -6,6 +6,7 @@ del sys.argv[1]
 import random
 from extendedcounter import *
 import style
+import config
 
 ########################################
 #parameters
@@ -41,4 +42,4 @@ for varname in varnames:
         pdf.createProjection(ROOT.RooArgSet(*othervars)).plotOn(frame, ROOT.RooFit.LineColor(testfa3s[testfa3]))
 
     frame.Draw()
-    [c1.SaveAs("plots/projection_%s.%s" % (varname, format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("%s/projection_%s.%s" % (config.plotdir, varname, format)) for format in ["png", "eps", "root", "pdf"]]

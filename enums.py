@@ -73,6 +73,12 @@ class TemplateType(MyEnum):
                  EnumItem("qqZZ", 3, "background", "bkg"),
                 )
 
+class WhichTemplates(MyEnum):
+    enumitems = (
+                 EnumItem("ggH_2e2muonly", 0, "ggH_2e2mu"),
+                 EnumItem("ggH_allflavors", 0),
+                )
+
 onoffshell = OnOffShell.enumitems
 categories = Category.enumitems
 channels = Channel.enumitems

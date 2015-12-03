@@ -6,6 +6,7 @@ from extendedcounter import *
 import style
 import itertools
 import os
+import config
 
 ########################################
 #parameters
@@ -73,7 +74,7 @@ for varname in varnames:
 
             h.Draw("colz")
 
-            dir = "plots/%s" % ("no-999" if floorminus999 else "")
+            dir = "%s/%s" % (config.plotdir, "no-999" if floorminus999 else "")
             try:
                 os.mkdir("%s/%sslices_fa3=%s/" % (dir, varname, testfa3))
             except OSError:

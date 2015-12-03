@@ -2,8 +2,8 @@ import MakePDF
 
 flavors = (
            "2e2mu",
-#           "4e",
-#           "4mu",
+           "4e",
+           "4mu",
           )
 
 class MakePDF_Heshy(MakePDF.MakePDF):
