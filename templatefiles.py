@@ -1,6 +1,7 @@
 from enums import *
 import rootlog
-ROOT = rootlog.fakeroot()
+import config
+ROOT = rootlog.thefakeroot
 
 
 
@@ -52,7 +53,6 @@ class BaseTemplateGetter(object):
         if not tfile:
             raise IOError(self.file + " does not exist!")
         template = tfile.Get(self.name)
-        print template
         if not template:
             raise IOError(self.file + " does not contain " + self.name + "!")
 

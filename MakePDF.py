@@ -12,7 +12,7 @@ import config
 from enums import *
 
 #import ROOT
-ROOT = rootlog.fakeroot()
+ROOT = rootlog.thefakeroot
 import ROOT as therealROOT
 
 ROOT.gSystem.Load('libRooFit')
@@ -48,7 +48,9 @@ class MakePDF:
 		SMrate.setConstant(True)
 
 
-		FileName = "{0}_fa3_{1}_{2}_workspace.root".format(config.whichtemplates, self.channel, self.on_off)
+		if not os.path.exists("workspaces"):
+			os.mkdir("workspaces")
+		FileName = "workspaces/{0}_fa3_{1}_{2}_workspace.root".format(str(config.whichtemplates), self.channel, self.on_off)
 		if turnoffbkg:
 			FileName = FileName.replace(".root", "_nobkg.root")
 		w = ROOT.RooWorkspace("workspace","workspace")

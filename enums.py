@@ -2,7 +2,7 @@ class EnumItem(object):
     def __init__(self, name, code, *other):
         self.name = name
         self.code = code
-        self.names = [name, code] + list(other)
+        self.names = tuple([name, code] + list(other))
 
     def __str__(self):
         return self.name
@@ -10,6 +10,8 @@ class EnumItem(object):
         return self.code
     def __format__(self, format_spec):
         return format(int(self), format_spec)
+    def __hash__(self):
+        return hash(self.names)
 
     def __eq__(self, other):
         if type(other) == int or type(other) == str:
@@ -44,6 +46,9 @@ class MyEnum(object):
             return self.item == other
     def __ne__(self, other):
         return not self == other
+
+    def __hash__(self):
+        return hash(self.item)
 
 class OnOffShell(MyEnum):
     enumitems = (
