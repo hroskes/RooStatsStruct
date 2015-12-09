@@ -27,7 +27,7 @@ class MakePDF:
 
 		#Placeholder for Inputs
 		self.channel = Channel(channelCode) # 0 = 2e2mu, 1 = 4mu, 2 = 4e
-		self.on_off = OnOffShell(on_off_Code)  # 0 = on-shell, 1 = off-shell
+		self.on_off = OnOffShell(on_off_Code) # 0 = on-shell, 1 = off-shell
 
 		#Variables
 		mu = ROOT.RooRealVar("mu","mu",1.,0.,100.)
@@ -36,16 +36,8 @@ class MakePDF:
 		#These variables are fixed as const. THIS IS ONLY TEMPORARY
 		phi = ROOT.RooRealVar("phia3","phia3",0.,-math.pi,math.pi)
 		phi.setConstant(True)
-		r1 = ROOT.RooRealVar("r1","r1",0.966)
-		r1.setConstant(True)
-		r2 = ROOT.RooRealVar("r2","r2",1.968)
-		r2.setConstant(True)
-		r3 = ROOT.RooRealVar("r3","r3",1.968)
-		r3.setConstant(True)
-		BKGrate = ROOT.RooRealVar("BKGrate","BKGrate",0 if turnoffbkg else 13.6519)
-		BKGrate.setConstant(True)
-		SMrate = ROOT.RooRealVar("SMrate","SMrate",7.6807) #make a different one of these for each category & channel then put in lines 200-220
-		SMrate.setConstant(True)
+		luminosity = ROOT.RooRealVar("luminosity","luminosity",19.712)
+		luminosity.setConstant(True)
 
 
 		if not os.path.exists("workspaces"):
@@ -161,6 +153,12 @@ class MakePDF:
 			TemplateName = "BKG_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
 			BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, BKGdataHist)
 
+			r1 = ROOT.RooRealVar("r1","r1",0.966)
+			r1.setConstant(True)
+			r2 = ROOT.RooRealVar("r2","r2",1.968)
+			r2.setConstant(True)
+			r3 = ROOT.RooRealVar("r3","r3",1.968)
+			r3.setConstant(True)
 
 			TemplateName = "SM_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
 			SMnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1.-abs(@0))",ROOT.RooArgList(fa3))
@@ -177,24 +175,30 @@ class MakePDF:
 			#NOTE BELOW INCLUDES MU AND SMrate
 			#Below NOT COMBINE COMPATIBLE
 
+			TemplateName = "qqZZ_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
+			if not turnoffbkg:
+				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0", ROOT.RooArgList(luminosity))
+			else:
+				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "0", ROOT.RooArgList())
+
 			if category == "ggH":
-				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
+				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
+				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
 				ggHpdf = ROOT.RooAddPdf(TotalPDF,"ggH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There ggH"
 			elif category == "VH":
-				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
+				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
+				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
 				VHpdf = ROOT.RooAddPdf(TotalPDF,"VH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(VHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There VH"
 			elif category == "VBF":
-				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, SMrate))
+				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGrate))
+				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
 				VBFpdf = ROOT.RooAddPdf(TotalPDF,"VBF_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(VBFpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There VBF"

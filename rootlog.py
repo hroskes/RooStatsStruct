@@ -36,7 +36,7 @@ class fakeroot(object):
         files.clear()
     def __del__(self):
          if reusednames:
-             print "Warning!  The following names were used to create Roo*'s multiple times:\n" + "\n".join(reusednames)
+             print "Warning!  The following names were used to create Roo*'s multiple times:\n" + "\n".join(sorted(reusednames))
 
 thefakeroot = fakeroot()
 

@@ -15,14 +15,14 @@ testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
 varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
 ########################################
 
-f = ROOT.TFile.Open("fa3_0_0_workspace_nobkg.root")
-#f = ROOT.TFile.Open("fa3_0_0_workspace.root")
+#f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
+f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
 w = f.Get("workspace")
 
 fa3 = w.var("fa3")
 mu = w.var("mu")
 
-pdf = w.pdf("ggH_0_0")
+pdf = w.pdf("Cat_0_0_SumPDF")
 
 for varname in varnames:
     var = w.var(varname)

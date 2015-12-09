@@ -9,7 +9,7 @@ import style
 import config
 
 
-def testfit(nNLLs = 100,
+def testfit(nNLLs = 10,
             nbins = 1000,
             low = -1,
             high = 1,
@@ -19,7 +19,7 @@ def testfit(nNLLs = 100,
             ntoys = 20,  #default if None: BKGrate+SMrate
            ):
 
-    f = ROOT.TFile.Open("fa3_0_0_workspace_nobkg.root")
+    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
     w = f.Get("workspace")
 
     fa3 = w.var("fa3")
@@ -86,4 +86,4 @@ def testfit(nNLLs = 100,
     [c1.SaveAs("%s/scan_fa3=%s%s.%s" % (config.plotdir, testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
-    [testfit(testfa3=testfa3, ntoys = 20) for testfa3 in [-0.5, 0.5, 0, 1]]
+    [testfit(testfa3=testfa3, ntoys = 20) for testfa3 in [0, 1, -0.5, 0.5]]

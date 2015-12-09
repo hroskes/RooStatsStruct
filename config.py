@@ -5,8 +5,8 @@ plotdirs = {
             WhichTemplates("ggH_allflavors"): "plots_ggH_allflavors/",
            }
 
-#whichtemplates = WhichTemplates("ggH_2e2mu")
-whichtemplates = WhichTemplates("ggH_allflavors")
+whichtemplates = WhichTemplates("ggH_2e2mu")
+#whichtemplates = WhichTemplates("ggH_allflavors")
 
 
 

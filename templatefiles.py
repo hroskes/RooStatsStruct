@@ -11,8 +11,8 @@ def template(*args):
 
 
 
-basedir = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/makeTemplates/templates/"
-basedirmeng = "/afs/cern.ch/work/x/xiaomeng/public/forChris/"
+basedirVBF = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/makeTemplates/templates/VBF/"
+basedirggH_frommeng = "/afs/cern.ch/user/h/hroskes/work/Summer2015_VBF/makeTemplates/templates/ggH_fromMeng_normalized/"
 
 class BaseTemplateGetter(object):
 
@@ -101,16 +101,16 @@ class TemplateGetter_ggHonly_2e2mu(BaseTemplateGetter):
             self.empty = True
 
         if self.templatetype == "SM":
-            self.file = basedirmeng + "%s_fa3Adap_new.root" % self.channel
+            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
             self.name = "template0PlusAdapSmoothMirror"
         elif self.templatetype == "PS":
-            self.file = basedirmeng + "%s_fa3Adap_new.root" % self.channel
+            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
             self.name = "template0MinusAdapSmoothMirror"
         elif self.templatetype == "interference":
-            self.file = basedirmeng + "%s_fa3Adap_new.root" % self.channel
+            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
             self.name = "templateIntAdapSmoothMirror"
         elif self.templatetype == "qqZZ":
-            self.file = basedirmeng + "%s_fa3Adap_new_bkg.root" % self.channel
+            self.file = basedirggH_frommeng + "%s_templates_bkg.root" % self.channel
             self.name = "template_qqZZ"
         else:
             raise ValueError("Bad templatetype! %s" % self.templatetype)
@@ -123,16 +123,16 @@ class TemplateGetter_ggHonly_allflavors(BaseTemplateGetter):
             self.empty = True
 
         if self.templatetype == "SM":
-            self.file = basedirmeng + "%s_fa3Adap_new.root" % self.channel
+            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
             self.name = "template0PlusAdapSmoothMirror"
         elif self.templatetype == "PS":
-            self.file = basedirmeng + "%s_fa3Adap_new.root" % self.channel
+            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
             self.name = "template0MinusAdapSmoothMirror"
         elif self.templatetype == "interference":
-            self.file = basedirmeng + "%s_fa3Adap_new.root" % self.channel
+            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
             self.name = "templateIntAdapSmoothMirror"
         elif self.templatetype == "qqZZ":
-            self.file = basedirmeng + "%s_fa3Adap_new_bkg.root" % self.channel
+            self.file = basedirggH_frommeng + "%s_templates_bkg.root" % self.channel
             self.name = "template_qqZZ"
         else:
             raise ValueError("Bad templatetype! %s" % self.templatetype)
@@ -146,31 +146,31 @@ class TemplateGetter_ggHVBF_2e2mu(BaseTemplateGetter):
 
         if self.category == "VBF":
             if self.templatetype == "SM":
-                self.file = basedir + "%s_templates.root" % self.channel
+                self.file = basedirVBF + "%s_templates.root" % self.channel
                 self.name = "template_VBFscalar"
             elif self.templatetype == "PS":
-                self.file = basedir + "%s_templates.root" % self.channel
+                self.file = basedirVBF + "%s_templates.root" % self.channel
                 self.name = "template_VBFpseudoscalar"
             elif self.templatetype == "interference":
-                self.file = basedir + "%s_templates.root" % self.channel
+                self.file = basedirVBF + "%s_templates.root" % self.channel
                 self.name = "template_VBFinterference"
             elif self.templatetype == "qqZZ":
-                self.file = basedir + "%s_templates_bkg.root" % self.channel
+                self.file = basedirVBF + "%s_templates_bkg.root" % self.channel
                 self.name = "template_qqZZ"
             else:
                 raise ValueError("Bad templatetype! %s" % self.templatetype)
         elif self.category in ("ggH", "VBF"):
             if self.templatetype == "SM":
-                self.file = basedirmeng + "%s_fa3Adap_new.root" % "2e2mu"
+                self.file = basedirggH_frommeng + "%s_templates.root" % "2e2mu"
                 self.name = "template0PlusAdapSmoothMirror"
             elif self.templatetype == "PS":
-                self.file = basedirmeng + "%s_fa3Adap_new.root" % "2e2mu"
+                self.file = basedirggH_frommeng + "%s_templates.root" % "2e2mu"
                 self.name = "template0MinusAdapSmoothMirror"
             elif self.templatetype == "interference":
-                self.file = basedirmeng + "%s_fa3Adap_new.root" % "2e2mu"
+                self.file = basedirggH_frommeng + "%s_templates.root" % "2e2mu"
                 self.name = "templateIntAdapSmoothMirror"
             elif self.templatetype == "qqZZ":
-                self.file = basedirmeng + "%s_fa3Adap_new_bkg.root" % "2e2mu"
+                self.file = basedirggH_frommeng + "%s_templates_bkg.root" % "2e2mu"
                 self.name = "template_qqZZ"
             else:
                 raise ValueError("Bad templatetype! %s" % self.templatetype)
