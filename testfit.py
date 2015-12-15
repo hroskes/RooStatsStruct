@@ -9,17 +9,18 @@ import style
 import config
 
 
-def testfit(nNLLs = 10,
+def testfit(nNLLs = 100,
             nbins = 1000,
             low = -1,
             high = 1,
             testmu = 1,
             testfa3 = 0,
             zoomed = False,
-            ntoys = 20,  #default if None: BKGrate+SMrate
+            ntoys = int(6.6562629 + 144.691),  #default if None: BKGrate+SMrate
            ):
 
-    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
+    #f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
+    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
     w = f.Get("workspace")
 
     fa3 = w.var("fa3")

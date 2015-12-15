@@ -68,6 +68,7 @@ public:
 		RooArgList _funcIntList;
 		RooArgList _funcNormList;
 	};
+        constexpr static const double floor = 1e-18;
 
 protected:
 
@@ -82,10 +83,11 @@ protected:
 	TIterator* _coefIter;    //! Iterator over coefficient list
 	Bool_t _extended;        // Allow use as extended p.d.f.
 	Bool_t _doFloor;
+        Double_t _floor;
 
 private:
 
-	ClassDef(RooRealFlooredSumPdf, 2) // PDF constructed from a sum of (non-pdf) functions
+	ClassDef(RooRealFlooredSumPdf, 3) // PDF constructed from a sum of (non-pdf) functions
 };
 
  

@@ -115,6 +115,8 @@ class TemplateGetter_ggHonly_2e2mu(BaseTemplateGetter):
         else:
             raise ValueError("Bad templatetype! %s" % self.templatetype)
 
+        print self.templatetype, self.channel, self.on_off, self.file, self.name, self.empty
+
 class TemplateGetter_ggHonly_allflavors(BaseTemplateGetter):
     def fileandname(self):
         if self.on_off == "onshell" and self.category == "ggH":

@@ -171,35 +171,35 @@ class MakePDF:
 			TemplateName = "Signal_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
 			SignalPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgList(SMnorm,MIXnorm,PSnorm))
 
-			TemplateName = "Signal_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
-			#NOTE BELOW INCLUDES MU AND SMrate
-			#Below NOT COMBINE COMPATIBLE
-
 			TemplateName = "qqZZ_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
 			if not turnoffbkg:
 				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0", ROOT.RooArgList(luminosity))
 			else:
 				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "0", ROOT.RooArgList())
 
+			TemplateName = "Signal_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
+			#NOTE BELOW INCLUDES MU AND SMrate
+			#Below NOT COMBINE COMPATIBLE
+
 			if category == "ggH":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
-				ggHpdf = ROOT.RooAddPdf(TotalPDF,"ggH_{0}_{1}".format(self.channel,self.on_off))
+				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
+				ggHpdf = ROOT.RooRealSumPdf(TotalPDF,"ggH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There ggH"
 			elif category == "VH":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
-				VHpdf = ROOT.RooAddPdf(TotalPDF,"VH_{0}_{1}".format(self.channel,self.on_off))
+				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
+				VHpdf = ROOT.RooRealSumPdf(TotalPDF,"VH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(VHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There VH"
 			elif category == "VBF":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
-				VBFpdf = ROOT.RooAddPdf(TotalPDF,"VBF_{0}_{1}".format(self.channel,self.on_off))
+				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
+				VBFpdf = ROOT.RooRealSumPdf(TotalPDF,"VBF_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(VBFpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There VBF"
 
@@ -211,8 +211,10 @@ class MakePDF:
 		VHpdf.Print()
 		VBFpdf.Print()
 
+		one = ROOT.RooConstVar("one", "one", 1.0)
 		TemplateName = "Cat_{0}_{1}_SumPDF".format(self.channel,self.on_off)
-		CatSumPDF = ROOT.RooAddPdf(TemplateName, TemplateName, ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf))
+		#one = ROOT.RooFormula
+		CatSumPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf), ROOT.RooArgList(one, one, one))
 
 
 		getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
