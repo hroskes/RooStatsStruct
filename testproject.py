@@ -28,9 +28,6 @@ w.var("sMELA_ggH").setVal(.5)
 w.var("Dcp_dec").setVal(1.)
 w.var("D0-_dec").setVal(0.)
 
-w.Print()
-raw_input()
-
 pdf = w.pdf("Cat_0_0_SumPDF")
 
 for varname in varnames:
@@ -51,4 +48,4 @@ for varname in varnames:
         pdf.createProjection(ROOT.RooArgSet(*othervars)).plotOn(frame, ROOT.RooFit.LineColor(testfa3s[testfa3]))
 
     frame.Draw()
-    [c1.SaveAs("%s/projection_%s.%s" % (config.plotdir + "/" + nobkg, varname, format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("%s/projection_%s.%s" % (config.plotdir, varname, format)) for format in ["png", "eps", "root", "pdf"]]
