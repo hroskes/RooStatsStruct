@@ -19,8 +19,6 @@ ROOT.gSystem.Load('libRooFit')
 import loadlib
 from array import array
 
-turnoffbkg = True
-
 class MakePDF:
 
 	def makeWorkspace(self, channelCode, on_off_Code):
@@ -43,7 +41,7 @@ class MakePDF:
 		if not os.path.exists("workspaces"):
 			os.mkdir("workspaces")
 		FileName = "workspaces/{0}_fa3_{1}_{2}_workspace.root".format(str(config.whichtemplates), self.channel, self.on_off)
-		if turnoffbkg:
+		if config.turnoffbkg:
 			FileName = FileName.replace(".root", "_nobkg.root")
 		w = ROOT.RooWorkspace("workspace","workspace")
 
@@ -172,7 +170,7 @@ class MakePDF:
 			SignalPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgList(SMnorm,MIXnorm,PSnorm))
 
 			TemplateName = "qqZZ_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
-			if not turnoffbkg:
+			if not config.turnoffbkg:
 				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0", ROOT.RooArgList(luminosity))
 			else:
 				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "0", ROOT.RooArgList())

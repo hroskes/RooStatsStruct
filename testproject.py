@@ -15,14 +15,19 @@ testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
 varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
 ########################################
 
-f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
-#f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
+if config.turnoffbkg:
+    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
+else:
+    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
 w = f.Get("workspace")
 
 fa3 = w.var("fa3")
 mu = w.var("mu")
 
-[w.var(varname).setVal(.5) for varname in varnames]
+w.var("sMELA_ggH").setVal(.5)
+w.var("Dcp_dec").setVal(1.)
+w.var("D0-_dec").setVal(0.)
+
 w.Print()
 raw_input()
 
@@ -46,4 +51,5 @@ for varname in varnames:
         pdf.createProjection(ROOT.RooArgSet(*othervars)).plotOn(frame, ROOT.RooFit.LineColor(testfa3s[testfa3]))
 
     frame.Draw()
-    [c1.SaveAs("%s/projection_%s.%s" % (config.plotdir, varname, format)) for format in ["png", "eps", "root", "pdf"]]
+    nobkg = "nobkg" if config.turnoffbkg else ""
+    [c1.SaveAs("%s/projection_%s.%s" % (config.plotdir + "/" + nobkg, varname, format)) for format in ["png", "eps", "root", "pdf"]]
