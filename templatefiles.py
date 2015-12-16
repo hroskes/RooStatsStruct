@@ -11,8 +11,8 @@ def template(*args):
 
 
 
-basedirVBF = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/makeTemplates/templates/VBF/"
-basedirggH_frommeng = "/afs/cern.ch/user/h/hroskes/work/Summer2015_VBF/makeTemplates/templates/ggH_fromMeng_normalized/"
+basedirVBF = "templates/VBF/"   #doesn't exist and not used
+basedirggH_frommeng = "templates/ggH_fromMeng_normalized/"
 
 class BaseTemplateGetter(object):
 

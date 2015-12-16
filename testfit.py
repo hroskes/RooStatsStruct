@@ -19,8 +19,11 @@ def testfit(nNLLs = 100,
             ntoys = int(6.6562629 + 144.691),  #default if None: BKGrate+SMrate
            ):
 
-    #f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
-    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
+    if config.turnoffbkg:
+        f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
+    else:
+        f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
+
     w = f.Get("workspace")
 
     fa3 = w.var("fa3")

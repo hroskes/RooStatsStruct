@@ -51,5 +51,4 @@ for varname in varnames:
         pdf.createProjection(ROOT.RooArgSet(*othervars)).plotOn(frame, ROOT.RooFit.LineColor(testfa3s[testfa3]))
 
     frame.Draw()
-    nobkg = "nobkg" if config.turnoffbkg else ""
     [c1.SaveAs("%s/projection_%s.%s" % (config.plotdir + "/" + nobkg, varname, format)) for format in ["png", "eps", "root", "pdf"]]
