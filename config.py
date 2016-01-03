@@ -21,10 +21,12 @@ whichtemplates = WhichTemplates("ggH_2e2mu")
 
 
 
+turnoffbkg = True
 
 
-plotdir = plotdirs[whichtemplates]
 
 
 
-turnoffbkg = False
+
+
+plotdir = plotdirs[whichtemplates] + ("/nobkg/" if turnoffbkg else "")

@@ -16,7 +16,7 @@ def testfit(nNLLs = 100,
             testmu = 1,
             testfa3 = 0,
             zoomed = False,
-            ntoys = int(6.6562629 + 144.691),  #default if None: BKGrate+SMrate
+            ntoys = None,  #default if None: BKGrate+SMrate
            ):
 
     if config.turnoffbkg:
@@ -36,9 +36,14 @@ def testfit(nNLLs = 100,
     sMELA_VBF = w.var("sMELA_VBF")
     D0minus_VBF = w.var("D0-_VBF")
     DCP_VBF = w.var("Dcp_VBF")
+    sMELA_VH = w.var("sMELA_VH")
+    D0minus_VH = w.var("D0-_VH")
+    DCP_VH = w.var("Dcp_VH")
 
     if ntoys is None:
-        ntoys = (w.var("BKGrate").getVal() + w.var("SMrate").getVal())
+        ntoys = pdf.getNorm(ROOT.RooArgSet(sMELA_ggH, D0minus_ggH, DCP_ggH, sMELA_VBF, D0minus_VBF, DCP_VBF, sMELA_VH, D0minus_VH, DCP_VH))
+        print ntoys
+        assert False
 
     print "Number of toys:", ntoys
 
@@ -90,4 +95,10 @@ def testfit(nNLLs = 100,
     [c1.SaveAs("%s/scan_fa3=%s%s.%s" % (config.plotdir, testfa3, "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
-    [testfit(testfa3=testfa3, ntoys = 20) for testfa3 in [0, 1, -0.5, 0.5]]
+    fa3s = sys.argv[1:]
+    if not fa3s:
+        fa3s = [0, 1, .5, -.5]
+    [testfit(testfa3=float(testfa3), ntoys =
+                                            8.8585 + (0 if config.turnoffbkg else 7.6807)
+                                            #16
+                                            ) for testfa3 in fa3s]

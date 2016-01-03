@@ -75,14 +75,13 @@ for varname in varnames:
 
             h.Draw("colz")
 
-            dir = "%s/%s" % (config.plotdir, "nobkg" if config.turnoffbkg else "")
             try:
-                os.makedirs("%s/%sslices_fa3=%s/" % (dir, varname, testfa3))
+                os.makedirs("%s/%sslices_fa3=%s/" % (config.plotdir, varname, testfa3))
             except OSError:
                 pass
             try:
-                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "%s/%sslices_fa3=%s/index.php" % (dir, varname, testfa3))
+                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "%s/%sslices_fa3=%s/index.php" % (config.plotdir, varname, testfa3))
             except OSError:
                 pass
-            [c1.SaveAs("%s/%sslices_fa3=%s/slice_%s.%s" % (dir, varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
+            [c1.SaveAs("%s/%sslices_fa3=%s/slice_%s.%s" % (config.plotdir, varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
             del h
