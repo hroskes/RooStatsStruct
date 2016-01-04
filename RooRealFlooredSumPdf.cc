@@ -51,7 +51,8 @@ RooRealFlooredSumPdf::RooRealFlooredSumPdf(const char *name, const char *title) 
   _funcList("!funcList","List of functions",this),
   _coefList("!coefList","List of coefficients",this),
   _extended(kFALSE),
-  _doFloor(kTRUE)
+  _doFloor(kTRUE),
+  _floor(floor)
 {
   // Constructor with name and title
   _funcIter   = _funcList.createIterator() ;
@@ -68,7 +69,8 @@ _haveLastCoef(kFALSE),
 _funcList("!funcList", "List of functions", this),
 _coefList("!coefList", "List of coefficients", this),
 _extended(extended),
-_doFloor(kTRUE)
+_doFloor(kTRUE),
+_floor(floor)
 {
 	// Constructor p.d.f implementing sum_i [ coef_i * func_i ], if N_coef==N_func
 	// or sum_i [ coef_i * func_i ] + (1 - sum_i [ coef_i ] )* func_N if Ncoef==N_func-1
@@ -132,7 +134,8 @@ _haveLastCoef(other._haveLastCoef),
 _funcList("!funcList", this, other._funcList),
 _coefList("!coefList", this, other._coefList),
 _extended(other._extended),
-_doFloor(other._doFloor)
+_doFloor(other._doFloor),
+_floor(other._floor)
 {
 	// Copy constructor
 
@@ -204,7 +207,7 @@ Double_t RooRealFlooredSumPdf::evaluate() const
 	}
 
 	// Introduce floor
-	if (value < 1.0e-8 && _doFloor) value = 1.0e-8; // Last IEEE double precision
+	if (value < _floor && _doFloor) value = _floor; // Last IEEE double precision
 
 	return value;
 }

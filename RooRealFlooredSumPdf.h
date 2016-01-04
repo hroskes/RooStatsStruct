@@ -60,9 +60,6 @@ public:
 	virtual std::list<Double_t>* plotSamplingHint(RooAbsRealLValue& /*obs*/, Double_t /*xlo*/, Double_t /*xhi*/) const;
 	Bool_t isBinnedDistribution(const RooArgSet& obs) const;
 
-
-protected:
-
 	class CacheElem : public RooAbsCacheElement {
 	public:
 		CacheElem()  {};
@@ -71,6 +68,10 @@ protected:
 		RooArgList _funcIntList;
 		RooArgList _funcNormList;
 	};
+        constexpr static const double floor = 1e-18;
+
+protected:
+
 	mutable RooObjCacheManager _normIntMgr; // The integration cache manager
 
 
@@ -82,10 +83,11 @@ protected:
 	TIterator* _coefIter;    //! Iterator over coefficient list
 	Bool_t _extended;        // Allow use as extended p.d.f.
 	Bool_t _doFloor;
+        Double_t _floor;
 
 private:
 
-	ClassDef(RooRealFlooredSumPdf, 2) // PDF constructed from a sum of (non-pdf) functions
+	ClassDef(RooRealFlooredSumPdf, 3) // PDF constructed from a sum of (non-pdf) functions
 };
 
  

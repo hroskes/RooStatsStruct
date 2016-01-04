@@ -6,25 +6,33 @@ del sys.argv[1]
 import random
 from extendedcounter import *
 import style
+import config
 
 ########################################
 #parameters
 testmu = 1
 testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
-varnames = ["sMELA", "D0-_VBF", "Dcp_VBF"]
+varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
 ########################################
 
-f = ROOT.TFile.Open("fa3_0_2_0_workspace_nobkg.root")
-#f = ROOT.TFile.Open("fa3_0_2_0_workspace.root")
+if config.turnoffbkg:
+    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
+else:
+    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
 w = f.Get("workspace")
 
 fa3 = w.var("fa3")
 mu = w.var("mu")
 
-pdf = w.pdf("Total_0_2_0_SumPDF")
+w.var("sMELA_ggH").setVal(.5)
+w.var("Dcp_dec").setVal(1.)
+w.var("D0-_dec").setVal(0.)
+
+pdf = w.pdf("Cat_0_0_SumPDF")
 
 for varname in varnames:
     var = w.var(varname)
+    print varname, var
     frame = var.frame()
 
     othervarnames = varnames[:]
@@ -40,4 +48,4 @@ for varname in varnames:
         pdf.createProjection(ROOT.RooArgSet(*othervars)).plotOn(frame, ROOT.RooFit.LineColor(testfa3s[testfa3]))
 
     frame.Draw()
-    [c1.SaveAs("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/projection_%s.%s" % (varname, format)) for format in ["png", "eps", "root", "pdf"]]
+    [c1.SaveAs("%s/projection_%s.%s" % (config.plotdir, varname, format)) for format in ["png", "eps", "root", "pdf"]]

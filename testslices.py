@@ -6,23 +6,27 @@ from extendedcounter import *
 import style
 import itertools
 import os
+import config
 
 ########################################
 #parameters
 testfa3s = [-1 + a/4.0 for a in range(8,0,-1)]
-varnames = ["sMELA", "D0-_VBF", "Dcp_VBF"]
-floorminus999 = False
+varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
 ########################################
 
 ROOT.gStyle.SetCanvasDefW(1000)
 ROOT.gErrorIgnoreLevel = 1001
 
-f = ROOT.TFile.Open("fa3_0_2_0_workspace_nobkg.root")
+if config.turnoffbkg:
+    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
+else:
+    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
+
 w = f.Get("workspace")
 
 fa3 = w.var("fa3")
 
-TotalPDF = w.pdf("Total_0_2_0_SumPDF")
+TotalPDF = w.pdf("Cat_0_0_SumPDF")
 
 pdf = ROOT.RooFormulaVar("SignalPdfAsFunction", "SignalPdfAsFunction", "(@0)", ROOT.RooArgList(TotalPDF))
 c1 = ROOT.TCanvas.MakeDefCanvas()
@@ -67,20 +71,17 @@ for varname in varnames:
                 if pdf.getVal() >= 0:
                     h.SetBinContent(i+1, j+1, pdf.getVal())
                 else:
-                    if floorminus999:
-                        h.SetBinContent(i+1, j+1, -999)
                     print "%sslices_fa3=%s/slice_%s.%s" % (varname, testfa3, value, format), i, j, pdf.getVal()
 
             h.Draw("colz")
 
-            dir = "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/test/%s" % ("no-999" if floorminus999 else "")
             try:
-                os.mkdir("%s/%sslices_fa3=%s/" % (dir, varname, testfa3))
+                os.makedirs("%s/%sslices_fa3=%s/" % (config.plotdir, varname, testfa3))
             except OSError:
                 pass
             try:
-                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "%s/%sslices_fa3=%s/index.php" % (dir, varname, testfa3))
+                os.symlink("/afs/cern.ch/user/h/hroskes/www/index.php", "%s/%sslices_fa3=%s/index.php" % (config.plotdir, varname, testfa3))
             except OSError:
                 pass
-            [c1.SaveAs("%s/%sslices_fa3=%s/slice_%s.%s" % (dir, varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
+            [c1.SaveAs("%s/%sslices_fa3=%s/slice_%s.%s" % (config.plotdir, varname, testfa3, value, format)) for format in ["png", "eps", "root", "pdf"]]
             del h
