@@ -12,7 +12,7 @@ import config
 #parameters
 testmu = 1
 testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
-varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
+varnames = ["Dcp_dec", "sMELA_ggH", "D0-_dec"]
 ########################################
 
 if config.turnoffbkg:

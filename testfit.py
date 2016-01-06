@@ -20,25 +20,47 @@ def testfit(nNLLs = 100,
            ):
 
     if config.turnoffbkg:
-        f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
+        f_0 = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
     else:
-        f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
+        f_0 = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
 
-    w = f.Get("workspace")
+    w_0 = f_0.Get("workspace")
 
-    fa3 = w.var("fa3")
-    mu = w.var("mu")
+    fa3 = w_0.var("fa3")
+    mu = w_0.var("mu")
 
-    pdf = w.pdf("Cat_0_0_SumPDF")
-    sMELA_ggH = w.var("sMELA_ggH")
-    D0minus_ggH = w.var("D0-_dec")
-    DCP_ggH = w.var("Dcp_dec")
-    sMELA_VBF = w.var("sMELA_VBF")
-    D0minus_VBF = w.var("D0-_VBF")
-    DCP_VBF = w.var("Dcp_VBF")
-    sMELA_VH = w.var("sMELA_VH")
-    D0minus_VH = w.var("D0-_VH")
-    DCP_VH = w.var("Dcp_VH")
+    pdf_0 = w_0.pdf("Cat_0_0_SumPDF")
+    sMELA_ggH = w_0.var("sMELA_ggH")
+    D0minus_ggH = w_0.var("D0-_dec")
+    DCP_ggH = w_0.var("Dcp_dec")
+    sMELA_VBF = w_0.var("sMELA_VBF")
+    D0minus_VBF = w_0.var("D0-_VBF")
+    DCP_VBF = w_0.var("Dcp_VBF")
+    sMELA_VH = w_0.var("sMELA_VH")
+    D0minus_VH = w_0.var("D0-_VH")
+    DCP_VH = w_0.var("Dcp_VH")
+
+    if config.turnoffbkg:
+        f_1 = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_1_0_workspace_nobkg.root")
+    else:
+        f_1 = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_1_0_workspace.root")
+
+    w_1 = f_1.Get("workspace")
+
+    pdf_1 = w_1.pdf("Cat_1_0_SumPDF")
+
+    if config.turnoffbkg:
+        f_2 = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_2_0_workspace_nobkg.root")
+    else:
+        f_2 = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_2_0_workspace.root")
+
+    w_2 = f_2.Get("workspace")
+    
+    pdf_2 = w_2.pdf("Cat_2_0_SumPDF")
+
+    one = ROOT.RooConstVar("one", "one", 1.0)
+    TemplateName = "SumPDF"
+    pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(pdf_0, pdf_1, pdf_2), ROOT.RooArgList(one, one, one))
 
     if ntoys is None:
         ntoys = pdf.getNorm(ROOT.RooArgSet(sMELA_ggH, D0minus_ggH, DCP_ggH, sMELA_VBF, D0minus_VBF, DCP_VBF, sMELA_VH, D0minus_VH, DCP_VH))
@@ -98,7 +120,7 @@ if __name__ == '__main__':
     fa3s = sys.argv[1:]
     if not fa3s:
         fa3s = [0, 1, .5, -.5]
-    [testfit(testfa3=float(testfa3), ntoys =
-                                            8.8585 + (0 if config.turnoffbkg else 7.6807)
+	[testfit(testfa3=float(testfa3), ntoys =
+                                            16.7176 + (0 if config.turnoffbkg else 28.8087)
                                             #16
                                             ) for testfa3 in fa3s]

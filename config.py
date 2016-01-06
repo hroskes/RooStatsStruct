@@ -8,20 +8,20 @@ if getpass.getuser() == "hroskes":
                }
 elif getpass.getuser() == "chmartin":
     plotdirs = {
-                WhichTemplates("ggH_2e2mu"): "???",
-                WhichTemplates("ggH_allflavors"): "???",
+                WhichTemplates("ggH_2e2mu"): "/afs/cern.ch/user/c/chmartin/www/Pheno/2e2mu/",
+                WhichTemplates("ggH_allflavors"): "/afs/cern.ch/user/c/chmartin/www/Pheno/All/",
                }
 else:
     raise ValueError("Who are you?  (see config.py)")
 
 
 
-whichtemplates = WhichTemplates("ggH_2e2mu")
-#whichtemplates = WhichTemplates("ggH_allflavors")
+#whichtemplates = WhichTemplates("ggH_2e2mu")
+whichtemplates = WhichTemplates("ggH_allflavors")
 
 
 
-turnoffbkg = True
+turnoffbkg = False
 
 
 

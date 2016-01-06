@@ -29,12 +29,12 @@ TString templates[n] = {
                         "template_qqZZ", "template_ggZZ", "template_ZX",
                         "template_qqZZ", "template_ggZZ", "template_ZX",
                        };
-//https://github.com/usarica/HiggsAnalysis-HZZ4l_Combination/blob/master/CreateDatacards/SM_inputs_8TeV/inputs_2e2mu.txt
+//https://github.com/meng-xiao/HiggsAnalysis-HZZ4l_Combination/blob/master/CreateDatacards/HZZ/cards_fa3/
 const double luminosity = 19.712;
 double rates[n] = {
-                   8.8585,          0.5005,          4.2929,
-                   2.9364,          0.2041,          2.7676,
-                   7.6478,          0.4131,          1.1878,
+                   13.6519/*8.8585*/,          0.5005,          4.2929,
+                   5.9081/*2.9364*/,          0.2041,          2.7676,
+                   9.2487/*7.6478*/,          0.4131,          1.1878,
                   };
 
 void normalizebkg(int i)
