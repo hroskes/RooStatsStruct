@@ -16,13 +16,15 @@ else:
 
 
 
-#whichtemplates = WhichTemplates("ggH_2e2mu")
-whichtemplates = WhichTemplates("ggH_allflavors")
+whichtemplates = WhichTemplates("ggH_2e2mu")
+#whichtemplates = WhichTemplates("ggH_allflavors")
 
 
 
 turnoffbkg = False
 
+
+seed = 123456
 
 
 
