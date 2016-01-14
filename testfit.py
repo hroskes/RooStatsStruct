@@ -120,7 +120,7 @@ if __name__ == '__main__':
     fa3s = sys.argv[1:]
     if not fa3s:
         fa3s = [0, 1, .5, -.5]
-    [testfit(testfa3=float(testfa3), ntoys =
-                                            16.7176 + (0 if config.turnoffbkg else 28.8087)
-                                            #16
-                                            ) for testfa3 in fa3s]
+    [testfit(
+             testfa3=float(testfa3),
+             ntoys = config.sigrate + config.bkgrate
+            ) for testfa3 in fa3s]

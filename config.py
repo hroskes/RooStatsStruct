@@ -32,3 +32,21 @@ seed = 123456
 
 
 plotdir = plotdirs[whichtemplates] + ("/nobkg/" if turnoffbkg else "")
+
+
+
+
+
+#I want to get this from the templates, but I don't have time now
+sigrates = {
+            WhichTemplates("ggH_2e2mu"): 7.6807,
+            WhichTemplates("ggH_allflavors"): 7.6807 + 3.0898 + 5.9471,
+           }
+bkgrates = {
+            WhichTemplates("ggH_2e2mu"): 13.6519,   #8.8585 = qqZZ only
+            WhichTemplates("ggH_allflavors"): 13.6519 + 5.9081 + 9.2487,   #8.8585 + 2.9364 + 7.6478 = qqZZ only
+           }
+
+
+sigrate = sigrates[whichtemplates]
+bkgrate = 0 if turnoffbkg else bkgrates[whichtemplates]
