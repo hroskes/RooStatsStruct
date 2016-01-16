@@ -40,8 +40,6 @@ for varname in varnames:
     othervars = [w.var(a) for a in othervarnames]
 
     for testfa3 in testfa3s:
-        ROOT.RooRandom.randomGenerator().SetSeed(random.randint(0,10000))
-
         c1 = ROOT.TCanvas.MakeDefCanvas()
         mu.setVal(testmu)
         fa3.setVal(testfa3)
