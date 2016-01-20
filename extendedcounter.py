@@ -56,3 +56,15 @@ class ExtendedCounter(collections.Counter):
         x = array.array("d", keys)
         y = array.array("d", values)
         return ROOT.TGraph(len(self), x, y)
+
+def makefromcombineC(combinefilename):
+    result = ExtendedCounter()
+    with open(combinefilename) as f:
+        for line in f:
+            try:
+                line = line.split("graph->SetPoint(")[1].split(")")[0]
+                line = line.split(",")
+                result[float(line[1])] = float(line[2])
+            except (IndexError, ValueError):
+                pass
+    return result
