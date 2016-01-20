@@ -40,23 +40,24 @@ if __name__ == '__main__':
         pass
 
     for fa3 in [0., 1., 0.5, -0.5]:
-        filenameroot = config.plotdir + "/scan_fa3=%s.root" % fa3
+        for zoomed in "_zoomed", "":
+            filenameroot = config.plotdir + "/scan_fa3=%s%s.root" % (fa3, zoomed)
 
-        combinefilenameC = "plotsfromcombine/fa3=%s_" % fa3
-        if config.whichtemplates == "ggH_2e2mu":
-            combinefilenameC += "2e2mu_"
-        elif config.whichtemplates == "ggH_allflavors":
-            pass
-        else:
-            raise ValueError("No combine plots for %s" % config.whichtemplates)
+            combinefilenameC = "plotsfromcombine/fa3=%s_" % fa3
+            if config.whichtemplates == "ggH_2e2mu":
+                combinefilenameC += "2e2mu_"
+            elif config.whichtemplates == "ggH_allflavors":
+                pass
+            else:
+                raise ValueError("No combine plots for %s" % config.whichtemplates)
 
-        if config.turnoffbkg:
-            combinefilenameC += "nobkg"
-        else:
-            combinefilenameC += "qqZZ"
+            if config.turnoffbkg:
+                combinefilenameC += "nobkg"
+            else:
+                combinefilenameC += "qqZZ"
 
-        combinefilenameC += ".C"
+            combinefilenameC += ".C"
 
-        newsaveas = newsaveasdir + "/scan_fa3=%s" % fa3
+            newsaveas = newsaveasdir + "/scan_fa3=%s%s" % (fa3, zoomed)
 
-        plotwithcombine(filenameroot, combinefilenameC, newsaveas)
+            plotwithcombine(filenameroot, combinefilenameC, newsaveas)
