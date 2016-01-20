@@ -7,6 +7,7 @@ import random
 from extendedcounter import *
 import style
 import config
+import os
 
 
 def testfit(nNLLs = 100,
@@ -109,6 +110,11 @@ def testfit(nNLLs = 100,
     multigraph.GetXaxis().SetTitle("f_{a_{3}}")
 
     style.drawlines()
+
+    try:
+        os.makedirs(config.plotdir)
+    except OSError:
+        pass
 
     [c1.SaveAs("%s/scan_fa3=%s%s.%s" % (config.plotdir, testfa3, "",        format)) for format in ["png", "eps", "root", "pdf"]]
 
