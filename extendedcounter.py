@@ -68,3 +68,6 @@ def makefromcombineC(combinefilename):
             except (IndexError, ValueError):
                 pass
     return result
+
+def makefromTGraph(g):
+    return ExtendedCounter({x: y for x, y, dummy in zip(g.GetX(), g.GetY(), range(g.GetN()))})
