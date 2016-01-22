@@ -11,7 +11,7 @@ def plotwithcombine(filenameroot, combinefilenameC, newsaveas):
     #extract the multigraph from the file
     f = ROOT.TFile.Open(filenameroot)
     if not f:
-        raise IOError("no file " + filenameroot + "!")
+        return#raise IOError("no file " + filenameroot + "!")
     c1 = f.GetListOfKeys().At(0).ReadObj()
     if not c1 or type(c1) != ROOT.TCanvas:
         raise IOError("no canvas in file " + filenameroot + "!")
