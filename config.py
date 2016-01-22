@@ -3,8 +3,8 @@ import getpass
 
 if getpass.getuser() == "hroskes":
     plotdirs = {
-                WhichTemplates("ggH_2e2mu"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/",
-                WhichTemplates("ggH_allflavors"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/ggH_allflavors/",
+                WhichTemplates("ggH_2e2mu"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/2e2mu",
+                WhichTemplates("ggH_allflavors"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/allflavors/",
                }
 elif getpass.getuser() == "chmartin":
     plotdirs = {
@@ -31,7 +31,7 @@ seed = 123456
 
 
 
-plotdir = plotdirs[whichtemplates] + ("/nobkg/" if turnoffbkg else "")
+plotdir = (plotdirs[whichtemplates] + ("/nobkg/" if turnoffbkg else "")).replace("SEED", str(seed))
 
 
 

@@ -94,4 +94,7 @@ def mergeplots(newsaveas, *rootfiles):
         c1.SaveAs(newsaveas + ext)
 
 if __name__ == '__main__':
-    mergeplots("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456+234567/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/234567/2e2mu/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/withcombine/")
+    mergeplots("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456+234567/2e2mu/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/234567/2e2mu/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456/2e2mu/withcombine/")
+    mergeplots("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456+234567/2e2mu/nobkg/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/234567/2e2mu/nobkg/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456/2e2mu/nobkg/withcombine/")
+    mergeplots("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456+234567/allflavors/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/234567/allflavors/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456/allflavors/withcombine/")
+    mergeplots("/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456+234567/allflavors/nobkg/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/234567/allflavors/nobkg/", "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/123456/allflavors/nobkg/withcombine/")
