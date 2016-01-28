@@ -10,7 +10,7 @@ import config
 import os
 
 
-def testfit(nNLLs = 100,
+def testfit(nNLLs = 1000,
             nbins = 1000,
             low = -1,
             high = 1,
