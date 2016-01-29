@@ -46,6 +46,8 @@ if __name__ == '__main__':
             combinefilenameC = "plotsfromcombine/fa3=%s_" % fa3
             if config.whichtemplates == "ggH_2e2mu":
                 combinefilenameC += "2e2mu_"
+            elif config.whichtemplates == "ggH_4e":
+                combinefilenameC += "4e_"
             elif config.whichtemplates == "ggH_allflavors":
                 pass
             else:
