@@ -81,7 +81,8 @@ class TemplateType(MyEnum):
 class WhichTemplates(MyEnum):
     enumitems = (
                  EnumItem("ggH_2e2muonly", 0, "ggH_2e2mu"),
-                 EnumItem("ggH_allflavors", 0),
+                 EnumItem("ggH_allflavors", 1),
+                 EnumItem("ggH_4eonly", 2, "ggH_4e"),
                 )
 
 onoffshell = OnOffShell.enumitems

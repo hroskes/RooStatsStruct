@@ -93,9 +93,9 @@ class BaseTemplateGetter(object):
         return template
         
 
-class TemplateGetter_ggHonly_2e2mu(BaseTemplateGetter):
+class TemplateGetter_ggHonly_oneflavor(BaseTemplateGetter):
     def fileandname(self):
-        if self.on_off == "onshell" and self.category == "ggH" and self.channel == "2e2mu":
+        if self.on_off == "onshell" and self.category == "ggH" and self.channel == self.theflavor:
             self.empty = False
         else:
             self.empty = True
@@ -116,6 +116,12 @@ class TemplateGetter_ggHonly_2e2mu(BaseTemplateGetter):
             raise ValueError("Bad templatetype! %s" % self.templatetype)
 
         print self.templatetype, self.channel, self.on_off, self.file, self.name, self.empty
+
+class TemplateGetter_ggHonly_2e2mu(TemplateGetter_ggHonly_oneflavor):
+    theflavor = "2e2mu"
+
+class TemplateGetter_ggHonly_4e(TemplateGetter_ggHonly_oneflavor):
+    theflavor = "4e"
 
 class TemplateGetter_ggHonly_allflavors(BaseTemplateGetter):
     def fileandname(self):
@@ -181,5 +187,6 @@ class TemplateGetter_ggHVBF_2e2mu(BaseTemplateGetter):
 
 templategetters = {
     WhichTemplates("ggH_2e2mu"): TemplateGetter_ggHonly_2e2mu,
+    WhichTemplates("ggH_4e"): TemplateGetter_ggHonly_4e,
     WhichTemplates("ggH_allflavors"): TemplateGetter_ggHonly_allflavors,
 }
