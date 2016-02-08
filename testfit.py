@@ -25,7 +25,7 @@ def testfit(nNLLs = 1000,
     fa3 = None
 
     for channel in channels:
-        fs[channel] = ROOT.TFile.Open("workspaces/{0}_fa3_{1}_{2}_workspace.root".format(str(config.whichtemplates), channel, 0))
+        fs[channel] = ROOT.TFile.Open("workspaces/{0}_fa3_{1}_{2}_workspace{3}.root".format(str(config.whichtemplates), channel, 0, "_nobkg" if config.turnoffbkg else ""))
         ws[channel] = fs[channel].Get("workspace")
         pdfs[channel] = ws[channel].pdf("Cat_{0}_{1}_SumPDF".format(channel, 0))
         if fa3 is None:  #this is the first one
