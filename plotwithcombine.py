@@ -4,6 +4,7 @@ import rootlog
 ROOT = rootlog.thefakeroot
 import ROOT as therealROOT
 import style
+import subprocess
 import os
 
 def plotwithcombine(filenameroot, combinefilenameC, newsaveas):
@@ -31,6 +32,9 @@ def plotwithcombine(filenameroot, combinefilenameC, newsaveas):
         c1.SaveAs(newsaveas + ext)
 
     f.Close()
+
+    #save as png doesn't always work
+    subprocess.call("""echo 'c1->SaveAs("%s.png")' | root -l -b %s.root""" % (newsaveas, newsaveas), shell=True)
 
 if __name__ == '__main__':
     newsaveasdir = config.plotdir + "/withcombine/"
