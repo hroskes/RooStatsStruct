@@ -26,7 +26,7 @@ else:
 
 w = f.Get("workspace")
 
-fa3 = w.var("fa3")
+fa3 = w.var("fa3_decay")
 
 TotalPDF = w.pdf("Cat_0_0_SumPDF")
 

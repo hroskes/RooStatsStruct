@@ -10,7 +10,7 @@ import config
 f = ROOT.TFile.Open("fa3_0_2_0_workspace_nobkg.root")
 w = f.Get("workspace")
 
-fa3 = w.var("fa3")
+fa3 = w.var("fa3_decay")
 mu = w.var("mu")
 mu.setVal(1)
 w.Print()

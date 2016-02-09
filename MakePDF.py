@@ -29,7 +29,24 @@ class MakePDF:
 
 		#Variables
 		mu = ROOT.RooRealVar("mu","mu",1.,0.,100.)
-		fa3 = ROOT.RooRealVar("fa3","fa3",0.,-1.,1.)
+		g4_values_for_fa3half = {
+			Category("ggH"): 2.55052,  #+/- 0.00018
+			Category("VBF"): 0.297979, #+/- 0.000013
+			Category("VH"):  0.144057, #+/- 1.4e-5    this is for ZH
+			#     for WH:    0.1236136  +/- 7.7e-6    might cause problems...
+		}
+		g4_for_fa3half = {
+			category: ROOT.RooConstVar("g4_for_fa3_half_%s"%category, "g4_for_fa3_half_%s"%category, value)
+				for category, value in g4_values_for_fa3half
+		}
+		fa3 = {}
+		fa3[Category("ggH")] = ROOT.RooRealVar("fa3_ggH", "fa3_ggH", 0, -1, 1)
+		for category in categories:
+			if category == "ggH": continue
+			fa3[category] = ROOT.RooFormulaVar("fa3_%s"%category, "fa3_%s"%category,
+								"(@0>0 ? 1 : -1) / (1 + (1 - @0)*@1**2 / (@0*@2**2))",
+								ROOT.RooArgList(fa3["ggH"], g4_for_fa3half[category], g4_for_fa3half["ggH"])
+							  )
 
 		#These variables are fixed as const. THIS IS ONLY TEMPORARY
 		phi = ROOT.RooRealVar("phia3","phia3",0.,-math.pi,math.pi)
@@ -159,11 +176,11 @@ class MakePDF:
 			r3.setConstant(True)
 
 			TemplateName = "SM_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
-			SMnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1.-abs(@0))",ROOT.RooArgList(fa3))
+			SMnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(1.-abs(@0))",ROOT.RooArgList(fa3[category]))
 			TemplateName = "MIX_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
-			MIXnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1.-abs(@0)))",ROOT.RooArgList(fa3))
+			MIXnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1.-abs(@0)))",ROOT.RooArgList(fa3[category]))
 			TemplateName = "PS_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
-			PSnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "abs(@0)",ROOT.RooArgList(fa3))
+			PSnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "abs(@0)",ROOT.RooArgList(fa3[category]))
 
 
 			TemplateName = "Signal_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
@@ -177,21 +194,21 @@ class MakePDF:
 			#Below NOT COMBINE COMPATIBLE
 
 			if category == "ggH":
-				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
+				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3[category], r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
 				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
 				ggHpdf = ROOT.RooRealSumPdf(TotalPDF,"ggH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There ggH"
 			elif category == "VH":
-				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
+				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3[category], r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
 				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
 				VHpdf = ROOT.RooRealSumPdf(TotalPDF,"VH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(VHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There VH"
 			elif category == "VBF":
-				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3, r1, r2, r3, phi, mu, luminosity))
+				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3[category], r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
 				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
 				VBFpdf = ROOT.RooRealSumPdf(TotalPDF,"VBF_{0}_{1}".format(self.channel,self.on_off))

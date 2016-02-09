@@ -21,7 +21,7 @@ else:
     f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
 w = f.Get("workspace")
 
-fa3 = w.var("fa3")
+fa3 = w.var("fa3_decay")
 mu = w.var("mu")
 
 w.var("sMELA_ggH").setVal(.5)
