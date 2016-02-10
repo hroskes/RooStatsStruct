@@ -8,9 +8,9 @@ using namespace std;
 void normalize(TH1* h, double newnormalization)
 {
     cout << newnormalization << endl;
-    cout << h->Integral() << endl;
-    h->Scale(newnormalization/h->Integral());
-    cout << h->Integral() << endl << endl;
+    cout << h->Integral("width") << endl;
+    h->Scale(newnormalization/h->Integral("width"));
+    cout << h->Integral("width") << endl << endl;
 }
 
 TString olddir = "../ggH_fromMeng/";

@@ -47,8 +47,6 @@ def testfit(nNLLs = 1000,
 
     if ntoys is None:
         ntoys = pdf.getNorm(ROOT.RooArgSet(sMELA_ggH, D0minus_ggH, DCP_ggH, sMELA_VBF, D0minus_VBF, DCP_VBF, sMELA_VH, D0minus_VH, DCP_VH))
-        print ntoys
-        assert False
 
     print "Number of toys:", ntoys
 
@@ -110,5 +108,5 @@ if __name__ == '__main__':
         fa3s = [0, 1, .5, -.5]
     [testfit(
              testfa3=float(testfa3),
-             ntoys = config.sigrate + config.bkgrate
+             ntoys = None
             ) for testfa3 in fa3s]

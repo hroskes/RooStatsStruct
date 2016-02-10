@@ -9,7 +9,7 @@ bool justcopy = false;
 
 void normalize(TH1* h, double newnormalization)
 {
-    h->Scale(newnormalization/h->Integral());
+    h->Scale(newnormalization/h->Integral("width"));
 }
 
 TString olddir = "../ggH_fromMeng/";
@@ -43,17 +43,17 @@ void normalizesig(int i)
         fnew.emplace(files[i], TFile::Open(newdir + "/" + TString(files[i]).ReplaceAll("_fa3Adap_new", "_templates"), "RECREATE"));
 
     TH1 *hSM = (TH1*)fold[files[i]]->Get(templates[0]);
-    double multiply = rates[i] / luminosity / hSM->Integral();
+    double multiply = rates[i] / luminosity / hSM->Integral("width");
     cout << multiply << endl;
 
     for (int j = 0; j < ntemplates; j++)
     {
         TH1 *h = (TH1*)fold[files[i]]->Get(templates[j]);
         h->SetDirectory(fnew[files[i]]);
-        cout << "    " << h->Integral() << endl;
+        cout << "    " << h->Integral("width") << endl;
         if (!justcopy)
             h->Scale(multiply);
-        cout << "    " << h->Integral() << endl;
+        cout << "    " << h->Integral("width") << endl;
         h->Write();
     }
 }

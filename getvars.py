@@ -30,3 +30,5 @@ one = ROOT.RooConstVar("one", "one", 1.0)
 TemplateName = "SumPDF"
 pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.values()), ROOT.RooArgList(*([one]*len(pdfs))))
 
+discriminants = ROOT.RooArgSet(*[globals()["%s_%s" % (a,b)] for a in ("D0minus", "DCP", "sMELA") for b in ("ggH", "VBF", "VH")])
+pdfnorm = pdf.createIntegral(discriminants)
