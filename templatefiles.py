@@ -56,7 +56,7 @@ class BaseTemplateGetter(object):
         if not template:
             raise IOError(self.file + " does not contain " + self.name + "!")
 
-        if self.empty:
+        if self.empty or (config.turnoffbkg and self.templatetype == "qqZZ"):
 
             todelete = []
             for a in self.emptytemplates:
@@ -67,7 +67,7 @@ class BaseTemplateGetter(object):
 
             if (self.file, self.name) not in self.emptytemplates:  #empty template with the same bins as the given template from file and name
                 try:    #TH3?
-                    self.emptytemplates[(self.file, self.name)] = template.__class__(  #create a new histogram to be the empty one
+                    self.emptytemplates[(self.file, self.name)] = type(template)(  #create a new histogram to be the empty one
                         "empty%i"%len(self.emptytemplates),
                         "empty",
                         template.GetNbinsX(), template.GetXaxis().GetXmin(), template.GetXaxis().GetXmax(),
@@ -76,14 +76,14 @@ class BaseTemplateGetter(object):
                     )
                 except TypeError:
                     try:    #TH2?
-                        self.emptytemplates[(self.file, self.name)] = template.__class__(  #create a new histogram to be the empty one
+                        self.emptytemplates[(self.file, self.name)] = type(template)(  #create a new histogram to be the empty one
                             "empty"+len(self.emptytemplates),
                             "empty",
                             template.GetNbinsX(), template.GetXaxis().GetXmin(), template.GetXaxis().GetXmax(),
                             template.GetNbinsY(), template.GetYaxis().GetXmin(), template.GetYaxis().GetXmax(),
                         )
                     except TypeError:    #TH1?
-                        self.emptytemplates[(self.file, self.name)] = template.__class__(  #create a new histogram to be the empty one
+                        self.emptytemplates[(self.file, self.name)] = type(template)(  #create a new histogram to be the empty one
                             "empty"+len(self.emptytemplates),
                             "empty",
                             template.GetNbinsX(), template.GetXaxis().GetXmin(), template.GetXaxis().GetXmax(),

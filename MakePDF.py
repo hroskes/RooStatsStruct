@@ -170,10 +170,7 @@ class MakePDF:
 			SignalPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SMhistFunc, MIXhistFunc, PShistFunc), ROOT.RooArgList(SMnorm,MIXnorm,PSnorm))
 
 			TemplateName = "qqZZ_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
-			if not config.turnoffbkg:
-				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0", ROOT.RooArgList(luminosity))
-			else:
-				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "0", ROOT.RooArgList())
+			BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0", ROOT.RooArgList(luminosity))
 
 			TemplateName = "Signal_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
 			#NOTE BELOW INCLUDES MU AND SMrate
