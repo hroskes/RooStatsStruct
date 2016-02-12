@@ -16,8 +16,4 @@ class MakePDF_Heshy(MakePDF.MakePDF):
         MakePDF.MakePDF.makeWorkspace(self, channelCode, on_off_Code)
 
 if __name__ == '__main__':
-    MakePDF.turnoffbkg = True
-    MakePDF_Heshy()
-    MakePDF.ROOT.reset()
-    MakePDF.turnoffbkg = False
     MakePDF_Heshy()
