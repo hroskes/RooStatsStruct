@@ -46,8 +46,6 @@ class BaseTemplateGetter(object):
             if found > 1:
                 raise ValueError("Argument %s to TemplateFile is ambiguous" % arg)
 
-        self.fileandname()
-
     def template(self):
         tfile = ROOT.TFile.Open(self.file)
         if not tfile:
@@ -91,15 +89,16 @@ class BaseTemplateGetter(object):
             template = self.emptytemplates[(self.file, self.name)]
 
         return template
-        
 
-class TemplateGetter_ggHonly_oneflavor(BaseTemplateGetter):
-    def fileandname(self):
-        if self.on_off == "onshell" and self.category == "ggH" and self.channel == self.theflavor:
-            self.empty = False
-        else:
-            self.empty = True
+class TemplateGetter_ggH(BaseTemplateGetter):
+    def __init__(self, *args):
+        if not hasattr(self, "fileandname_VBF"):
+            self.fileandname_VBF = self.fileandname_ggH
+        if not hasattr(self, "fileandname_VH"):
+            self.fileandname_VH = self.fileandname_ggH
+        super(TemplateGetter_ggH, self).__init__(self, *args)
 
+    def fileandname_ggH(self):
         if self.templatetype == "SM":
             self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
             self.name = "template0PlusAdapSmoothMirror"
@@ -115,7 +114,19 @@ class TemplateGetter_ggHonly_oneflavor(BaseTemplateGetter):
         else:
             raise ValueError("Bad templatetype! %s" % self.templatetype)
 
-        print self.templatetype, self.channel, self.on_off, self.file, self.name, self.empty
+class TemplateGetter_ggHonly_allflavors(TemplateGetter_ggH):
+    def setempty(self):
+        if self.on_off == "onshell" and self.category == "ggH":
+            self.empty = False
+        else:
+            self.empty = True
+
+class TemplateGetter_ggHonly_oneflavor(TemplateGetter_ggH):
+    def setempty(self):
+        if self.on_off == "onshell" and self.category == "ggH" and self.channel == self.theflavor:
+            self.empty = False
+        else:
+            self.empty = True
 
 class TemplateGetter_ggHonly_2e2mu(TemplateGetter_ggHonly_oneflavor):
     theflavor = "2e2mu"
@@ -123,70 +134,8 @@ class TemplateGetter_ggHonly_2e2mu(TemplateGetter_ggHonly_oneflavor):
 class TemplateGetter_ggHonly_4e(TemplateGetter_ggHonly_oneflavor):
     theflavor = "4e"
 
-class TemplateGetter_ggHonly_allflavors(BaseTemplateGetter):
-    def fileandname(self):
-        if self.on_off == "onshell" and self.category == "ggH":
-            self.empty = False
-        else:
-            self.empty = True
-
-        if self.templatetype == "SM":
-            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
-            self.name = "template0PlusAdapSmoothMirror"
-        elif self.templatetype == "PS":
-            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
-            self.name = "template0MinusAdapSmoothMirror"
-        elif self.templatetype == "interference":
-            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
-            self.name = "templateIntAdapSmoothMirror"
-        elif self.templatetype == "qqZZ":
-            self.file = basedirggH_frommeng + "%s_templates_bkg.root" % self.channel
-            self.name = "template_qqZZ"
-        else:
-            raise ValueError("Bad templatetype! %s" % self.templatetype)
-
-class TemplateGetter_ggHVBF_2e2mu(BaseTemplateGetter):
-    def fileandname(self):
-        if self.channel == "2e2mu" and self.on_off == "on_shell" and self.category != "VH":
-            self.empty = True
-        else:
-            self.empty = False
-
-        if self.category == "VBF":
-            if self.templatetype == "SM":
-                self.file = basedirVBF + "%s_templates.root" % self.channel
-                self.name = "template_VBFscalar"
-            elif self.templatetype == "PS":
-                self.file = basedirVBF + "%s_templates.root" % self.channel
-                self.name = "template_VBFpseudoscalar"
-            elif self.templatetype == "interference":
-                self.file = basedirVBF + "%s_templates.root" % self.channel
-                self.name = "template_VBFinterference"
-            elif self.templatetype == "qqZZ":
-                self.file = basedirVBF + "%s_templates_bkg.root" % self.channel
-                self.name = "template_qqZZ"
-            else:
-                raise ValueError("Bad templatetype! %s" % self.templatetype)
-        elif self.category in ("ggH", "VBF"):
-            if self.templatetype == "SM":
-                self.file = basedirggH_frommeng + "%s_templates.root" % "2e2mu"
-                self.name = "template0PlusAdapSmoothMirror"
-            elif self.templatetype == "PS":
-                self.file = basedirggH_frommeng + "%s_templates.root" % "2e2mu"
-                self.name = "template0MinusAdapSmoothMirror"
-            elif self.templatetype == "interference":
-                self.file = basedirggH_frommeng + "%s_templates.root" % "2e2mu"
-                self.name = "templateIntAdapSmoothMirror"
-            elif self.templatetype == "qqZZ":
-                self.file = basedirggH_frommeng + "%s_templates_bkg.root" % "2e2mu"
-                self.name = "template_qqZZ"
-            else:
-                raise ValueError("Bad templatetype! %s" % self.templatetype)
-        else:
-            raise ValueError("Bad category! %s" % self.category)
-
 templategetters = {
     WhichTemplates("ggH_2e2mu"): TemplateGetter_ggHonly_2e2mu,
     WhichTemplates("ggH_4e"): TemplateGetter_ggHonly_4e,
-    WhichTemplates("ggH_allflavors"): TemplateGetter_ggHonly_allflavors,
+    WhichTemplates("ggH_allflavors"): TemplateGetter_ggH,
 }
