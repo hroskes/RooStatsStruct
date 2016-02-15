@@ -1,6 +1,7 @@
-from enums import *
-import rootlog
 import config
+from enums import *
+import os
+import rootlog
 ROOT = rootlog.thefakeroot
 
 
@@ -11,8 +12,8 @@ def template(*args):
 
 
 
-basedirVBF = "templates/VBF/"   #doesn't exist and not used
-basedirggH_frommeng = "templates/ggH_fromMeng_normalized/"
+basedirVBF = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/maketemplates/step6_templates"
+basedirggH_fromMeng = "templates/ggH_fromMeng_normalized/"
 
 class BaseTemplateGetter(object):
 
@@ -96,16 +97,16 @@ class BaseTemplateGetter(object):
 class TemplateGetter_ggH(BaseTemplateGetter):
     def fileandname_ggH(self):
         if self.templatetype == "SM":
-            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
+            self.file = os.path.join(basedirggH_fromMeng, "%s_templates.root" % self.channel)
             self.name = "template0PlusAdapSmoothMirror"
         elif self.templatetype == "PS":
-            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
+            self.file = os.path.join(basedirggH_fromMeng, "%s_templates.root" % self.channel)
             self.name = "template0MinusAdapSmoothMirror"
         elif self.templatetype == "interference":
-            self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
+            self.file = os.path.join(basedirggH_fromMeng, "%s_templates.root" % self.channel)
             self.name = "templateIntAdapSmoothMirror"
         elif self.templatetype == "qqZZ":
-            self.file = basedirggH_frommeng + "%s_templates_bkg.root" % self.channel
+            self.file = os.path.join(basedirggH_fromMeng, "%s_templates_bkg.root" % self.channel)
             self.name = "template_qqZZ"
         else:
             raise ValueError("Bad templatetype! %s" % self.templatetype)
@@ -132,8 +133,45 @@ class TemplateGetter_ggHonly_2e2mu(TemplateGetter_ggHonly_oneflavor):
 class TemplateGetter_ggHonly_4e(TemplateGetter_ggHonly_oneflavor):
     theflavor = "4e"
 
+
+
+
+class TemplateGetter_VBFonly(BaseTemplateGetter):
+    """
+    subclass this together with a class that provides the template files and names
+    """
+    def setisempty(self):
+        if self.on_off == "onshell" and self.category == "VBF":
+            self.empty = False
+        else:
+            self.empty = True
+
+    def fileandname(self):
+        return self.fileandname_VBF()
+
+class TemplateGetter_VBFdiscriminants(BaseTemplateGetter):
+    """
+    Dbkg from decay, but D0- and DCP from VBF alone with no decay info
+    """
+    def fileandname_VBF(self):
+        self.name = "template_VBF_alone"
+
+        if self.templatetype == "SM":
+            self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
+        elif self.templatetype == "PS":
+            self.file = os.path.join(basedirVBF, "VBF0-_%s.root" % self.channel)
+        elif self.templatetype == "fa30.5":
+            self.file = os.path.join(basedirVBF, "VBFfa30.5_%s.root" % self.channel)
+        elif self.templatetype == "qqZZ":
+            self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
+            assert config.turnoffbkg
+
+class TemplateGetter_VBFonly_VBFdiscriminants(TemplateGetter_VBFonly, TemplateGetter_VBFdiscriminants):
+    pass
+
 templategetters = {
     WhichTemplates("ggH_2e2mu"): TemplateGetter_ggHonly_2e2mu,
     WhichTemplates("ggH_4e"): TemplateGetter_ggHonly_4e,
     WhichTemplates("ggH_allflavors"): TemplateGetter_ggHonly,
+    WhichTemplates("VBF_VBFdiscriminants"): TemplateGetter_VBFonly_VBFdiscriminants,
 }

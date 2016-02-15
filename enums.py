@@ -83,6 +83,7 @@ class WhichTemplates(MyEnum):
                  EnumItem("ggH_2e2muonly", 0, "ggH_2e2mu"),
                  EnumItem("ggH_allflavors", 1),
                  EnumItem("ggH_4eonly", 2, "ggH_4e"),
+                 EnumItem("VBF_VBFdiscriminants", 3),
                 )
 
 onoffshell = OnOffShell.enumitems

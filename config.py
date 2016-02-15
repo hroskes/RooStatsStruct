@@ -1,11 +1,13 @@
 from enums import *
 import getpass
+import os
 
 if getpass.getuser() == "hroskes":
     plotdirs = {
                 WhichTemplates("ggH_2e2mu"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/2e2mu",
                 WhichTemplates("ggH_4e"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/4e",
                 WhichTemplates("ggH_allflavors"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/allflavors/",
+                WhichTemplates("VBF_VBFdiscriminants"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_VBFdiscriminants",
                }
 elif getpass.getuser() == "chmartin":
     plotdirs = {
@@ -19,12 +21,13 @@ else:
 
 
 #whichtemplates = WhichTemplates("ggH_2e2mu")
-whichtemplates = WhichTemplates("ggH_4e")
+#whichtemplates = WhichTemplates("ggH_4e")
 #whichtemplates = WhichTemplates("ggH_allflavors")
+whichtemplates = WhichTemplates("VBF_VBFdiscriminants")
 
 
 
-turnoffbkg = False
+turnoffbkg = True
 
 
 seed = 987653
@@ -33,25 +36,9 @@ seed = 987653
 
 
 
-
-plotdir = (plotdirs[whichtemplates] + ("/nobkg/" if turnoffbkg else "")).replace("SEED", str(seed))
-
-
-
-
-
-#I want to get this from the templates, but I don't have time now
-sigrates = {
-            WhichTemplates("ggH_2e2mu"): 7.6807,
-            WhichTemplates("ggH_4e"): 3.0898,
-            WhichTemplates("ggH_allflavors"): 7.6807 + 3.0898 + 5.9471,
-           }
-bkgrates = {
-            WhichTemplates("ggH_2e2mu"): 13.6519,   #8.8585 = qqZZ only
-            WhichTemplates("ggH_4e"): 5.9081,       #2.9364 = qqZZ only
-            WhichTemplates("ggH_allflavors"): 13.6519 + 5.9081 + 9.2487,   #8.8585 + 2.9364 + 7.6478 = qqZZ only
-           }
-
-
-sigrate = sigrates[whichtemplates]
-bkgrate = 0 if turnoffbkg else bkgrates[whichtemplates]
+try:
+    plotdir = (plotdirs[whichtemplates] + ("/nobkg/" if turnoffbkg else "")).replace("SEED", str(seed))
+    if not os.path.isdir(plotdir):
+        os.makedirs(plotdir)
+except KeyError:
+    raise KeyError("need to add folder for %s in config.py" % whichtemplates)
