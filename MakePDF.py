@@ -9,6 +9,7 @@ import math
 import rootlog
 import templatefiles
 import config
+import constants
 from enums import *
 
 #import ROOT
@@ -30,10 +31,9 @@ class MakePDF:
 		#Variables
 		mu = ROOT.RooRealVar("mu","mu",1.,0.,100.)
 		g4_values_for_fa3half = {
-			Category("ggH"): 2.55052,  #+/- 0.00018
-			Category("VBF"): 0.297979, #+/- 0.000013
-			Category("VH"):  0.144057, #+/- 1.4e-5    this is for ZH
-			#     for WH:    0.1236136  +/- 7.7e-6    might cause problems...
+			Category("ggH"): constants.g4_mix_ggH,
+			Category("VBF"): constants.g4_mix_VBF,
+			Category("VH"):  constants.g4_mix_ZH, #WH is a bit different, not sure what to do about this
 		}
 		g4_for_fa3half = {
 			category: ROOT.RooConstVar("g4_for_fa3_half_%s"%category, "g4_for_fa3_half_%s"%category, value)
@@ -52,7 +52,7 @@ class MakePDF:
 		#These variables are fixed as const. THIS IS ONLY TEMPORARY
 		phi = ROOT.RooRealVar("phia3","phia3",0.,-math.pi,math.pi)
 		phi.setConstant(True)
-		luminosity = ROOT.RooRealVar("luminosity","luminosity",19.712)
+		luminosity = ROOT.RooRealVar("luminosity","luminosity",constants.luminosity)
 		luminosity.setConstant(True)
 
 
@@ -169,11 +169,11 @@ class MakePDF:
 			TemplateName = "BKG_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
 			BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, BKGdataHist)
 
-			r1 = ROOT.RooRealVar("r1","r1",0.966)
+			r1 = ROOT.RooRealVar("r1","r1",constants.r1)
 			r1.setConstant(True)
-			r2 = ROOT.RooRealVar("r2","r2",1.968)
+			r2 = ROOT.RooRealVar("r2","r2",constants.r2)
 			r2.setConstant(True)
-			r3 = ROOT.RooRealVar("r3","r3",1.968)
+			r3 = ROOT.RooRealVar("r3","r3",constants.r3)
 			r3.setConstant(True)
 
 			TemplateName = "SM_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
