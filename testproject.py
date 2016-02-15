@@ -1,43 +1,42 @@
-import sys
-sys.argv.insert(1, "-b")
-import ROOT
-import loadlib
-del sys.argv[1]
-import random
-from extendedcounter import *
-import style
 import config
+from enums import *
+from extendedcounter import *
+import loadlib
+import random
+import ROOT
+import style
+import sys
 
-########################################
+##############################################
 #parameters
 testmu = 1
 testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
-varnames = ["Dcp_dec", "sMELA_ggH", "D0-_dec"]
-########################################
+varnames = ["Dcp_dec", "sMELA_ggH", "D0-_dec",
+            "Dcp_VBF", "sMELA_VBF", "D0-_VBF"]
+##############################################
 
-if config.turnoffbkg:
-    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace_nobkg.root")
-else:
-    f = ROOT.TFile.Open("workspaces/ggH_2e2muonly_fa3_0_0_workspace.root")
-w = f.Get("workspace")
+fs, ws, pdfs = {}, {}, {}
+fa3 = None
+vars = {}
 
-fa3 = w.var("fa3_ggH")
-mu = w.var("mu")
+for channel in channels:
+    fs[channel] = ROOT.TFile.Open("workspaces/{0}_fa3_{1}_{2}_workspace{3}.root".format(str(config.whichtemplates), channel, 0, "_nobkg" if config.turnoffbkg else ""))
+    ws[channel] = fs[channel].Get("workspace")
+    pdfs[channel] = ws[channel].pdf("Cat_{0}_{1}_SumPDF".format(channel, 0))
+    if fa3 is None:  #this is the first one
+        fa3 = ws[channel].var("fa3_ggH")
+        mu = ws[channel].var("mu")
+        for varname in varnames:
+            vars[varname] = ws[channel].var(varname)
 
-w.var("sMELA_ggH").setVal(.5)
-w.var("Dcp_dec").setVal(1.)
-w.var("D0-_dec").setVal(0.)
+one = ROOT.RooConstVar("one", "one", 1.0)
+TemplateName = "SumPDF"
+pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.values()), ROOT.RooArgList(*([one]*len(pdfs))))
 
-pdf = w.pdf("Cat_0_0_SumPDF")
-
-for varname in varnames:
-    var = w.var(varname)
-    print varname, var
+for varname, var in vars.iteritems():
     frame = var.frame()
 
-    othervarnames = varnames[:]
-    othervarnames.remove(varname)
-    othervars = [w.var(a) for a in othervarnames]
+    othervars = [othervar for othervar in vars.values() if othervar is not var]
 
     for testfa3 in testfa3s:
         c1 = ROOT.TCanvas.MakeDefCanvas()
