@@ -14,7 +14,7 @@ for channel in channels:
     ws[channel] = fs[channel].Get("workspace")
     pdfs[channel] = ws[channel].pdf("Cat_{0}_{1}_SumPDF".format(channel, 0))
     if fa3 is None:  #this is the first one
-        fa3 = ws[channel].var("fa3")
+        fa3 = ws[channel].var("fa3_ggH")
         mu = ws[channel].var("mu")
         sMELA_ggH = ws[channel].var("sMELA_ggH")
         D0minus_ggH = ws[channel].var("D0-_dec")
