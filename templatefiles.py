@@ -46,6 +46,9 @@ class BaseTemplateGetter(object):
             if found > 1:
                 raise ValueError("Argument %s to TemplateFile is ambiguous" % arg)
 
+        self.fileandname()
+        self.setisempty()
+
     def template(self):
         tfile = ROOT.TFile.Open(self.file)
         if not tfile:
@@ -91,13 +94,6 @@ class BaseTemplateGetter(object):
         return template
 
 class TemplateGetter_ggH(BaseTemplateGetter):
-    def __init__(self, *args):
-        if not hasattr(self, "fileandname_VBF"):
-            self.fileandname_VBF = self.fileandname_ggH
-        if not hasattr(self, "fileandname_VH"):
-            self.fileandname_VH = self.fileandname_ggH
-        super(TemplateGetter_ggH, self).__init__(self, *args)
-
     def fileandname_ggH(self):
         if self.templatetype == "SM":
             self.file = basedirggH_frommeng + "%s_templates.root" % self.channel
@@ -114,18 +110,20 @@ class TemplateGetter_ggH(BaseTemplateGetter):
         else:
             raise ValueError("Bad templatetype! %s" % self.templatetype)
 
-class TemplateGetter_ggHonly_allflavors(TemplateGetter_ggH):
-    def setempty(self):
+class TemplateGetter_ggHonly(TemplateGetter_ggH):
+    def setisempty(self):
         if self.on_off == "onshell" and self.category == "ggH":
             self.empty = False
         else:
             self.empty = True
 
-class TemplateGetter_ggHonly_oneflavor(TemplateGetter_ggH):
-    def setempty(self):
-        if self.on_off == "onshell" and self.category == "ggH" and self.channel == self.theflavor:
-            self.empty = False
-        else:
+    def fileandname(self):
+        return self.fileandname_ggH()
+
+class TemplateGetter_ggHonly_oneflavor(TemplateGetter_ggHonly):
+    def setisempty(self):
+        super(TemplateGetter_ggHonly_oneflavor, self).setisempty()
+        if self.channel != self.theflavor:
             self.empty = True
 
 class TemplateGetter_ggHonly_2e2mu(TemplateGetter_ggHonly_oneflavor):
@@ -137,5 +135,5 @@ class TemplateGetter_ggHonly_4e(TemplateGetter_ggHonly_oneflavor):
 templategetters = {
     WhichTemplates("ggH_2e2mu"): TemplateGetter_ggHonly_2e2mu,
     WhichTemplates("ggH_4e"): TemplateGetter_ggHonly_4e,
-    WhichTemplates("ggH_allflavors"): TemplateGetter_ggH,
+    WhichTemplates("ggH_allflavors"): TemplateGetter_ggHonly,
 }
