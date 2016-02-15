@@ -37,15 +37,16 @@ class MakePDF:
 		}
 		g4_for_fa3half = {
 			category: ROOT.RooConstVar("g4_for_fa3_half_%s"%category, "g4_for_fa3_half_%s"%category, value)
-				for category, value in g4_values_for_fa3half
+				for category, value in g4_values_for_fa3half.iteritems()
 		}
 		fa3 = {}
 		fa3[Category("ggH")] = ROOT.RooRealVar("fa3_ggH", "fa3_ggH", 0, -1, 1)
 		for category in categories:
 			if category == "ggH": continue
+                        ggH = Category("ggH")
 			fa3[category] = ROOT.RooFormulaVar("fa3_%s"%category, "fa3_%s"%category,
 								"(@0>0 ? 1 : -1) / (1 + (1 - @0)*@1**2 / (@0*@2**2))",
-								ROOT.RooArgList(fa3["ggH"], g4_for_fa3half[category], g4_for_fa3half["ggH"])
+								ROOT.RooArgList(fa3[ggH], g4_for_fa3half[category], g4_for_fa3half[ggH])
 							  )
 
 		#These variables are fixed as const. THIS IS ONLY TEMPORARY
