@@ -79,14 +79,14 @@ class BaseTemplateGetter(object):
                 except TypeError:
                     try:    #TH2?
                         self.emptytemplates[(self.file, self.name)] = type(template)(  #create a new histogram to be the empty one
-                            "empty"+len(self.emptytemplates),
+                            "empty%i"%len(self.emptytemplates),
                             "empty",
                             template.GetNbinsX(), template.GetXaxis().GetXmin(), template.GetXaxis().GetXmax(),
                             template.GetNbinsY(), template.GetYaxis().GetXmin(), template.GetYaxis().GetXmax(),
                         )
                     except TypeError:    #TH1?
                         self.emptytemplates[(self.file, self.name)] = type(template)(  #create a new histogram to be the empty one
-                            "empty"+len(self.emptytemplates),
+                            "empty%i"%len(self.emptytemplates),
                             "empty",
                             template.GetNbinsX(), template.GetXaxis().GetXmin(), template.GetXaxis().GetXmax(),
                         )

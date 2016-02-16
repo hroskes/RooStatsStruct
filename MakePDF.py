@@ -67,38 +67,23 @@ class MakePDF:
 		for category in categories:
 
 			#if statements to make Discriminants
-			Disc0_name = None
-			Disc1_name = None
-			Disc2_name = None
 			if self.on_off == "onshell":
 				if category == "ggH":
-					Disc0_name = "sMELA_ggH"
-					Disc1_name = "D0-_dec"
-					Disc2_name = "Dcp_dec"
+					Disc_name = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
 				elif category == "VH":
-					Disc0_name = "sMELA_VH"
-					Disc1_name = "D0-_VH"
-					Disc2_name = "Dcp_VH"
+					Disc_name = ["sMELA_VH", "D0-_VH", "Dcp_VH"]
 				elif category == "VBF":
-					Disc0_name = "sMELA_VBF"
-					Disc1_name = "D0-_VBF"
-					Disc2_name = "Dcp_VBF"
+					Disc_name = ["sMELA_VBF", "D0-_VBF", "Dcp_VBF"]
 				else:
 					print "INVALID ANALYSIS CATEGORY!"
 					assert(0)
 			elif self.on_off == "offshell":
 				if category == "ggH":
-					Disc0_name = "zz4l_mass_ggH"
-					Disc1_name = "Dgg"
-					Disc2_name = "D0-_dec_offshell"
+					Disc_name = ["zz4l_mass_ggH", "Dgg", "D0-_dec_offshell"]
 				elif category == "VH":
-					Disc0_name = "zz4l_mass_VH"
-					Disc1_name = "D0-_VH_offshell"
-					#Disc2_name = "Dcp_VH_offshell"
+					Disc_name = ["zz4l_mass_VH", "D0-_VH_offshell", "Dcp_VH_offshell"]
 				elif category == "VBF":
-					Disc0_name = "zz4l_mass_VBF"
-					Disc1_name = "D0-_VBF_offshell"
-					#Disc2_name = "Dcp_VBF_offshell"
+					Disc_name = ["zz4l_mass_VBF", "D0-_VBF_offshell", "Dcp_VBF_offshell"]
 				else:
 					print "INVALID ANALYSIS CATEGORY!"
 					assert(0)
@@ -114,42 +99,29 @@ class MakePDF:
 			MIXtemplate = templatefiles.template(category, self.channel, self.on_off, "interference")
 			BKGtemplate = templatefiles.template(category, self.channel, self.on_off, "qqZZ")
 
-			dBins0 = SMtemplate.GetXaxis().GetNbins()
-			dLow0 = SMtemplate.GetXaxis().GetXmin()
-			dHigh0 = SMtemplate.GetXaxis().GetXmax()
-
-			dBins1 = SMtemplate.GetYaxis().GetNbins()
-			dLow1 = SMtemplate.GetYaxis().GetXmin()
-			dHigh1 = SMtemplate.GetYaxis().GetXmax()
-
-			if Disc2_name is not None:
-				dBins2 = SMtemplate.GetZaxis().GetNbins()
-				dLow2 = SMtemplate.GetZaxis().GetXmin()
-				dHigh2 = SMtemplate.GetZaxis().GetXmax()
+			if isinstance(SMtemplate, ROOT.TH3):
+				dimensions = 3
+			elif isinstance(SMtemplate, ROOT.TH2):
+				dimensions = 2
+			elif isinstance(SMtemplate, ROOT.TH1):
+				dimensions = 1
 			else:
-				dBins2 = 1
-				dLow2 = 0
-				dHigh2 = 1
+				assert False
 
+			dBins = []
+			dLow = []
+			dHigh = []
+			Disc = []
 
-			Disc0 = ROOT.RooRealVar(Disc0_name,Disc0_name,dLow0,dHigh0)
-			Disc0.setBins(dBins0)
-			Disc1 = ROOT.RooRealVar(Disc1_name,Disc1_name,dLow1,dHigh1)
-			Disc1.setBins(dBins1)
-			if Disc2_name is not None:
-				Disc2 = ROOT.RooRealVar(Disc2_name,Disc2_name,dLow2,dHigh2)
-				Disc2.setBins(dBins2)
-			else:
-				Disc2 = None
+			for i in range(dimensions):
+				dBins.append(GetAxis(SMtemplate, i).GetNbins())
+				dLow.append(GetAxis(SMtemplate, i).GetXmin())
+				dHigh.append(GetAxis(SMtemplate, i).GetXmax())
 
-			if Disc2 is not None:
-				DiscArgList = ROOT.RooArgList(Disc0,Disc1,Disc2)
-				DiscArgSet = ROOT.RooArgSet(Disc0,Disc1,Disc2)
-			else:
-				DiscArgList = ROOT.RooArgList(Disc0,Disc1)
-				DiscArgSet = ROOT.RooArgSet(Disc0,Disc1)
+				Disc.append(ROOT.RooRealVar(Disc_name[i], Disc_name[i], dLow[0], dHigh[0]))
 
-
+			DiscArgList = ROOT.RooArgList(*Disc)
+			DiscArgSet = ROOT.RooArgSet(*Disc)
 
 			TemplateName = "SM_{0}_{1}_{2}_dataHist".format(self.channel,category,self.on_off)
 			SMdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, SMtemplate)
@@ -232,3 +204,16 @@ class MakePDF:
 
 		getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
 		w.writeToFile(FileName)
+
+def GetAxis(h, axis):
+	"""
+	axis: 0=x, 1=y, 2=z
+	"""
+	if axis == 0 or axis in ['x', 'X']:
+		return h.GetXaxis()
+	elif axis == 1 or axis in ['y', 'Y']:
+		return h.GetYaxis()
+	elif axis == 2 or axis in ['z', 'Z']:
+		return h.GetZaxis()
+	else:
+		raise ValueError("Bad axis %s"%axis)
