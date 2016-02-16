@@ -161,7 +161,7 @@ class TemplateGetter_VBFdiscriminants(BaseTemplateGetter):
         elif self.templatetype == "PS":
             self.file = os.path.join(basedirVBF, "VBF0-_%s.root" % self.channel)
         elif self.templatetype == "fa30.5":
-            self.file = os.path.join(basedirVBF, "VBFfa30.5_%s.root" % self.channel)
+            self.file = os.path.join(basedirVBF, "VBFint_%s.root" % self.channel)
         elif self.templatetype == "qqZZ":
             self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
             assert config.turnoffbkg
