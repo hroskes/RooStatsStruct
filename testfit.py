@@ -23,6 +23,8 @@ def testfit(nNLLs = 1000,
 
     fs, ws, pdfs = {}, {}, {}
     fa3 = None
+    varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec", "sMELA_VBF", "D0-_VBF", "Dcp_VBF", "sMELA_VH", "D0-_VH", "Dcp_VH"]
+    vars = {}
 
     for channel in channels:
         fs[channel] = ROOT.TFile.Open("workspaces/{0}_fa3_{1}_{2}_workspace{3}.root".format(str(config.whichtemplates), channel, 0, "_nobkg" if config.turnoffbkg else ""))
@@ -31,22 +33,17 @@ def testfit(nNLLs = 1000,
         if fa3 is None:  #this is the first one
             fa3 = ws[channel].var("fa3_ggH")
             mu = ws[channel].var("mu")
-            sMELA_ggH = ws[channel].var("sMELA_ggH")
-            D0minus_ggH = ws[channel].var("D0-_dec")
-            DCP_ggH = ws[channel].var("Dcp_dec")
-            sMELA_VBF = ws[channel].var("sMELA_VBF")
-            D0minus_VBF = ws[channel].var("D0-_VBF")
-            DCP_VBF = ws[channel].var("Dcp_VBF")
-            sMELA_VH = ws[channel].var("sMELA_VH")
-            D0minus_VH = ws[channel].var("D0-_VH")
-            DCP_VH = ws[channel].var("Dcp_VH")
+            for varname in varnames:
+                vars[varname] = ws[channel].var(varname)
+                if not vars[varname]:
+                    del vars[varname]
 
     one = ROOT.RooConstVar("one", "one", 1.0)
     TemplateName = "SumPDF"
     pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.values()), ROOT.RooArgList(*([one]*len(pdfs))))
 
     if ntoys is None:
-        ntoys = pdf.getNorm(ROOT.RooArgSet(sMELA_ggH, D0minus_ggH, DCP_ggH, sMELA_VBF, D0minus_VBF, DCP_VBF, sMELA_VH, D0minus_VH, DCP_VH))
+        ntoys = pdf.getNorm(ROOT.RooArgSet(*vars.values()))
 
     print "Number of toys:", ntoys
 
@@ -64,7 +61,7 @@ def testfit(nNLLs = 1000,
         mu.setVal(testmu)
         fa3.setVal(testfa3)
 
-        data = pdf.generate(ROOT.RooArgSet(sMELA_ggH, D0minus_ggH, DCP_ggH), ntoys)
+        data = pdf.generate(ROOT.RooArgSet(*vars.values()), ntoys)
         nll = pdf.createNLL(data)
         result = ExtendedCounter()
         for bincenter in bincenters:

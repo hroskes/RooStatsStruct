@@ -28,6 +28,8 @@ for channel in channels:
         mu = ws[channel].var("mu")
         for varname in varnames:
             vars[varname] = ws[channel].var(varname)
+            if not vars[varname]:
+                del vars[varname]
 
 one = ROOT.RooConstVar("one", "one", 1.0)
 TemplateName = "SumPDF"

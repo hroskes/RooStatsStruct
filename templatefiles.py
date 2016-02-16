@@ -154,7 +154,7 @@ class TemplateGetter_VBFdiscriminants(BaseTemplateGetter):
     Dbkg from decay, but D0- and DCP from VBF alone with no decay info
     """
     def fileandname_VBF(self):
-        self.name = "template_VBF_alone"
+        self.name = "template_VBF_alone_2D"
 
         if self.templatetype == "SM":
             self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
