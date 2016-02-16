@@ -73,7 +73,8 @@ class MakePDF:
 				elif category == "VH":
 					Disc_name = ["sMELA_VH", "D0-_VH", "Dcp_VH"]
 				elif category == "VBF":
-					Disc_name = ["sMELA_VBF", "D0-_VBF", "Dcp_VBF"]
+					#Disc_name = ["sMELA_VBF", "D0-_VBF", "Dcp_VBF"]
+					Disc_name = ["D0-_VBF", "Dcp_VBF"]
 				else:
 					print "INVALID ANALYSIS CATEGORY!"
 					assert(0)
@@ -118,7 +119,7 @@ class MakePDF:
 				dLow.append(GetAxis(SMtemplate, i).GetXmin())
 				dHigh.append(GetAxis(SMtemplate, i).GetXmax())
 
-				Disc.append(ROOT.RooRealVar(Disc_name[i], Disc_name[i], dLow[0], dHigh[0]))
+				Disc.append(ROOT.RooRealVar(Disc_name[i], Disc_name[i], dLow[i], dHigh[i]))
 
 			DiscArgList = ROOT.RooArgList(*Disc)
 			DiscArgSet = ROOT.RooArgSet(*Disc)
