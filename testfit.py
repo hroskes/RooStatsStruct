@@ -110,7 +110,7 @@ def testfit(nNLLs = 100,
 if __name__ == '__main__':
     fa3s = sys.argv[1:]
     if not fa3s:
-        fa3s = [0, 1, .5, -.5, constants.convertfa3(.5, "ggH", "VBF"), constants.convertfa3(-.5, "ggH", "VBF")]
+        fa3s = [0, 1, .5, -.5, constants.convertfa3(.5, "VBF", "ggH"), constants.convertfa3(-.5, "VBF", "ggH")]
     [testfit(
              testfa3=float(testfa3),
              ntoys = None
