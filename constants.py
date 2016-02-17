@@ -1,3 +1,6 @@
+from enums import Category
+from math import copysign
+
 JHU_XS_a1_ggH = 0.10105985E-01 #+/- 0.36487440E-06
 JHU_XS_a2_ggH = 0.36551352E-02 #+/- 0.11450634E-06
 JHU_XS_a3_ggH = 0.15447785E-02 #+/- 0.59623472E-07
@@ -22,3 +25,17 @@ luminosity = 19.712
 r1 = 0.966
 r2 = 1.968
 r3 = 1.968
+
+g4_mix = {
+    Category("ggH"): g4_mix_ggH,
+    Category("VBF"): g4_mix_VBF,
+    Category("VH"): g4_mix_ZH,
+}
+
+def convertfa3(fa3in, categoryin, categoryout):
+    categoryin = Category(categoryin)
+    categoryout = Category(categoryout)
+    return copysign(
+                    (abs(fa3in) * g4_mix[categoryin]**2)/(abs(fa3in) * g4_mix[categoryin]**2 + (1-abs(fa3in)) * g4_mix[categoryout]**2),
+                    fa3in
+                   )

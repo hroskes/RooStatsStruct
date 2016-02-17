@@ -45,7 +45,7 @@ class MakePDF:
 			if category == "ggH": continue
 			ggH = Category("ggH")
 			fa3[category] = ROOT.RooFormulaVar("fa3_%s"%category, "fa3_%s"%category,
-								"@0 == 0 ? 0 : (@0>0 ? 1 : -1) * (abs(@0)==1 ? 1 : (1 / (1 + (1 - abs(@0))*@1**2 / (abs(@0)*@2**2))))",
+                                                                "(@0>0 ? 1 : -1) * abs(@0)*@2**2 / (abs(@0)*@2**2 + (1-abs(@0)) * @1**2)",
 								ROOT.RooArgList(fa3[ggH], g4_for_fa3half[category], g4_for_fa3half[ggH])
 							  )
 

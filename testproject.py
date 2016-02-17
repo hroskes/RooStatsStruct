@@ -1,4 +1,5 @@
 import config
+import constants
 from enums import *
 from extendedcounter import *
 import loadlib
@@ -10,10 +11,17 @@ import sys
 ##############################################
 #parameters
 testmu = 1
-testfa3s = {0: 1, 1: 2, 0.5: 4, -0.5: 418}
 varnames = ["Dcp_dec", "sMELA_ggH", "D0-_dec",
             "Dcp_VBF", "sMELA_VBF", "D0-_VBF"]
+testfa3s = {0: 1, 1: 2, .5: 418, -.5: 4}
+if config.whichtemplates == "VBF_VBFdiscriminants":
+    fa3interpretation = "VBF"
+else:
+    fa3interpretation = "ggH"
+assert fa3interpretation == "VBF"
 ##############################################
+
+testfa3s = {constants.convertfa3(fa3, fa3interpretation, "ggH"): color for fa3, color in testfa3s.iteritems()}
 
 fs, ws, pdfs = {}, {}, {}
 fa3 = None

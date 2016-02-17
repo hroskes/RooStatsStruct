@@ -15,6 +15,7 @@ for channel in channels:
     pdfs[channel] = ws[channel].pdf("Cat_{0}_{1}_SumPDF".format(channel, 0))
     if fa3 is None:  #this is the first one
         fa3 = ws[channel].var("fa3_ggH")
+        fa3_VBF = ws[channel].obj("fa3_VBF")
         mu = ws[channel].var("mu")
         sMELA_ggH = ws[channel].var("sMELA_ggH")
         D0minus_ggH = ws[channel].var("D0-_dec")
