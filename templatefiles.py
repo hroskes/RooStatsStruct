@@ -166,7 +166,27 @@ class TemplateGetter_VBFdiscriminants(BaseTemplateGetter):
             self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
             assert config.turnoffbkg
 
+class TemplateGetter_VBFdecay(BaseTemplateGetter):
+    """
+    D0-_VBFdecay, DCP_VBF
+    """
+    def fileandname_VBF(self):
+        self.name = "template_VBF_DCP_VBF_2D"
+
+        if self.templatetype == "SM":
+            self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
+        elif self.templatetype == "PS":
+            self.file = os.path.join(basedirVBF, "VBF0-_%s.root" % self.channel)
+        elif self.templatetype == "fa30.5":
+            self.file = os.path.join(basedirVBF, "VBFint_%s.root" % self.channel)
+        elif self.templatetype == "qqZZ":
+            self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
+            assert config.turnoffbkg
+
 class TemplateGetter_VBFonly_VBFdiscriminants(TemplateGetter_VBFonly, TemplateGetter_VBFdiscriminants):
+    pass
+
+class TemplateGetter_VBFonly_VBFdecay(TemplateGetter_VBFonly, TemplateGetter_VBFdecay):
     pass
 
 templategetters = {
@@ -174,4 +194,5 @@ templategetters = {
     WhichTemplates("ggH_4e"): TemplateGetter_ggHonly_4e,
     WhichTemplates("ggH_allflavors"): TemplateGetter_ggHonly,
     WhichTemplates("VBF_VBFdiscriminants"): TemplateGetter_VBFonly_VBFdiscriminants,
+    WhichTemplates("VBF_VBFdecay"): TemplateGetter_VBFonly_VBFdecay,
 }
