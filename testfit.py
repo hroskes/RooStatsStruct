@@ -11,7 +11,7 @@ import style
 import sys
 
 
-def testfit(nNLLs = 10,
+def testfit(nNLLs = 100,
             nbins = 1000,
             low = -1,
             high = 1,
@@ -110,7 +110,7 @@ def testfit(nNLLs = 10,
 if __name__ == '__main__':
     fa3s = sys.argv[1:]
     if not fa3s:
-        fa3s = [0, 1, .5, -.5]
+        fa3s = [0, 1, .5, -.5, constants.convertfa3(.5, "ggH", "VBF"), constants.convertfa3(-.5, "ggH", "VBF")]
     [testfit(
              testfa3=float(testfa3),
              ntoys = None
