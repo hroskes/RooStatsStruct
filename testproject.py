@@ -14,7 +14,7 @@ testmu = 1
 varnames = ["Dcp_dec", "sMELA_ggH", "D0-_dec",
             "Dcp_VBF", "sMELA_VBF", "D0-_VBF"]
 testfa3s = {0: 1, 1: 2, .5: 418, -.5: 4}
-if config.whichtemplates == "VBF_VBFdiscriminants":
+if "VBF" in str(config.whichtemplates):
     fa3interpretation = "VBF"
 else:
     fa3interpretation = "ggH"

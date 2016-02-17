@@ -24,7 +24,7 @@ def testfit(nNLLs = 100,
     fs, ws, pdfs = {}, {}, {}
     fa3 = None
     #varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec", "sMELA_VBF", "D0-_VBF", "Dcp_VBF", "sMELA_VH", "D0-_VH", "Dcp_VH"]
-    if config.whichtemplates == "VBF_VBFdiscriminants":
+    if "VBF" in str(config.whichtemplates):
         varnames = ["D0-_VBF", "Dcp_VBF"]
     else:
         varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
