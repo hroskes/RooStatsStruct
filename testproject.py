@@ -18,7 +18,6 @@ if "VBF" in str(config.whichtemplates):
     fa3interpretation = "VBF"
 else:
     fa3interpretation = "ggH"
-assert fa3interpretation == "VBF"
 ##############################################
 
 testfa3s = {constants.convertfa3(fa3, fa3interpretation, "ggH"): color for fa3, color in testfa3s.iteritems()}

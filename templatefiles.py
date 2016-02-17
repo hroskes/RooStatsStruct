@@ -149,45 +149,41 @@ class TemplateGetter_VBFonly(BaseTemplateGetter):
     def fileandname(self):
         return self.fileandname_VBF()
 
-class TemplateGetter_VBFdiscriminants(BaseTemplateGetter):
-    """
-    Dbkg from decay, but D0- and DCP from VBF alone with no decay info
-    """
-    def fileandname_VBF(self):
-        self.name = "template_VBF_alone_2D"
+def TemplateGetterFactory_VBF(classname, templatename):
+    class TemplateGetter_VBF(BaseTemplateGetter):
+        def fileandname_VBF(self):
+            self.name = templatename
 
-        if self.templatetype == "SM":
-            self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
-        elif self.templatetype == "PS":
-            self.file = os.path.join(basedirVBF, "VBF0-_%s.root" % self.channel)
-        elif self.templatetype == "fa30.5":
-            self.file = os.path.join(basedirVBF, "VBFint_%s.root" % self.channel)
-        elif self.templatetype == "qqZZ":
-            self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
-            assert config.turnoffbkg
+            if self.templatetype == "SM":
+                self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
+            elif self.templatetype == "PS":
+                self.file = os.path.join(basedirVBF, "VBF0-_%s.root" % self.channel)
+            elif self.templatetype == "fa30.5":
+                self.file = os.path.join(basedirVBF, "VBFint_%s.root" % self.channel)
+            elif self.templatetype == "qqZZ":
+                self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
+                assert config.turnoffbkg
 
-class TemplateGetter_VBFdecay(BaseTemplateGetter):
-    """
-    D0-_VBFdecay, DCP_VBF
-    """
-    def fileandname_VBF(self):
-        self.name = "template_VBF_DCP_VBF_2D"
+    TemplateGetter_VBF.__name__ = classname
+    return TemplateGetter_VBF
 
-        if self.templatetype == "SM":
-            self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
-        elif self.templatetype == "PS":
-            self.file = os.path.join(basedirVBF, "VBF0-_%s.root" % self.channel)
-        elif self.templatetype == "fa30.5":
-            self.file = os.path.join(basedirVBF, "VBFint_%s.root" % self.channel)
-        elif self.templatetype == "qqZZ":
-            self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
-            assert config.turnoffbkg
+#Dbkg from decay, but D0- and DCP from VBF alone with no decay info
+TemplateGetter_VBFdiscriminants = TemplateGetterFactory_VBF("TemplateGetter_VBFdiscriminants", "template_VBF_alone_2D")
+#D0-_VBFdecay, DCP_VBF
+TemplateGetter_VBFdecay = TemplateGetterFactory_VBF("TemplateGetter_VBFdecay", "template_VBF_DCP_VBF_2D")
+TemplateGetter_VBF_g4power = {
+                              i:
+                                 TemplateGetterFactory_VBF(
+                                                           "TemplateGetter_VBF_g4power%i"%i,
+                                                           "template_VBF_g4power%i_2D"%i
+                                                          ) for i in (1, 2, 3)
+                             }
 
-class TemplateGetter_VBFonly_VBFdiscriminants(TemplateGetter_VBFonly, TemplateGetter_VBFdiscriminants):
-    pass
-
-class TemplateGetter_VBFonly_VBFdecay(TemplateGetter_VBFonly, TemplateGetter_VBFdecay):
-    pass
+class TemplateGetter_VBFonly_VBFdiscriminants(TemplateGetter_VBFonly, TemplateGetter_VBFdiscriminants): pass
+class TemplateGetter_VBFonly_VBFdecay(TemplateGetter_VBFonly, TemplateGetter_VBFdecay): pass
+class TemplateGetter_VBFonly_g4power1(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power[1]): pass
+class TemplateGetter_VBFonly_g4power2(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power[2]): pass
+class TemplateGetter_VBFonly_g4power3(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power[3]): pass
 
 templategetters = {
     WhichTemplates("ggH_2e2mu"): TemplateGetter_ggHonly_2e2mu,
@@ -195,4 +191,7 @@ templategetters = {
     WhichTemplates("ggH_allflavors"): TemplateGetter_ggHonly,
     WhichTemplates("VBF_VBFdiscriminants"): TemplateGetter_VBFonly_VBFdiscriminants,
     WhichTemplates("VBF_VBFdecay"): TemplateGetter_VBFonly_VBFdecay,
+    WhichTemplates("VBF_g4power1"): TemplateGetter_VBFonly_g4power1,
+    WhichTemplates("VBF_g4power2"): TemplateGetter_VBFonly_g4power2,
+    WhichTemplates("VBF_g4power3"): TemplateGetter_VBFonly_g4power3,
 }

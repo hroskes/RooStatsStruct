@@ -9,6 +9,9 @@ if getpass.getuser() == "hroskes":
                 WhichTemplates("ggH_allflavors"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/allflavors/",
                 WhichTemplates("VBF_VBFdiscriminants"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_VBFdiscriminants",
                 WhichTemplates("VBF_VBFdecay"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_VBFdecay",
+                WhichTemplates("VBF_g4power1"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power1",
+                WhichTemplates("VBF_g4power2"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power2",
+                WhichTemplates("VBF_g4power3"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power3",
                }
 elif getpass.getuser() == "chmartin":
     plotdirs = {
@@ -25,7 +28,10 @@ else:
 #whichtemplates = WhichTemplates("ggH_4e")
 #whichtemplates = WhichTemplates("ggH_allflavors")
 #whichtemplates = WhichTemplates("VBF_VBFdiscriminants")
-whichtemplates = WhichTemplates("VBF_VBFdecay")
+#whichtemplates = WhichTemplates("VBF_VBFdecay")
+whichtemplates = WhichTemplates("VBF_g4power1")
+#whichtemplates = WhichTemplates("VBF_g4power2")
+#whichtemplates = WhichTemplates("VBF_g4power3")
 
 
 

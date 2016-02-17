@@ -85,6 +85,9 @@ class WhichTemplates(MyEnum):
                  EnumItem("ggH_4eonly", 2, "ggH_4e"),
                  EnumItem("VBF_VBFdiscriminants", 3),
                  EnumItem("VBF_VBFdecay", 4),
+                 EnumItem("VBF_g4power1", 4),
+                 EnumItem("VBF_g4power2", 4),
+                 EnumItem("VBF_g4power3", 4),
                 )
 
 onoffshell = OnOffShell.enumitems
