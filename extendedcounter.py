@@ -45,10 +45,15 @@ class ExtendedCounter(collections.Counter):
         for key in self:
             self[key] -= minvalue
 
-    def TGraph(self):
-        """make a TGraph with the data in self.  Keys and values have to be numbers."""
+    def TGraph(self, transformx=lambda x: x, transformy=lambda x: x):
+        """
+        make a TGraph with the data in self.  Keys and values have to be numbers.
+        transformx and transformy: functions applied to x and y before creating the
+                                   graph
+        """
         self.zero()
         items = self.items()
+        items = [(transformx(x), transformy(y)) for x, y in items]
         items.sort(key = lambda x: x[0])
         keysvalues = zip(*items)
         keys = keysvalues[0]
