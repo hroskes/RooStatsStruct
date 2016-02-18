@@ -3,6 +3,7 @@ import constants
 from enums import *
 from extendedcounter import *
 import functools
+from getvars import discriminants, mu, fa3, pdf
 import loadlib
 import os
 import random
@@ -21,45 +22,23 @@ def testfit(nNLLs = 100,
             ntoys = None,  #default if None: BKGrate+SMrate
            ):
 
-    fs, ws, pdfs = {}, {}, {}
-    fa3 = None
-    #varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec", "sMELA_VBF", "D0-_VBF", "Dcp_VBF", "sMELA_VH", "D0-_VH", "Dcp_VH"]
-    if "VBF" in str(config.whichtemplates):
-        varnames = ["D0-_VBF", "Dcp_VBF"]
-    else:
-        varnames = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
-    vars = {}
-
-    for channel in channels:
-        fs[channel] = ROOT.TFile.Open("workspaces/{0}_fa3_{1}_{2}_workspace{3}.root".format(str(config.whichtemplates), channel, 0, "_nobkg" if config.turnoffbkg else ""))
-        ws[channel] = fs[channel].Get("workspace")
-        pdfs[channel] = ws[channel].pdf("Cat_{0}_{1}_SumPDF".format(channel, 0))
-        if fa3 is None:  #this is the first one
-            fa3 = ws[channel].var("fa3_ggH")
-            mu = ws[channel].var("mu")
-            for varname in varnames:
-                vars[varname] = ws[channel].var(varname)
-                if not vars[varname]:
-                    del vars[varname]
-
-    one = ROOT.RooConstVar("one", "one", 1.0)
-    TemplateName = "SumPDF"
-    pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.values()), ROOT.RooArgList(*([one]*len(pdfs))))
+    vars = []
+    for var in discriminants:
+        if var.GetTitle():
+            vars.append(var)
 
     if ntoys is None:
-        ntoys = pdf.getNorm(ROOT.RooArgSet(*vars.values()))
+        ntoys = pdf.getNorm(ROOT.RooArgSet(*vars))
 
     print "Number of toys:", ntoys
 
     ROOT.RooRandom.randomGenerator().SetSeed(config.seed)
 
-    fa3.setRange(-1, 1)
-
     bincenters = [1.0*i/nbins * high + (1-(1.0*i)/nbins) * low for i in range(nbins+1)]
 
-    graphcategories = (Category("ggH"), Category("VBF"))
+    graphcategories = (Category("HZZ"), Category("VBF"))
     multigraphs = {category: ROOT.TMultiGraph() for category in graphcategories}
-    transformx = {category: functools.partial(constants.convertfa3, categoryin=Category("ggH"), categoryout=category) for category in graphcategories}
+    transformx = {category: functools.partial(constants.convertfa3, categoryin=Category("HZZ"), categoryout=category) for category in graphcategories}
 
     c1 = ROOT.TCanvas.MakeDefCanvas()
     averageNLL = ExtendedCounter()
@@ -67,7 +46,7 @@ def testfit(nNLLs = 100,
         mu.setVal(testmu)
         fa3.setVal(testfa3)
 
-        data = pdf.generate(ROOT.RooArgSet(*vars.values()), ntoys)
+        data = pdf.generate(ROOT.RooArgSet(*vars), ntoys)
         nll = pdf.createNLL(data)
         result = ExtendedCounter()
         for bincenter in bincenters:
@@ -110,7 +89,7 @@ def testfit(nNLLs = 100,
 if __name__ == '__main__':
     fa3s = sys.argv[1:]
     if not fa3s:
-        fa3s = [0, 1, .5, -.5, constants.convertfa3(.5, "VBF", "ggH"), constants.convertfa3(-.5, "VBF", "ggH")]
+        fa3s = [0, 1, .5, -.5, constants.convertfa3(.5, "VBF", "HZZ"), constants.convertfa3(-.5, "VBF", "HZZ")]
     [testfit(
              testfa3=float(testfa3),
              ntoys = None

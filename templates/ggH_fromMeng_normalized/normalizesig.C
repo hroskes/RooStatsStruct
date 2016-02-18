@@ -54,6 +54,11 @@ void normalizesig(int i)
         if (!justcopy)
             h->Scale(multiply);
         cout << "    " << h->Integral("width") << endl;
+
+        h->SetXTitle("D_{0-}^{decay}");
+        h->SetYTitle("D_{CP}^{decay}");
+        h->SetZTitle("D_{bkg}");
+
         h->Write();
     }
 }

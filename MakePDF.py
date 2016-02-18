@@ -40,11 +40,11 @@ class MakePDF:
 				for category, value in g4_values_for_fa3half.iteritems()
 		}
 		fa3 = {}
-		fa3[Category("ggH")] = ROOT.RooRealVar("fa3_ggH", "fa3_ggH", 0, -1, 1)
+		fa3[Category("ggH")] = ROOT.RooRealVar("fa3_HZZ", "(f_{a3})_{HZZ}", 0, -1, 1)
 		for category in categories:
 			if category == "ggH": continue
 			ggH = Category("ggH")
-			fa3[category] = ROOT.RooFormulaVar("fa3_%s"%category, "fa3_%s"%category,
+			fa3[category] = ROOT.RooFormulaVar("fa3_%s"%category, "(f_{a3})_{%s}"%category,
                                                                 "(@0>0 ? 1 : -1) * abs(@0)*@2**2 / (abs(@0)*@2**2 + (1-abs(@0)) * @1**2)",
 								ROOT.RooArgList(fa3[ggH], g4_for_fa3half[category], g4_for_fa3half[ggH])
 							  )
@@ -68,29 +68,10 @@ class MakePDF:
 
 			#if statements to make Discriminants
 			if self.on_off == "onshell":
-				if category == "ggH":
-					Disc_name = ["sMELA_ggH", "D0-_dec", "Dcp_dec"]
-				elif category == "VH":
-					Disc_name = ["sMELA_VH", "D0-_VH", "Dcp_VH"]
-				elif category == "VBF":
-					#Disc_name = ["sMELA_VBF", "D0-_VBF", "Dcp_VBF"]
-					Disc_name = ["D0-_VBF", "Dcp_VBF"]
-				else:
-					print "INVALID ANALYSIS CATEGORY!"
-					assert(0)
+				Disc_name = ["Disc%i_%s" % (i, category) for i in range(3)]
 			elif self.on_off == "offshell":
-				if category == "ggH":
-					Disc_name = ["zz4l_mass_ggH", "Dgg", "D0-_dec_offshell"]
-				elif category == "VH":
-					Disc_name = ["zz4l_mass_VH", "D0-_VH_offshell", "Dcp_VH_offshell"]
-				elif category == "VBF":
-					Disc_name = ["zz4l_mass_VBF", "D0-_VBF_offshell", "Dcp_VBF_offshell"]
-				else:
-					print "INVALID ANALYSIS CATEGORY!"
-					assert(0)
-
+				Disc_name = ["Disc%i_%s_offshell" % (i, category) for i in range(3)]
 			else:
-				print "INVALID ON-OFF SHELL CATEGORY!"
 				assert(0)
 
 
@@ -110,16 +91,19 @@ class MakePDF:
 				assert False
 
 			dBins = []
+                        dTitle = []
 			dLow = []
 			dHigh = []
 			Disc = []
 
 			for i in range(dimensions):
-				dBins.append(GetAxis(SMtemplate, i).GetNbins())
-				dLow.append(GetAxis(SMtemplate, i).GetXmin())
-				dHigh.append(GetAxis(SMtemplate, i).GetXmax())
+				axis = GetAxis(SMtemplate, i)
+				dTitle.append(axis.GetTitle())
+				dBins.append(axis.GetNbins())
+				dLow.append(axis.GetXmin())
+				dHigh.append(axis.GetXmax())
 
-				Disc.append(ROOT.RooRealVar(Disc_name[i], Disc_name[i], dLow[i], dHigh[i]))
+				Disc.append(ROOT.RooRealVar(Disc_name[i], dTitle[i], dLow[i], dHigh[i]))
 
 			DiscArgList = ROOT.RooArgList(*Disc)
 			DiscArgSet = ROOT.RooArgSet(*Disc)

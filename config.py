@@ -28,8 +28,8 @@ else:
 #whichtemplates = WhichTemplates("ggH_4e")
 #whichtemplates = WhichTemplates("ggH_allflavors")
 #whichtemplates = WhichTemplates("VBF_VBFdiscriminants")
-#whichtemplates = WhichTemplates("VBF_VBFdecay")
-whichtemplates = WhichTemplates("VBF_g4power1")
+whichtemplates = WhichTemplates("VBF_VBFdecay")
+#whichtemplates = WhichTemplates("VBF_g4power1")
 #whichtemplates = WhichTemplates("VBF_g4power2")
 #whichtemplates = WhichTemplates("VBF_g4power3")
 
@@ -38,7 +38,7 @@ whichtemplates = WhichTemplates("VBF_g4power1")
 turnoffbkg = True
 
 
-seed = 987653
+seed = 987654
 
 
 

@@ -1,9 +1,11 @@
 #use from the python shell, from getvars.py import *
 
 import config
+from enums import *
+from itertools import product
 import loadlib
 import rootlog
-from enums import *
+
 ROOT = rootlog.fakeroot()
 
 fs, ws, pdfs = {}, {}, {}
@@ -14,22 +16,21 @@ for channel in channels:
     ws[channel] = fs[channel].Get("workspace")
     pdfs[channel] = ws[channel].pdf("Cat_{0}_{1}_SumPDF".format(channel, 0))
     if fa3 is None:  #this is the first one
-        fa3 = ws[channel].var("fa3_ggH")
+        fa3 = ws[channel].var("fa3_HZZ")
         fa3_VBF = ws[channel].obj("fa3_VBF")
         mu = ws[channel].var("mu")
-        sMELA_ggH = ws[channel].var("sMELA_ggH")
-        D0minus_ggH = ws[channel].var("D0-_dec")
-        DCP_ggH = ws[channel].var("Dcp_dec")
-        sMELA_VBF = ws[channel].var("sMELA_VBF")
-        D0minus_VBF = ws[channel].var("D0-_VBF")
-        DCP_VBF = ws[channel].var("Dcp_VBF")
-        sMELA_VH = ws[channel].var("sMELA_VH")
-        D0minus_VH = ws[channel].var("D0-_VH")
-        DCP_VH = ws[channel].var("Dcp_VH")
+        Disc = {category: {} for category in categories}
+        for category, i in product(categories, range(3)):
+            discriminant = ws[channel].var("Disc%i_%s" % (i, category))
+            if discriminant:
+                Disc[category][i] = ws[channel].var("Disc%i_%s" % (i, category))
+            del discriminant
+del channel
 
 one = ROOT.RooConstVar("one", "one", 1.0)
 TemplateName = "SumPDF"
 pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.values()), ROOT.RooArgList(*([one]*len(pdfs))))
 
-discriminants = ROOT.RooArgSet(*[globals()["%s_%s" % (a,b)] for a in ("D0minus", "DCP", "sMELA") for b in ("ggH", "VBF", "VH")])
-pdfnorm = pdf.createIntegral(discriminants)
+discriminants = sum((Disc[category].values() for category in categories),[])
+discriminantsargset = ROOT.RooArgSet(*discriminants)
+pdfnorm = pdf.createIntegral(discriminantsargset)

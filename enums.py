@@ -58,7 +58,7 @@ class OnOffShell(MyEnum):
 
 class Category(MyEnum):
     enumitems = (
-                 EnumItem("ggH", 0),
+                 EnumItem("ggH", 0, "HZZ"),
                  EnumItem("VH", 1),
                  EnumItem("VBF", 2),
                 )

@@ -47,6 +47,11 @@ void normalizebkg(int i)
     TH1 *h = (TH1*)fold[files[i]]->Get(templates[i]);
     h->SetDirectory(fnew[files[i]]);
     normalize(h, rates[i]/luminosity);
+
+    h->SetXTitle("D_{0-}^{decay}");
+    h->SetYTitle("D_{CP}^{decay}");
+    h->SetZTitle("D_{bkg}");
+
     h->Write();
 }
 
