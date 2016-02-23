@@ -12,6 +12,12 @@ if getpass.getuser() == "hroskes":
                 WhichTemplates("VBF_g4power1"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power1",
                 WhichTemplates("VBF_g4power2"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power2",
                 WhichTemplates("VBF_g4power3"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power3",
+                WhichTemplates("VBF_1D_D0minus_VBF"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_D0minus_VBF",
+                WhichTemplates("VBF_1D_D0minus_VBFdecay"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_D0minus_VBFdecay",
+                WhichTemplates("VBF_1D_DCP_VBF"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_DCP",
+                WhichTemplates("VBF_1D_g4power1"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_g4power1",
+                WhichTemplates("VBF_1D_g4power2"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_g4power2",
+                WhichTemplates("VBF_1D_g4power3"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_g4power3",
                }
 elif getpass.getuser() == "chmartin":
     plotdirs = {
@@ -27,11 +33,17 @@ else:
 #whichtemplates = WhichTemplates("ggH_2e2mu")
 #whichtemplates = WhichTemplates("ggH_4e")
 #whichtemplates = WhichTemplates("ggH_allflavors")
-whichtemplates = WhichTemplates("VBF_VBFdiscriminants")
+#whichtemplates = WhichTemplates("VBF_VBFdiscriminants")
 #whichtemplates = WhichTemplates("VBF_VBFdecay")
 #whichtemplates = WhichTemplates("VBF_g4power1")
 #whichtemplates = WhichTemplates("VBF_g4power2")
 #whichtemplates = WhichTemplates("VBF_g4power3")
+#whichtemplates = WhichTemplates("VBF_1D_D0minus_VBF")
+whichtemplates = WhichTemplates("VBF_1D_D0minus_VBFdecay")
+#whichtemplates = WhichTemplates("VBF_1D_DCP")
+#whichtemplates = WhichTemplates("VBF_1D_g4power1")
+#whichtemplates = WhichTemplates("VBF_1D_g4power2")
+#whichtemplates = WhichTemplates("VBF_1D_g4power3")
 
 
 

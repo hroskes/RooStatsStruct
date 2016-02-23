@@ -29,7 +29,7 @@ class MyEnum(object):
                 self.item = item
                 break
         else:
-            raise ValueError("%s is not a member of enum " + type(self).__name__ + "!  Valid choices:\n"
+            raise ValueError("%s is not a member of enum "%value + type(self).__name__ + "!  Valid choices:\n"
                                + "\n".join(" aka ".join(str(name) for name in item.names) for item in self.enumitems))
 
     def __str__(self):
@@ -85,9 +85,15 @@ class WhichTemplates(MyEnum):
                  EnumItem("ggH_4eonly", 2, "ggH_4e"),
                  EnumItem("VBF_VBFdiscriminants", 3),
                  EnumItem("VBF_VBFdecay", 4),
-                 EnumItem("VBF_g4power1", 4),
-                 EnumItem("VBF_g4power2", 4),
-                 EnumItem("VBF_g4power3", 4),
+                 EnumItem("VBF_g4power1", 5),
+                 EnumItem("VBF_g4power2", 6),
+                 EnumItem("VBF_g4power3", 7),
+                 EnumItem("VBF_1D_D0minus_VBF", 8),
+                 EnumItem("VBF_1D_D0minus_VBFdecay", 9),
+                 EnumItem("VBF_1D_DCP_VBF", 10),
+                 EnumItem("VBF_1D_g4power1", 11),
+                 EnumItem("VBF_1D_g4power2", 12),
+                 EnumItem("VBF_1D_g4power3", 13),
                 )
 
 onoffshell = OnOffShell.enumitems
