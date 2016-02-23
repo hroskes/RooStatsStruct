@@ -186,7 +186,7 @@ TemplateGetter_VBF_1D_g4power = {
                                  i:
                                     TemplateGetterFactory_VBF(
                                                               "TemplateGetter_VBF_1D_g4power%i"%i,
-                                                              "D__g4power%i_VBFdecay"%i
+                                                              "D_g4power%i_VBFdecay"%i
                                                              ) for i in (1, 2, 3)
                                 }
 
