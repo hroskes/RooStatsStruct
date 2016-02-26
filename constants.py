@@ -21,7 +21,7 @@ JHU_XS_a1_WH = 30998.54 #+/- 2.50
 JHU_XS_a3_WH = 2028656 #+/- 191
 g4_mix_WH = (JHU_XS_a1_WH / JHU_XS_a3_WH) ** .5
 
-luminosity = 19.712
+luminosity = 300    #fb^-1
 r1 = 0.966
 r2 = 1.968
 r3 = 1.968
