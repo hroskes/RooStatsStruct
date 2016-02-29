@@ -387,10 +387,10 @@ Double_t RooRealFlooredSumPdf::analyticalIntegralWN(Int_t code, const RooArgSet*
 
   Double_t result = 0;
   if(normVal>0) result = value / normVal;
-  if (result<1.0e-10 && _doFloor){
+  if (result<_floor && _doFloor){
     coutW(Eval) << "RooRealFlooredSumPdf::integral(" << GetName()
       << " WARNING: Integral below threshold: " << result << endl;
-    result = 1.0e-10; // A somewhat larger number
+    result = _floor; // A somewhat larger number
   }
 	return result;
 }

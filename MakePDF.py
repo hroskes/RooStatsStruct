@@ -156,22 +156,22 @@ class MakePDF:
 			if category == "ggH":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3[category], r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
-				ggHpdf = ROOT.RooRealSumPdf(TotalPDF,"ggH_{0}_{1}".format(self.channel,self.on_off))
+				TotalPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
+				ggHpdf = ROOT.RooRealFlooredSumPdf(TotalPDF,"ggH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(ggHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There ggH"
 			elif category == "VH":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3[category], r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
-				VHpdf = ROOT.RooRealSumPdf(TotalPDF,"VH_{0}_{1}".format(self.channel,self.on_off))
+				TotalPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
+				VHpdf = ROOT.RooRealFlooredSumPdf(TotalPDF,"VH_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(VHpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There VH"
 			elif category == "VBF":
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3[category], r1, r2, r3, phi, mu, luminosity))
 				TemplateName = "Temp_{0}_{1}_{2}_SumPDF".format(self.channel,category,self.on_off)
-				TotalPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
-				VBFpdf = ROOT.RooRealSumPdf(TotalPDF,"VBF_{0}_{1}".format(self.channel,self.on_off))
+				TotalPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
+				VBFpdf = ROOT.RooRealFlooredSumPdf(TotalPDF,"VBF_{0}_{1}".format(self.channel,self.on_off))
 				getattr(w, 'import')(VBFpdf, ROOT.RooFit.RecycleConflictNodes())
 				print "Go There VBF"
 
@@ -192,7 +192,7 @@ class MakePDF:
 			catnorm[str(category)] = ROOT.RooConstVar(TemplateName, TemplateName, 1/othervolume)
 
 		TemplateName = "Cat_{0}_{1}_SumPDF".format(self.channel,self.on_off)
-		CatSumPDF = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf), ROOT.RooArgList(catnorm["ggH"], catnorm["VH"], catnorm["VBF"]))
+		CatSumPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(ggHpdf,VHpdf,VBFpdf), ROOT.RooArgList(catnorm["ggH"], catnorm["VH"], catnorm["VBF"]))
 
 
 		getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
