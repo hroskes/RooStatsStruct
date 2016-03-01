@@ -9,7 +9,8 @@ ROOT = rootlog.thefakeroot
 def template(*args):
     return templategetters[config.whichtemplates](*args).template()
 
-
+def pdftype(*args):
+    return templategetters[config.whichtemplates](*args).pdftype()
 
 
 basedirVBF = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/maketemplates/step6_templates"
@@ -47,10 +48,10 @@ class BaseTemplateGetter(object):
             if found > 1:
                 raise ValueError("Argument %s to TemplateFile is ambiguous" % arg)
 
+    def template(self):
         self.fileandname()
         self.setisempty()
 
-    def template(self):
         tfile = ROOT.TFile.Open(self.file)
         if not tfile:
             raise IOError(self.file + " does not exist!")
@@ -121,6 +122,9 @@ class TemplateGetter_ggHonly(TemplateGetter_ggH):
     def fileandname(self):
         return self.fileandname_ggH()
 
+    def pdftype(self):
+        return PDFType("decayonly_onshell")
+
 class TemplateGetter_ggHonly_oneflavor(TemplateGetter_ggHonly):
     def setisempty(self):
         super(TemplateGetter_ggHonly_oneflavor, self).setisempty()
@@ -148,6 +152,9 @@ class TemplateGetter_VBFonly(BaseTemplateGetter):
 
     def fileandname(self):
         return self.fileandname_VBF()
+
+    def pdftype(self):
+        return PDFType("production+decay_onshell")
 
 def TemplateGetterFactory_VBF(classname, templatename):
     class TemplateGetter_VBF(BaseTemplateGetter):

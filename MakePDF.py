@@ -22,12 +22,7 @@ from array import array
 
 class MakePDF(object):
 
-	def __init__(self, ggHPDFtype, VBFPDFtype, VHPDFtype):
-		self.PDFtypes = {
-			Category("ggH"): PDFType(ggHPDFtype),
-			Category("VH"):  PDFType(VHPDFtype),
-			Category("VBF"): PDFType(VBFPDFtype),
-		}
+	def __init__(self):
 		for on_off_code in ["on"]:
 			for flavor in "2e2mu", "4e", "4mu":
 				self.makeWorkspace(flavor, on_off_code)
@@ -100,13 +95,13 @@ class MakePDF(object):
 
 
 			#Build Signal PDF
-			if self.PDFtypes[category] == "decayonly_onshell":
+			if templatefiles.pdftype(category) == "decayonly_onshell":
 				SMtemplate = templatefiles.template(category, self.channel, self.on_off, "SM")
 				PStemplate = templatefiles.template(category, self.channel, self.on_off, "PS")
 				MIXtemplate = templatefiles.template(category, self.channel, self.on_off, "interference")
 				BKGtemplate = templatefiles.template(category, self.channel, self.on_off, "qqZZ")
 				maintemplate = SMtemplate   #this one is just to get info from (dimensions, discriminant titles, ...)
-			elif self.PDFtypes[category] == "production+decay_onshell":
+			elif templatefiles.pdftype(category) == "production+decay_onshell":
 				g4powertemplate = [None]*5
 				for i in range(5):
 					g4powertemplate[i] = templatefiles.template(category, self.channel, self.on_off, ["SM", "g4power1", "g4power2", "g4power3", "PS"][i])
@@ -143,7 +138,7 @@ class MakePDF(object):
 			DiscArgSet = ROOT.RooArgSet(*Disc)
 			volumes[category] = one.createIntegral(DiscArgSet).getVal()
 
-			if self.PDFtypes[category] == "decayonly_onshell":
+			if templatefiles.pdftype(category) == "decayonly_onshell":
 
 				TemplateName = "SM_{0}_{1}_{2}_dataHist".format(self.channel,category,self.on_off)
 				SMdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, SMtemplate)
@@ -189,7 +184,7 @@ class MakePDF(object):
 				#Below NOT COMBINE COMPATIBLE
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3[category], r1, r2, r3, phi, mu, luminosity))
 
-			elif self.PDFtypes[category] == "production+decay_onshell":
+			elif templatefiles.pdftype(category) == "production+decay_onshell":
 
 				datahists = [None]*5
 				histfuncs = [None]*5
@@ -256,4 +251,4 @@ def GetAxis(h, axis):
 		raise ValueError("Bad axis %s"%axis)
 
 if __name__ == "__main__":
-	MakePDF("production+decay_onshell", "production+decay_onshell", "production+decay_onshell")
+	MakePDF()
