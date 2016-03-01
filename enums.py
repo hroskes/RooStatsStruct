@@ -74,8 +74,11 @@ class TemplateType(MyEnum):
     enumitems = (
                  EnumItem("0+", 0, "SM", "scalar"),
                  EnumItem("0-", 1, "PS", "pseudoscalar"),
-                 EnumItem("interference", 2, "interf", "fa30.5"),
+                 EnumItem("interference", 2, "interf"),
                  EnumItem("qqZZ", 3, "background", "bkg"),
+                 EnumItem("g4power1", 4),
+                 EnumItem("g4power2", 5),
+                 EnumItem("g4power3", 6),
                 )
 
 class WhichTemplates(MyEnum):
@@ -96,7 +99,13 @@ class WhichTemplates(MyEnum):
                  EnumItem("VBF_1D_g4power3", 13),
                 )
 
-onoffshell = OnOffShell.enumitems
-categories = Category.enumitems
-channels = Channel.enumitems
-templatetypes = TemplateType.enumitems
+class PDFType(MyEnum):
+    enumitems = (
+                 EnumItem("decayonly_onshell", 0, "productiononly_onshell"),
+                 EnumItem("production+decay_onshell", 1),
+                )
+
+onoffshell = [OnOffShell(item) for item in OnOffShell.enumitems]
+categories = [Category(item) for item in Category.enumitems]
+channels = [Channel(item) for item in Channel.enumitems]
+templatetypes = [TemplateType(item) for item in TemplateType.enumitems]

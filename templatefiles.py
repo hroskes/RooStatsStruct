@@ -152,17 +152,29 @@ class TemplateGetter_VBFonly(BaseTemplateGetter):
 def TemplateGetterFactory_VBF(classname, templatename):
     class TemplateGetter_VBF(BaseTemplateGetter):
         def fileandname_VBF(self):
-            self.name = templatename
-
             if self.templatetype == "SM":
-                self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
+                g1power = 4
+                g4power = 0
+            elif self.templatetype == "g4power1":
+                g1power = 3
+                g4power = 1
+            elif self.templatetype == "g4power2":
+                g1power = 2
+                g4power = 2
+            elif self.templatetype == "g4power3":
+                g1power = 1
+                g4power = 3
             elif self.templatetype == "PS":
-                self.file = os.path.join(basedirVBF, "VBF0-_%s.root" % self.channel)
-            elif self.templatetype == "fa30.5":
-                self.file = os.path.join(basedirVBF, "VBFint_%s.root" % self.channel)
+                g1power = 0
+                g4power = 4
             elif self.templatetype == "qqZZ":
-                self.file = os.path.join(basedirVBF, "VBF0+_%s.root" % self.channel)
-                assert config.turnoffbkg
+                #temporary
+		g1power = 4
+		g4power = 0
+		assert config.turnoffbkg
+
+            self.file = os.path.join(basedirVBF, "VBFfinal_%s.root" % self.channel)
+            self.name = "%s_g1%ig4%i" % (templatename, g1power, g4power)
 
     TemplateGetter_VBF.__name__ = classname
     return TemplateGetter_VBF
