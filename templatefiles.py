@@ -179,6 +179,8 @@ def TemplateGetterFactory_VBF(classname, templatename):
 		g1power = 4
 		g4power = 0
 		assert config.turnoffbkg
+            else:
+                raise ValueError("Invalid TemplateType for VBF templategetter: %s" % self.templatetype)
 
             self.file = os.path.join(basedirVBF, "VBFfinal_%s.root" % self.channel)
             self.name = "%s_g1%ig4%i" % (templatename, g1power, g4power)

@@ -217,6 +217,10 @@ class MakePDF(object):
 			#getattr(w, 'import')(TotalPDFs[category], ROOT.RooFit.RecycleConflictNodes())
 			print "Go There", category
 
+                        #delete these variables, to make sure they are actually assigned next time
+                        #the actual objects are not deleted, they still have a reference in rootlog
+                        del SignalPDF, BKGhistFunc, SIGnorm, BKGnorm
+
 
 
 		#each category PDF is multiplied 1/(volume of other categories' phase space)
