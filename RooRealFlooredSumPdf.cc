@@ -33,16 +33,21 @@ _floor(floor)
 
 
 //_____________________________________________________________________________
+RooRealFlooredSumPdf::RooRealFlooredSumPdf(const char *name, const char *title, RooAbsReal &func1, RooAbsReal &func2, RooAbsReal &coef1) :
+RooRealSumPdf(name, title, func1, func2, coef1),
+_doFloor(true),
+_floor(floor)
+{}
+
+
+
+
+//_____________________________________________________________________________
 RooRealFlooredSumPdf::RooRealFlooredSumPdf(const RooRealFlooredSumPdf& other, const char* name) :
 RooRealSumPdf(other, name),
 _doFloor(other._doFloor),
 _floor(other._floor)
-{
-  // Copy constructor
-
-  _funcIter = _funcList.createIterator();
-  _coefIter = _coefList.createIterator();
-}
+{}
 
 
 

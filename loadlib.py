@@ -3,4 +3,5 @@ import ROOT
 #ROOT.gSystem.AddIncludePath("-I$CMSSW_BASE/src/");
 #ROOT.gSystem.AddIncludePath("-I$ROOFITSYS/include/");
 ROOT.gROOT.LoadMacro("RooRealFlooredSumPdf.cc+");
+ROOT.gROOT.LoadMacro("RooFlooredAddPdf.cc+");
 
