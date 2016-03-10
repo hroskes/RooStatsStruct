@@ -21,7 +21,7 @@ class BaseTemplateGetter(object):
     emptytemplates = {}
 
     def __init__(self, *args):
-        self.channel, self.on_off, self.category = None, None, None
+        self.channel, self.on_off, self.category, self.templatetype, self.info = None, None, None, None, False
         for arg in args:
             found = 0
             try:
@@ -45,8 +45,14 @@ class BaseTemplateGetter(object):
             except ValueError:
                 pass
 
+            if arg == "info":
+                self.templatetype = TemplateType(self.infotemplatetype)
+                found += 1
+
             if found > 1:
                 raise ValueError("Argument %s to TemplateFile is ambiguous" % arg)
+            if found == 0:
+                raise ValueError("Invalid argument %s to TemplateFile" % arg)
 
     def template(self):
         self.fileandname()
@@ -96,6 +102,7 @@ class BaseTemplateGetter(object):
         return template
 
 class TemplateGetter_ggH(BaseTemplateGetter):
+    infotemplatetype = "SM"
     def fileandname_ggH(self):
         if self.templatetype == "SM":
             self.file = os.path.join(basedirggH_fromMeng, "%s_templates.root" % self.channel)
@@ -158,6 +165,7 @@ class TemplateGetter_VBFonly(BaseTemplateGetter):
 
 def TemplateGetterFactory_VBF(classname, templatename):
     class TemplateGetter_VBF(BaseTemplateGetter):
+        infotemplatetype = "SM"
         def fileandname_VBF(self):
             if self.templatetype == "SM":
                 g1power = 4

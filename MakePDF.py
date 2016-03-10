@@ -74,7 +74,6 @@ class MakePDF(object):
 		TotalPDFs = {}
 
 		one = ROOT.RooConstVar("one", "one", 1.0)
-		volumes = {}
 
 		if not os.path.exists("workspaces"):
 			os.mkdir("workspaces")
@@ -83,9 +82,12 @@ class MakePDF(object):
 			FileName = FileName.replace(".root", "_nobkg.root")
 		w = ROOT.RooWorkspace("workspace","workspace")
 
+                #get discriminants
+                DiscArgList = {}
+                DiscArgSet = {}
+                BigDiscList = []
 		for category in categories:
 
-			#if statements to make Discriminants
 			if self.on_off == "onshell":
 				Disc_name = ["Disc%i_%s" % (i, category) for i in range(3)]
 			elif self.on_off == "offshell":
@@ -93,28 +95,13 @@ class MakePDF(object):
 			else:
 				assert(0)
 
+                        infotemplate = templatefiles.template(category, self.channel, self.on_off, "info")
 
-			#Build Signal PDF
-			if templatefiles.pdftype(category) == "decayonly_onshell":
-				SMtemplate = templatefiles.template(category, self.channel, self.on_off, "SM")
-				PStemplate = templatefiles.template(category, self.channel, self.on_off, "PS")
-				MIXtemplate = templatefiles.template(category, self.channel, self.on_off, "interference")
-				BKGtemplate = templatefiles.template(category, self.channel, self.on_off, "qqZZ")
-				maintemplate = SMtemplate   #this one is just to get info from (dimensions, discriminant titles, ...)
-			elif templatefiles.pdftype(category) == "production+decay_onshell":
-				g4powertemplate = [None]*5
-				for i in range(5):
-					g4powertemplate[i] = templatefiles.template(category, self.channel, self.on_off, ["SM", "g4power1", "g4power2", "g4power3", "PS"][i])
-				BKGtemplate = templatefiles.template(category, self.channel, self.on_off, "qqZZ")
-				maintemplate = g4powertemplate[0]
-			else:
-				assert False
-
-			if isinstance(maintemplate, ROOT.TH3):
+			if isinstance(infotemplate, ROOT.TH3):
 				dimensions = 3
-			elif isinstance(maintemplate, ROOT.TH2):
+			elif isinstance(infotemplate, ROOT.TH2):
 				dimensions = 2
-			elif isinstance(maintemplate, ROOT.TH1):
+			elif isinstance(infotemplate, ROOT.TH1):
 				dimensions = 1
 			else:
 				assert False
@@ -126,7 +113,7 @@ class MakePDF(object):
 			Disc = []
 
 			for i in range(dimensions):
-				axis = GetAxis(maintemplate, i)
+				axis = GetAxis(infotemplate, i)
 				dTitle.append(axis.GetTitle())
 				dBins.append(axis.GetNbins())
 				dLow.append(axis.GetXmin())
@@ -134,29 +121,38 @@ class MakePDF(object):
 
 				Disc.append(ROOT.RooRealVar(Disc_name[i], dTitle[i], dLow[i], dHigh[i]))
 
-			DiscArgList = ROOT.RooArgList(*Disc)
-			DiscArgSet = ROOT.RooArgSet(*Disc)
-			volumes[category] = one.createIntegral(DiscArgSet).getVal()
+			DiscArgList[category] = ROOT.RooArgList(*Disc)
+			DiscArgSet[category] = ROOT.RooArgSet(*Disc)
+                        BigDiscList += Disc
 
+                BigDiscArgSet = ROOT.RooArgSet(*BigDiscList)
+                BigDiscArgList = ROOT.RooArgList(*BigDiscList)
+
+		#Build Signal PDF
+		for category in categories:
 			if templatefiles.pdftype(category) == "decayonly_onshell":
+				SMtemplate = templatefiles.template(category, self.channel, self.on_off, "SM")
+				PStemplate = templatefiles.template(category, self.channel, self.on_off, "PS")
+				MIXtemplate = templatefiles.template(category, self.channel, self.on_off, "interference")
+				BKGtemplate = templatefiles.template(category, self.channel, self.on_off, "qqZZ")
 
 				TemplateName = "SM_{0}_{1}_{2}_dataHist".format(self.channel,category,self.on_off)
-				SMdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, SMtemplate)
+				SMdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], SMtemplate)
 				TemplateName = "PS_{0}_{1}_{2}_dataHist".format(self.channel,category,self.on_off)
-				PSdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, PStemplate)
+				PSdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], PStemplate)
 				TemplateName = "MIX_{0}_{1}_{2}_dataHist".format(self.channel,category,self.on_off)
-				MIXdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, MIXtemplate)
+				MIXdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], MIXtemplate)
 				TemplateName = "BKG_{0}_{1}_{2}_dataHist".format(self.channel,category,self.on_off)
-				BKGdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, BKGtemplate)
+				BKGdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], BKGtemplate)
 
 				TemplateName = "SM_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-				SMhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, SMdataHist)
+				SMhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, SMdataHist)
 				TemplateName = "PS_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-				PShistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, PSdataHist)
+				PShistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, PSdataHist)
 				TemplateName = "MIX_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-				MIXhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, MIXdataHist)
+				MIXhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, MIXdataHist)
 				TemplateName = "BKG_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-				BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, BKGdataHist)
+				BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, BKGdataHist)
 
 				r1 = ROOT.RooRealVar("r1","r1",constants.r1)
 				r1.setConstant(True)
@@ -185,6 +181,10 @@ class MakePDF(object):
 				SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@6*@5*((1-abs(@0))+abs(@0)*@1 +(@0>0 ? 1.: -1.)*sqrt(abs(@0)*(1-abs(@0)))*(cos(@4)*(@2-1-@1) +sin(@4)*(@3-1-@1)))",ROOT.RooArgList(fa3[category], r1, r2, r3, phi, mu, luminosity))
 
 			elif templatefiles.pdftype(category) == "production+decay_onshell":
+				g4powertemplate = [None]*5
+				for i in range(5):
+					g4powertemplate[i] = templatefiles.template(category, self.channel, self.on_off, ["SM", "g4power1", "g4power2", "g4power3", "PS"][i])
+				BKGtemplate = templatefiles.template(category, self.channel, self.on_off, "qqZZ")
 
 				datahists = [None]*5
 				histfuncs = [None]*5
@@ -192,16 +192,16 @@ class MakePDF(object):
 
 				for i in range(5):
 					TemplateName = "g4power{0}_{1}_{2}_{3}_dataHist".format(i, self.channel,category,self.on_off)
-					datahists[i] = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, g4powertemplate[i])
+					datahists[i] = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], g4powertemplate[i])
 					TemplateName = "g4power{0}_{1}_{2}_{3}_HistPDF".format(i, self.channel,category,self.on_off)
-					histfuncs[i] = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, datahists[i])
+					histfuncs[i] = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, datahists[i])
 					TemplateName = "g4power{0}_{1}_{2}_{3}_norm".format(i, self.channel,category,self.on_off)
 					norms[i] = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0**%i * @1**%i"%(i, 4-i), ROOT.RooArgList(g4, g1))
 
 				TemplateName = "BKG_{0}_{1}_{2}_dataHist".format(self.channel,category,self.on_off)
-				BKGdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList, BKGtemplate)
+				BKGdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], BKGtemplate)
 				TemplateName = "BKG_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-				BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet, BKGdataHist)
+				BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, BKGdataHist)
 				TemplateName = "qqZZ_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
 				BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0", ROOT.RooArgList(luminosity))
 
@@ -223,19 +223,8 @@ class MakePDF(object):
 
 
 
-		#each category PDF is multiplied 1/(volume of other categories' phase space)
-		#this way the integral over all 9 discriminants gives the number of events
-		catnorm = {}
-		for category in categories:
-			othervolume = 1
-			for othercategory in categories:
-				if othercategory == category: continue
-				othervolume *= volumes[othercategory]
-			TemplateName = "{0}_{1}_{2}_norm".format(self.channel, category, self.on_off)
-			catnorm[category] = ROOT.RooConstVar(TemplateName, TemplateName, 1/othervolume)
-
 		TemplateName = "Cat_{0}_{1}_SumPDF".format(self.channel,self.on_off)
-		CatSumPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(TotalPDFs[ggH], TotalPDFs[VH], TotalPDFs[VBF]), ROOT.RooArgList(catnorm[ggH], catnorm[VH], catnorm[VBF]))
+		CatSumPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(TotalPDFs[ggH], TotalPDFs[VH], TotalPDFs[VBF]), ROOT.RooArgList(one, one, one))
 
 
 		getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
