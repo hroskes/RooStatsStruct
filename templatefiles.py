@@ -184,9 +184,9 @@ def TemplateGetterFactory_VBF(classname, templatename):
                 g4power = 4
             elif self.templatetype == "qqZZ":
                 #temporary
-		g1power = 4
-		g4power = 0
-		assert config.turnoffbkg
+                g1power = 4
+                g4power = 0
+                assert config.turnoffbkg
             else:
                 raise ValueError("Invalid TemplateType for VBF templategetter: %s" % self.templatetype)
 
