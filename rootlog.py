@@ -23,7 +23,9 @@ files = {}
 
 class fakeroot(object):
     def __getattr__(self, name):
-        if name.startswith("Roo") and "RooArg" not in name and name != "RooFit":
+        if name in ["RooArgSet", "RooArgList"]:
+            return RooArgSetOrList(name)
+        elif name.startswith("Roo") and name != "RooFit":
             return RooSomething(name)
         elif name == "TFile":
             return TFile()
@@ -39,6 +41,27 @@ class fakeroot(object):
              print "Warning!  The following names were used to create Roo*'s multiple times:\n" + "\n".join(sorted(reusednames))
 
 thefakeroot = fakeroot()
+
+class RooArgSetOrList(object):
+    def __init__(self, classname):
+        self.classname = classname
+    def __call__(self, *args):
+        fancystuff = len(args) > 9
+        for arg in args[:-1]:
+            if not isinstance(arg, ROOT.RooAbsArg):
+                fancystuff = False
+                break
+        if fancystuff:
+            tlist = ROOT.TList()
+            for arg in args[:-1]:
+                tlist.Add(arg)
+            if isinstance(args[-1], ROOT.RooAbsArg):
+                tlist.Add(args[-1])
+                return getattr(ROOT, self.classname)(tlist)
+            else:
+                return getattr(ROOT, self.classname)(tlist, args[-1])
+        else:
+            return getattr(ROOT, self.classname)(*args)
 
 class RooSomething(object):
     def __init__(self, classname):

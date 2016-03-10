@@ -4,7 +4,10 @@ import config
 from enums import *
 from itertools import product
 import loadlib
+import os
+import ROOT as therealROOT
 import rootlog
+import sys
 
 ROOT = rootlog.fakeroot()
 
@@ -34,3 +37,27 @@ pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.value
 discriminants = sum((Disc[category].values() for category in categories),[])
 discriminantsargset = ROOT.RooArgSet(*discriminants)
 pdfnorm = pdf.createIntegral(discriminantsargset)
+
+if os.isatty(sys.stdout.fileno()):
+    #to make it easier to get things from the workspace
+    #  but only if in interactive mode, so as not to complicate things
+    #  in scripts
+    w = ws[Channel("2e2mu")]
+    def __getattr__(self, attr):
+        result = self.obj(attr)
+        if result:
+            return result
+        raise AttributeError("No object named '%s' in the workspace!" % attr)
+    type(w).__getattr__ = __getattr__
+    del __getattr__
+    #can now get things from w using w.name
+
+    #integral
+    def int(self, whichdiscriminants = "ggH VH VBF"):
+        discs = []
+        for category in whichdiscriminants.split():
+            assert category in ("ggH", "VH", "VBF")
+            discs += [disc for disc in discriminants if category in disc.GetName()]
+        return self.createIntegral(ROOT.RooArgSet(*discs)).getVal()
+    therealROOT.RooAbsReal.int = int
+    del int
