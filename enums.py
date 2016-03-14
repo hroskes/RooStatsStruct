@@ -105,6 +105,16 @@ class PDFType(MyEnum):
                  EnumItem("production+decay_onshell", 1),
                 )
 
+class Hypothesis(MyEnum):
+    enumitems = (
+                 EnumItem("0+", 0, "SM", "scalar"),
+                 EnumItem("0-", 1, "PS", "pseudoscalar"),
+                 EnumItem("fa30.5", 2, "interf", "interf", "mix"),
+                 EnumItem("qqZZ", 3, "background", "bkg"),
+                 EnumItem("fa30.25", 4),
+                 EnumItem("fa3-0.5", 5),
+                )
+
 onoffshell = [OnOffShell(item) for item in OnOffShell.enumitems]
 categories = [Category(item) for item in Category.enumitems]
 channels = [Channel(item) for item in Channel.enumitems]

@@ -1,6 +1,9 @@
 from enums import Category
 from math import copysign
 
+SMXS_VBF = 3748   #fb
+SMBR = 2.76E-04
+
 JHU_XS_a1_ggH = 0.10105985E-01 #+/- 0.36487440E-06
 JHU_XS_a2_ggH = 0.36551352E-02 #+/- 0.11450634E-06
 JHU_XS_a3_ggH = 0.15447785E-02 #+/- 0.59623472E-07

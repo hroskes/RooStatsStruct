@@ -13,7 +13,7 @@ def pdftype(*args):
     return templategetters[config.whichtemplates](*args).pdftype()
 
 
-basedirVBF = "/afs/cern.ch/work/h/hroskes/Summer2015_VBF/maketemplates/step6_templates"
+basedirVBF = "templates/VBF"
 basedirggH_fromMeng = "templates/ggH_fromMeng_normalized/"
 
 class BaseTemplateGetter(object):
