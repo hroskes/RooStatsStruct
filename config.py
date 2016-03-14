@@ -4,20 +4,13 @@ import os
 
 if getpass.getuser() == "hroskes":
     plotdirs = {
-                WhichTemplates("ggH_2e2mu"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/2e2mu",
-                WhichTemplates("ggH_4e"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/4e",
-                WhichTemplates("ggH_allflavors"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/allflavors/",
-                WhichTemplates("VBF_VBFdiscriminants"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_nodecay",
-                WhichTemplates("VBF_VBFdecay"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_DCPVBF",
-                WhichTemplates("VBF_g4power1"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power1",
-                WhichTemplates("VBF_g4power2"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power2",
-                WhichTemplates("VBF_g4power3"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_g4power3",
-                WhichTemplates("VBF_1D_D0minus_VBF"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_D0minus_VBF",
-                WhichTemplates("VBF_1D_D0minus_VBFdecay"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_D0minus_VBFdecay",
-                WhichTemplates("VBF_1D_DCP_VBF"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_DCP",
-                WhichTemplates("VBF_1D_g4power1"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_g4power1",
-                WhichTemplates("VBF_1D_g4power2"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_g4power2",
-                WhichTemplates("VBF_1D_g4power3"): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/VBF_1D_g4power3",
+                WhichTemplates(whichtemplates): "/afs/cern.ch/user/h/hroskes/www/VBF/Summer2015/scans/SEED/%s"%whichtemplates
+                    for whichtemplates in WhichTemplates.enumitems
+               }
+elif getpass.getuser() == "jroskes1@jhu.edu":
+    plotdirs = {
+                WhichTemplates(whichtemplates): "/scratch/users/jroskes1@jhu.edu/RooStatsStruct/plots/SEED/%s"%whichtemplates
+                    for whichtemplates in WhichTemplates.enumitems
                }
 elif getpass.getuser() == "chmartin":
     plotdirs = {
@@ -33,8 +26,8 @@ else:
 #whichtemplates = WhichTemplates("ggH_2e2mu")
 #whichtemplates = WhichTemplates("ggH_4e")
 #whichtemplates = WhichTemplates("ggH_allflavors")
-#whichtemplates = WhichTemplates("VBF_VBFdiscriminants")
-#whichtemplates = WhichTemplates("VBF_VBFdecay")
+#whichtemplates = WhichTemplates("VBF_nodecay")
+#whichtemplates = WhichTemplates("VBF_DCPVBF")
 #whichtemplates = WhichTemplates("VBF_g4power1")
 #whichtemplates = WhichTemplates("VBF_g4power2")
 #whichtemplates = WhichTemplates("VBF_g4power3")
