@@ -59,8 +59,8 @@ class Sample(object):
                  #return (g4**2 * constants.JHU_XS_a3_VBF) / (g1**2 * constants.JHU_XS_a1_VBF + g4**2 * constants.JHU_XS_a3_VBF)
             elif self.hypothesis == "fa3-0.5":
                 return -.5
-            elif self.hypothesis == "fa30.25":
-                return .25
+            elif self.hypothesis == "fa3-0.9":
+                return -0.9
         assert False
 
     def calcg1g4(self):

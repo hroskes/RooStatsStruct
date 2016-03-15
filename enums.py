@@ -111,7 +111,7 @@ class Hypothesis(MyEnum):
                  EnumItem("0-", 1, "PS", "pseudoscalar"),
                  EnumItem("fa30.5", 2, "interf", "interf", "mix"),
                  EnumItem("qqZZ", 3, "background", "bkg"),
-                 EnumItem("fa30.25", 4),
+                 EnumItem("fa3-0.9", 4),
                  EnumItem("fa3-0.5", 5),
                 )
 

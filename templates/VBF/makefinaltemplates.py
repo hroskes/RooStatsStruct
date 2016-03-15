@@ -10,9 +10,9 @@ def maketemplates():
     PS = Sample("VBF", "0-")
     half = Sample("VBF", "fa30.5")
     minushalf = Sample("VBF", "fa3-0.5")
-    quarter = Sample("VBF", "fa30.25")
+    minuspointnine = Sample("VBF", "fa3-0.9")
 
-    samples = (SM, PS, half, minushalf, quarter)
+    samples = (SM, PS, half, minushalf, minuspointnine)
     for sample in samples: print sample, sample.g1(), sample.g4(), sample.fa3VBF(), sample.JHUcrosssection()
 
     multipliers = {}
