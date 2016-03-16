@@ -13,12 +13,12 @@ def gethorig(fa3):
         a = "0+"
     elif fa3 == 1:
         a = "0-"
-    elif fa3 in [.5, -.5, .25]:
+    else:
         a = "fa3%s"%fa3
 
     with TFile("VBF%s_2e2mu.root"%a) as f:
         h = f.Get("D_g4power1_VBFdecay")
-        h.SetDirectory(0)
+        if h: h.SetDirectory(0)
 
     return h
 
@@ -44,9 +44,9 @@ def compare(fa3):
 
     if fa3 == 0: g1, g4 = 1, 0
     if fa3 == 1: g1, g4 = 0, (constants.JHU_XS_a1_VBF * constants.JHU_XS_a1_ggH / (constants.JHU_XS_a3_VBF * constants.JHU_XS_a3_ggH))**.25
-    if fa3 == .5: g1, g4 = 1/2**.25, (constants.JHU_XS_a1_VBF * constants.JHU_XS_a1_ggH / (constants.JHU_XS_a3_VBF * constants.JHU_XS_a3_ggH))**.25 / 2**.25
-    if fa3 == -.5: g1, g4 = 1, -(constants.JHU_XS_a1_VBF * constants.JHU_XS_a1_ggH / (constants.JHU_XS_a3_VBF * constants.JHU_XS_a3_ggH))**.25
-    if fa3 == .25: g1, g4 = 1, (constants.JHU_XS_a1_VBF * constants.JHU_XS_a1_ggH / (3 * constants.JHU_XS_a3_VBF * constants.JHU_XS_a3_ggH))**.25
+    if fa3 == .5: g1, g4 = 0.83806711453, 0.249726416396
+    if fa3 == -.5: g1, g4 = 0.83806711453, -0.249726416396
+    if fa3 == .25: g1, g4 = 0.92955527457, 0.159919078204
 
     h = geth(g1, g4)
     horig = gethorig(fa3)
@@ -56,11 +56,11 @@ def compare(fa3):
 
     hs = ROOT.THStack("hs", horig.GetTitle())
     hs.Add(h)
-    hs.Add(horig)
+    if horig: hs.Add(horig)
     c1 = ROOT.TCanvas()
     hs.Draw("histnostack")
     c1.SaveAs("~/www/TEST/test_%f.png"%fa3)
 
 if __name__ == "__main__":
-    for a in 0, 1, .5, -.5, .25:
+    for a in 0, 1, .5, -.5, .25, -.9:
         compare(a)
