@@ -42,19 +42,21 @@ def compare(fa3):
 
     print fa3
 
-    if fa3 == 0: g1, g4 = 1, 0
-    if fa3 == 1: g1, g4 = 0, (constants.JHU_XS_a1_VBF * constants.JHU_XS_a1_ggH / (constants.JHU_XS_a3_VBF * constants.JHU_XS_a3_ggH))**.25
-    if fa3 == .5: g1, g4 = 0.83806711453, 0.249726416396
-    if fa3 == -.5: g1, g4 = 0.83806711453, -0.249726416396
-    if fa3 == .25: g1, g4 = 0.92955527457, 0.159919078204
+    if abs(fa3) == 0: g1, g4 = 1, 0
+    if abs(fa3) == 1: g1, g4 = 0, (constants.JHU_XS_a1_VBF * constants.JHU_XS_a1_ggH / (constants.JHU_XS_a3_VBF * constants.JHU_XS_a3_ggH))**.25
+    if abs(fa3) == .5: g1, g4 = 0.83806711453, 0.249726416396
+    if abs(fa3) == .25: g1, g4 = 0.92955527457, 0.159919078204
+    if abs(fa3) == .9: g1, g4 = 0.54637026335, 0.488420624767
+
+    if fa3 < 0: g4 *= -1
 
     h = geth(g1, g4)
     horig = gethorig(fa3)
 
     h.SetLineColor(1)
-    horig.SetLineColor(2)
+    if horig: horig.SetLineColor(2)
 
-    hs = ROOT.THStack("hs", horig.GetTitle())
+    hs = ROOT.THStack("", "")
     hs.Add(h)
     if horig: hs.Add(horig)
     c1 = ROOT.TCanvas()
