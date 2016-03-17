@@ -61,6 +61,8 @@ class Sample(object):
                 return -.5
             elif self.hypothesis == "fa30.25":
                 return .25
+            elif self.hypothesis == "fa3-0.9":
+                return -0.9
         assert False
 
     def calcg1g4(self):

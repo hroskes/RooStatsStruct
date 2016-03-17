@@ -113,6 +113,7 @@ class Hypothesis(MyEnum):
                  EnumItem("qqZZ", 3, "background", "bkg"),
                  EnumItem("fa30.25", 4),
                  EnumItem("fa3-0.5", 5),
+                 EnumItem("fa3-0.9", 6),
                 )
 
 onoffshell = [OnOffShell(item) for item in OnOffShell.enumitems]

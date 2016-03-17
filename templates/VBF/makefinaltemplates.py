@@ -11,7 +11,9 @@ def maketemplates():
     half = Sample("VBF", "fa30.5")
     minushalf = Sample("VBF", "fa3-0.5")
     quarter = Sample("VBF", "fa30.25")
+    minuspointnine = Sample("VBF", "fa3-0.9")
 
+    allsamples = (SM, PS, half, minushalf, quarter, minuspointnine)
     samples = (SM, PS, half, minushalf, quarter)
     for sample in samples: print sample, sample.g1(), sample.g4(), sample.fa3VBF(), sample.JHUcrosssection()
 
@@ -38,7 +40,7 @@ def maketemplates():
 
     for channel in channels:
         f = {}
-        for sample in samples:
+        for sample in allsamples:
             f[sample] = ROOT.TFile.Open(sample.templatesfile(channel, None))
 
         newf = ROOT.TFile.Open(SM.templatesfile(channel, None).replace("0+", "final"), "recreate")
