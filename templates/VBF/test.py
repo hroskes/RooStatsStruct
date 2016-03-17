@@ -3,6 +3,8 @@ from contextlib import closing
 import ROOT
 import style
 
+histname = "D_g4power1_VBFdecay"
+
 def TFile(*args):
     f = ROOT.TFile(*args)
     f.close = f.Close
@@ -17,7 +19,7 @@ def gethorig(fa3):
         a = "fa3%s"%fa3
 
     with TFile("VBF%s_2e2mu.root"%a) as f:
-        h = f.Get("D_g4power1_VBFdecay")
+        h = f.Get(histname)
         if h: h.SetDirectory(0)
 
     return h
@@ -26,7 +28,7 @@ def gethorig(fa3):
 def geth(g1, g4):
 
     with TFile("VBFfinal_2e2mu.root") as f:
-        T = [f.Get("D_g4power1_VBFdecay_g1%ig4%i" % (4-i, i)) for i in range(5)]
+        T = [f.Get("%s_g1%ig4%i" % (histname, 4-i, i)) for i in range(5)]
 
         h = T[0].Clone()
         h.Reset()
