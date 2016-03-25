@@ -87,7 +87,7 @@ def testfit(nNLLs = 100,
         [c1.SaveAs("%s/scan_fa3_%s=%s%s.%s" % (config.plotdir, category, transformx[category](testfa3), "_zoomed", format)) for format in ["png", "eps", "root", "pdf"]]
 
 if __name__ == '__main__':
-    fa3s = sys.argv[1:]
+    fa3s = sys.argv[2:]
     if not fa3s:
         fa3s = [0, 1, .5, -.5, constants.convertfa3(.5, "VBF", "HZZ"), constants.convertfa3(-.5, "VBF", "HZZ")]
     [testfit(

@@ -1,6 +1,7 @@
 from enums import *
 import getpass
 import os
+import sys
 
 if getpass.getuser() == "hroskes":
     plotdirs = {
@@ -31,13 +32,17 @@ else:
 #whichtemplates = WhichTemplates("VBF_g4power1")
 #whichtemplates = WhichTemplates("VBF_g4power2")
 #whichtemplates = WhichTemplates("VBF_g4power3")
-whichtemplates = WhichTemplates("VBF_1D_D0minus_VBF")
+#whichtemplates = WhichTemplates("VBF_1D_D0minus_VBF")
 #whichtemplates = WhichTemplates("VBF_1D_D0minus_VBFdecay")
 #whichtemplates = WhichTemplates("VBF_1D_DCP_VBF")
-#whichtemplates = WhichTemplates("VBF_1D_g4power1")
+whichtemplates = WhichTemplates("VBF_1D_g4power1")
 #whichtemplates = WhichTemplates("VBF_1D_g4power2")
 #whichtemplates = WhichTemplates("VBF_1D_g4power3")
 
+try:
+    if sys.argv[1]: whichtemplates = WhichTemplates(sys.argv[1])
+except IndexError:
+    pass
 
 
 turnoffbkg = True
