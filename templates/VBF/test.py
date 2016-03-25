@@ -58,12 +58,16 @@ def compare(fa3):
     h.SetLineColor(1)
     if horig: horig.SetLineColor(2)
 
+    print " ", h.Integral("width"), horig.Integral("width")
+    print " ", h.GetMinimum(), horig.GetMinimum()
+
     hs = ROOT.THStack("", "")
     hs.Add(h)
     if horig: hs.Add(horig)
     c1 = ROOT.TCanvas()
     hs.Draw("histnostack")
-    c1.SaveAs("~/www/TEST/test_%f.png"%fa3)
+    for ext in "png", "eps", "root", "pdf":
+        c1.SaveAs("~/www/TEST/test_%f.%s"%(fa3, ext))
 
 if __name__ == "__main__":
     for a in 0, 1, .5, -.5, .25, -.9:
