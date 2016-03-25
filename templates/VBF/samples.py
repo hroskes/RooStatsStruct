@@ -23,6 +23,11 @@ class Sample(object):
     def __str__(self):
         return "%s %s" % (self.productionmode, self.hypothesis)
 
+    def __eq__(self, other):
+        return self.hypothesis == other.hypothesis and self.productionmode == other.productionmode
+    def __ne__(self, other):
+        return not self == other
+
     def templatesfile(self, flavor, index):
         result = "%s%s_%s.root" % (self.productionmode, self.hypothesis, flavor)
 
