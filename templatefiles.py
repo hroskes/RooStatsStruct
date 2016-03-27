@@ -1,4 +1,5 @@
 import config
+import constants
 from enums import *
 import os
 import rootlog
@@ -12,6 +13,8 @@ def template(*args):
 def pdftype(*args):
     return templategetters[config.whichtemplates](*args).pdftype()
 
+def createg1g4(fa3, g4_for_fa3half, *args):
+    return templategetters[config.whichtemplates](*args).createg1g4(fa3, g4_for_fa3half)
 
 basedirVBF = "templates/VBF"
 basedirggH_fromMeng = "templates/ggH_fromMeng_normalized/"
@@ -132,6 +135,16 @@ class TemplateGetter_ggHonly(TemplateGetter_ggH):
     def pdftype(self):
         return PDFType("decayonly_onshell")
 
+    def createg1g4(self, fa3, g4_for_fa3half):
+        ggH = Category("HZZ")
+        #these are g1 and g4 normalized so that g1^2*xsec_SM + g1^2*xsec_PS = xsec_SM
+        #   for decay
+        g1 = ROOT.RooFormulaVar("g1", "g_{1}", "sqrt(1-abs(@0))", ROOT.RooArgList(fa3[ggH]))
+        g4 = ROOT.RooFormulaVar("g4", "g_{4}", "(@0>0 ? 1 : -1) * sqrt(abs(@0))*@1",
+                                ROOT.RooArgList(fa3[ggH], g4_for_fa3half[ggH])
+                               )
+        return g1, g4
+
 class TemplateGetter_ggHonly_oneflavor(TemplateGetter_ggHonly):
     def setisempty(self):
         super(TemplateGetter_ggHonly_oneflavor, self).setisempty()
@@ -162,6 +175,21 @@ class TemplateGetter_VBFonly(BaseTemplateGetter):
 
     def pdftype(self):
         return PDFType("production+decay_onshell")
+
+    def createg1g4(self, fa3, g4_for_fa3half):
+        ggH = Category("HZZ")
+        VBF = Category("VBF")
+        #these are g1 and g4 normalized so that (g1^2*xsec_SM + g1^2*xsec_PS) * (g1^2*xsec_SM + g1^2*xsec_PS) = xsec_SM
+        #   for VBF*decay
+        #multiply scales g1 and g4 together, so that the cross section remains correct
+        multiply = ROOT.RooFormulaVar("scaleg1g4", "1/(1-abs(@0) + (abs(@0) * (@1/@2)**2)) ** .25",
+                                      ROOT.RooArgList(fa3[ggH], g4_for_fa3half[ggH], g4_for_fa3half[VBF])
+                                     )
+        g1 = ROOT.RooFormulaVar("g1", "g_{1}", "@1*sqrt(1-abs(@0))", ROOT.RooArgList(fa3[ggH], multiply))
+        g4 = ROOT.RooFormulaVar("g4", "g_{4}", "@2*(@0>0 ? 1 : -1) * sqrt(abs(@0))*@1",
+                                ROOT.RooArgList(fa3[ggH], g4_for_fa3half[ggH], multiply)
+                               )
+        return g1, g4
 
 def TemplateGetterFactory_VBF(classname, templatename):
     class TemplateGetter_VBF(BaseTemplateGetter):

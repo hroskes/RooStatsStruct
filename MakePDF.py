@@ -44,10 +44,12 @@ class MakePDF(object):
             VBF: constants.g4_mix_VBF,
             VH:  constants.g4_mix_ZH, #WH is a bit different, not sure what to do about this
         }
+
         g4_for_fa3half = {
-            category: ROOT.RooConstVar("g4_for_fa3_half_%s"%category, "g4_for_fa3_half_%s"%category, value)
+            category: ROOT.RooConstVar("g4_for_fa3half_%s"%category, "g4_for_fa3half_%s"%category, value)
                 for category, value in g4_values_for_fa3half.iteritems()
         }
+
         fa3 = {}
         fa3[ggH] = ROOT.RooRealVar("fa3_HZZ", "(f_{a3})_{HZZ}", 0, -1, 1)
         for category in categories:
@@ -58,12 +60,7 @@ class MakePDF(object):
                                               )
 
         #these are g1 and g4 normalized so that g1^2*xsec_SM + g1^2*xsec_PS = xsec_SM
-        #   FOR DECAY
-        g1 = ROOT.RooFormulaVar("g1", "g_{1}", "sqrt(1-abs(@0))", ROOT.RooArgList(fa3[ggH]))
-        g4 = ROOT.RooFormulaVar("g4", "g_{4}", "(@0>0 ? 1 : -1) * sqrt(abs(@0))*@1", 
-                                ROOT.RooArgList(fa3[ggH], g4_for_fa3half[ggH])
-                               )
-
+        g1, g4 = templatefiles.createg1g4(fa3, g4_for_fa3half)
 
         #These variables are fixed as const. THIS IS ONLY TEMPORARY
         phi = ROOT.RooRealVar("phia3","phia3",0.,-math.pi,math.pi)
