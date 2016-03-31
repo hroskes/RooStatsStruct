@@ -181,15 +181,25 @@ Double_t RooRealFlooredSumPdf::evaluate() const
 
 	// N funcs, N-1 coefficients 
 	Double_t lastCoef(1);
+        cout << endl;
+        for (int i = 0; i < ntabs; i++) cout << "    ";
+        ntabs++;
+        cout << GetName() << ": ";
 	while ((coef = (RooAbsReal*)coefIter.next())) {
 		func = (RooAbsReal*)funcIter.next();
 		Double_t coefVal = coef->getVal();
+                cout << coefVal << " ";
 		if (coefVal) {
 			cxcoutD(Eval) << "RooRealFlooredSumPdf::eval(" << GetName() << ") coefVal = " << coefVal << " funcVal = " << func->IsA()->GetName() << "::" << func->GetName() << " = " << func->getVal() << endl;
 			value += func->getVal()*coefVal;
 			lastCoef -= coef->getVal();
+                        cout << func->getVal() << " ";
 		}
+                else cout << "!coefVal ";
+                cout << "    ";
 	}
+        ntabs--;
+        cout << "       final value: " << value;
 
 	if (!_haveLastCoef) {
 		// Add last func with correct coefficient
@@ -208,6 +218,8 @@ Double_t RooRealFlooredSumPdf::evaluate() const
 
 	// Introduce floor
 	if (value < _floor && _doFloor) value = _floor; // Last IEEE double precision
+        cout << " " << value << endl;
+        for (int i = 0; i < ntabs-1; i++) cout << "    ";
 
 	return value;
 }
@@ -334,27 +346,27 @@ Double_t RooRealFlooredSumPdf::analyticalIntegralWN(Int_t code, const RooArgSet*
 
 	// N funcs, N-1 coefficients 
 	Double_t lastCoef(1);
-        cout << endl;
-        for (int i = 0; i < ntabs; i++) cout << "    ";
-        ntabs++;
-        cout << GetName() << ": ";
+        //cout << endl;
+        //for (int i = 0; i < ntabs; i++) cout << "    ";
+        //ntabs++;
+        //cout << GetName() << ": ";
 	while ((coef = (RooAbsReal*)coefIter.next())) {
 		funcInt = (RooAbsReal*)funcIntIter.next();
 		func = (RooAbsReal*)funcIter.next();
 		Double_t coefVal = coef->getVal(normSet2);
-                cout << coefVal << " ";
+                //cout << coefVal << " ";
 		if (coefVal) {
 			assert(func);
 			assert(funcInt);
 			value += funcInt->getVal()*coefVal;
 			lastCoef -= coef->getVal(normSet2);
-                        cout << funcInt->getVal() << " ";
+                        //cout << funcInt->getVal() << " ";
 		}
-                else cout << "!coefVal ";
-                cout << "    ";
+                //else cout << "!coefVal ";
+                //cout << "    ";
 	}
-        ntabs--;
-        cout << "       final value: " << value;
+        //ntabs--;
+        //cout << "       final value: " << value;
 
 	if (!_haveLastCoef) {
 		// Add last func with correct coefficient
@@ -402,8 +414,8 @@ Double_t RooRealFlooredSumPdf::analyticalIntegralWN(Int_t code, const RooArgSet*
     //  << " WARNING: Integral below threshold: " << result << endl;
     result = 1.0e-10; // A somewhat larger number
   }
-        cout << " " << result << endl;
-        for (int i = 0; i < ntabs-1; i++) cout << "    ";
+        //cout << " " << result << endl;
+        //for (int i = 0; i < ntabs-1; i++) cout << "    ";
 	return result;
 }
 
@@ -581,9 +593,6 @@ void RooRealFlooredSumPdf::printMetaArgs(ostream& os) const
 
 Double_t RooRealFlooredSumPdf::getValV(const RooArgSet* nset) const
 {
-  cout << "getValV ";
-  if (nset) nset->Print(); else cout << "no nset" << endl;
-  
   // Fast-track processing of clean-cache objects
   //   if (_operMode==AClean) {
   //     cout << "RooAbsPdf::getValV(" << this << "," << GetName() << ") CLEAN  value = " << _value << endl ;
