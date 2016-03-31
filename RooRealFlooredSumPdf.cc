@@ -581,8 +581,8 @@ void RooRealFlooredSumPdf::printMetaArgs(ostream& os) const
 
 Double_t RooRealFlooredSumPdf::getValV(const RooArgSet* nset) const
 {
-  cout << "getValV ";
-  if (nset) nset->Print(); else cout << "no nset" << endl;
+  //cout << "getValV ";
+  //if (nset) nset->Print(); else cout << "no nset" << endl;
   
   // Fast-track processing of clean-cache objects
   //   if (_operMode==AClean) {
