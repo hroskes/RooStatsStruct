@@ -143,13 +143,13 @@ class MakePDF(object):
                 BKGdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], BKGtemplate)
 
                 TemplateName = "SM_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-                SMhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, SMdataHist)
+                SMhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet[category], SMdataHist)
                 TemplateName = "PS_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-                PShistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, PSdataHist)
+                PShistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet[category], PSdataHist)
                 TemplateName = "MIX_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-                MIXhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, MIXdataHist)
+                MIXhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet[category], MIXdataHist)
                 TemplateName = "BKG_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-                BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, BKGdataHist)
+                BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet[category], BKGdataHist)
 
                 r1 = ROOT.RooRealVar("r1","r1",constants.r1)
                 r1.setConstant(True)
@@ -183,22 +183,22 @@ class MakePDF(object):
                     g4powertemplate[i] = templatefiles.template(category, self.channel, self.on_off, ["SM", "g4power1", "g4power2", "g4power3", "PS"][i])
                 BKGtemplate = templatefiles.template(category, self.channel, self.on_off, "qqZZ")
 
-                datahists = [None]*5
-                histfuncs = [None]*5
-                norms = [None]*5
+                datahists = [None]*1
+                histfuncs = [None]*1
+                norms = [None]*1
 
-                for i in range(5):
+                for i in range(1):
                     TemplateName = "g4power{0}_{1}_{2}_{3}_dataHist".format(i, self.channel,category,self.on_off)
                     datahists[i] = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], g4powertemplate[i])
                     TemplateName = "g4power{0}_{1}_{2}_{3}_HistPDF".format(i, self.channel,category,self.on_off)
-                    histfuncs[i] = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, datahists[i])
+                    histfuncs[i] = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet[category], datahists[i])
                     TemplateName = "g4power{0}_{1}_{2}_{3}_norm".format(i, self.channel,category,self.on_off)
                     norms[i] = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0**%i * @1**%i"%(i, 4-i), ROOT.RooArgList(g4, g1))
 
                 TemplateName = "BKG_{0}_{1}_{2}_dataHist".format(self.channel,category,self.on_off)
                 BKGdataHist = ROOT.RooDataHist(TemplateName, TemplateName, DiscArgList[category], BKGtemplate)
                 TemplateName = "BKG_{0}_{1}_{2}_HistPDF".format(self.channel,category,self.on_off)
-                BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, BigDiscArgSet, BKGdataHist)
+                BKGhistFunc = ROOT.RooHistFunc(TemplateName, TemplateName, DiscArgSet[category], BKGdataHist)
                 TemplateName = "qqZZ_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
                 BKGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0", ROOT.RooArgList(luminosity))
 

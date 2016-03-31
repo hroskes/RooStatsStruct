@@ -28,7 +28,7 @@ using namespace TMath;
 
 ClassImp(RooRealFlooredSumPdf)
 
-
+int ntabs = 0;
 
 //_____________________________________________________________________________
 RooRealFlooredSumPdf::RooRealFlooredSumPdf() 
@@ -334,17 +334,27 @@ Double_t RooRealFlooredSumPdf::analyticalIntegralWN(Int_t code, const RooArgSet*
 
 	// N funcs, N-1 coefficients 
 	Double_t lastCoef(1);
+        cout << endl;
+        for (int i = 0; i < ntabs; i++) cout << "    ";
+        ntabs++;
+        cout << "Heshy " << GetName() << ": ";
 	while ((coef = (RooAbsReal*)coefIter.next())) {
 		funcInt = (RooAbsReal*)funcIntIter.next();
 		func = (RooAbsReal*)funcIter.next();
 		Double_t coefVal = coef->getVal(normSet2);
+                cout << coefVal << " ";
 		if (coefVal) {
 			assert(func);
 			assert(funcInt);
 			value += funcInt->getVal()*coefVal;
 			lastCoef -= coef->getVal(normSet2);
+                        cout << funcInt->getVal() << " ";
 		}
+                else cout << "!coefVal ";
+                cout << "    ";
 	}
+        ntabs--;
+        cout << "       final value: " << value;
 
 	if (!_haveLastCoef) {
 		// Add last func with correct coefficient
@@ -388,10 +398,13 @@ Double_t RooRealFlooredSumPdf::analyticalIntegralWN(Int_t code, const RooArgSet*
   Double_t result = 0;
   if(normVal>0) result = value / normVal;
   if (result<1.0e-10 && _doFloor){
-    coutW(Eval) << "RooRealFlooredSumPdf::integral(" << GetName()
-      << " WARNING: Integral below threshold: " << result << endl;
+    //coutW(Eval) << "RooRealFlooredSumPdf::integral(" << GetName()
+    //  << " WARNING: Integral below threshold: " << result << endl;
     result = 1.0e-10; // A somewhat larger number
   }
+        cout << " " << result << endl;
+        for (int i = 0; i < ntabs-1; i++) cout << "    ";
+        cout << "Heshy ";
 	return result;
 }
 

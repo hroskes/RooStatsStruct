@@ -28,9 +28,11 @@ def testfit(nNLLs = 100,
             vars.append(var)
 
     if ntoys is None:
-        ntoys = pdf.getNorm(ROOT.RooArgSet(*vars))
+        fa3.setVal(testfa3)
+        ntoys = pdf.expectedEvents(ROOT.RooArgSet(*vars))
 
     print "Number of toys:", ntoys
+    return
 
     ROOT.RooRandom.randomGenerator().SetSeed(config.seed)
 
