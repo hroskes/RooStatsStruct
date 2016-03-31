@@ -70,6 +70,8 @@ public:
 	};
         constexpr static const double floor = 1e-18;
 
+        virtual Double_t getValV(const RooArgSet* set=0) const;
+
 protected:
 
 	mutable RooObjCacheManager _normIntMgr; // The integration cache manager

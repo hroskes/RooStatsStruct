@@ -337,7 +337,7 @@ Double_t RooRealFlooredSumPdf::analyticalIntegralWN(Int_t code, const RooArgSet*
         cout << endl;
         for (int i = 0; i < ntabs; i++) cout << "    ";
         ntabs++;
-        cout << "Heshy " << GetName() << ": ";
+        cout << GetName() << ": ";
 	while ((coef = (RooAbsReal*)coefIter.next())) {
 		funcInt = (RooAbsReal*)funcIntIter.next();
 		func = (RooAbsReal*)funcIter.next();
@@ -404,7 +404,6 @@ Double_t RooRealFlooredSumPdf::analyticalIntegralWN(Int_t code, const RooArgSet*
   }
         cout << " " << result << endl;
         for (int i = 0; i < ntabs-1; i++) cout << "    ";
-        cout << "Heshy ";
 	return result;
 }
 
@@ -577,4 +576,68 @@ void RooRealFlooredSumPdf::printMetaArgs(ostream& os) const
 	}
 
 	os << " ";
+}
+
+
+Double_t RooRealFlooredSumPdf::getValV(const RooArgSet* nset) const
+{
+  cout << "getValV ";
+  if (nset) nset->Print(); else cout << "no nset" << endl;
+  
+  // Fast-track processing of clean-cache objects
+  //   if (_operMode==AClean) {
+  //     cout << "RooAbsPdf::getValV(" << this << "," << GetName() << ") CLEAN  value = " << _value << endl ;
+  //     return _value ;
+  //   }
+
+  // Special handling of case without normalization set (used in numeric integration of pdfs)
+  if (!nset) {
+    RooArgSet* tmp = _normSet ;
+    _normSet = 0 ;
+    Double_t val = evaluate() ;
+    _normSet = tmp ;
+    Bool_t error = traceEvalPdf(val) ;
+
+    if (error) {
+//       raiseEvalError() ;
+      return 0 ;
+    }
+    return val ;
+  }
+
+
+  // Process change in last data set used
+  Bool_t nsetChanged(kFALSE) ;
+  if (nset!=_normSet || _norm==0) {
+    nsetChanged = syncNormalization(nset) ;
+  }
+
+  // Return value of object. Calculated if dirty, otherwise cached value is returned.
+  if (isValueDirty() || nsetChanged || _norm->isValueDirty()) {
+
+    // Evaluate numerator
+    Double_t rawVal = evaluate() ;
+    Bool_t error = traceEvalPdf(rawVal) ; // Error checking and printing
+
+    // Evaluate denominator
+    Double_t normVal(_norm->getVal()) ;
+    
+    if (normVal<=0.) {
+      error=kTRUE ;
+      logEvalError("p.d.f normalization integral is zero or negative") ;  
+    }
+
+    // Raise global error flag if problems occur
+    if (error) {
+//       raiseEvalError() ;
+      _value = 0 ;
+    } else {
+      _value = rawVal / normVal ;
+//       cout << "RooAbsPdf::getValV(" << GetName() << ") writing _value = " << rawVal << "/" << normVal << " = " << _value << endl ;
+    }
+
+    clearValueAndShapeDirty() ; //setValueDirty(kFALSE) ;
+  } 
+
+  return _value ;
 }
