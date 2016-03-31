@@ -349,6 +349,8 @@ Double_t RooRealFlooredSumPdf::analyticalIntegralWN(Int_t code, const RooArgSet*
 			value += funcInt->getVal()*coefVal;
 			lastCoef -= coef->getVal(normSet2);
                         cout << funcInt->getVal() << " ";
+                        if (!dynamic_cast<RooRealIntegral*>(funcInt)) assert(false);
+                        cout << "j=" << RooRealIntegralCheat(*dynamic_cast<RooRealIntegral*>(funcInt)).JacobianProduct() << " ";
 		}
                 else cout << "!coefVal ";
                 cout << "    ";

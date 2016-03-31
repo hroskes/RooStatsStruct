@@ -21,6 +21,7 @@
 #include "TH1.h"
 #include "RooDataHist.h"
 #include "RooHistFunc.h"
+#include "RooRealIntegral.h"
 
 using namespace RooFit;
 
@@ -92,5 +93,13 @@ private:
 	ClassDef(RooRealFlooredSumPdf, 3) // PDF constructed from a sum of (non-pdf) functions
 };
 
+
+class RooRealIntegralCheat : public RooRealIntegral {
+public:
+    RooRealIntegralCheat(RooRealIntegral& a) : RooRealIntegral(a) {}
+    double JacobianProduct() {return jacobianProduct();}
+private:
+    ClassDef(RooRealIntegralCheat, 1) //cheat
+};
  
 #endif
