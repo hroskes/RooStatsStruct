@@ -41,7 +41,7 @@ class Sample(object):
             SMXS = constants.SMXS_VBF
             SMBR = constants.SMBR
         try:
-            return SMXS * SMBR * (self.JHUcrosssection() / constants.JHU_XS_a1_VBF)
+            return SMXS * SMBR * (self.JHUcrosssection() / (constants.JHU_XS_a1_VBF*constants.JHU_XS_a1_ggH))
         except NameError:
             raise NotImplementedError("Information for %s not put into samples.Sample.crosssection!"%self)
 
