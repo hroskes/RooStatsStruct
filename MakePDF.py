@@ -206,6 +206,7 @@ class MakePDF(object):
                 SignalPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*histfuncs), ROOT.RooArgList(*norms))
                 TemplateName = "Signal_{0}_{1}_{2}_norm".format(self.channel,category,self.on_off)
                 SIGnorm = ROOT.RooFormulaVar(TemplateName, TemplateName, "@0*@1", ROOT.RooArgList(luminosity, mu))
+
             else:
                 assert False
 
@@ -213,6 +214,11 @@ class MakePDF(object):
             TotalPDFs[category] = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
             #getattr(w, 'import')(TotalPDFs[category], ROOT.RooFit.RecycleConflictNodes())
             print "Go There", category
+
+            if category == "VBF" and self.channel == "2e2mu":
+                print g4powertemplate[0].GetName(), datahists[0].GetName(), histfuncs[0].GetName(), SignalPDF.GetName(), TotalPDFs[category].GetName()
+                print g4powertemplate[0].Integral("width"), datahists[0].sum(True), histfuncs[0].createIntegral(DiscArgSet[category]).getVal(), SignalPDF.expectedEvents(DiscArgSet[category]), TotalPDFs[category].expectedEvents(DiscArgSet[category])
+                raw_input()
 
             #delete these variables, to make sure they are actually assigned next time
             #the actual objects are not deleted, they still have a reference in rootlog
@@ -224,6 +230,7 @@ class MakePDF(object):
         CatSumPDF = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(TotalPDFs[ggH], TotalPDFs[VH], TotalPDFs[VBF]), ROOT.RooArgList(one, one, one))
 
 
+        #getattr(w, 'import')([a for a in rootlog.objects if a.GetName() == "Signal_0_2_0_SumPDF"][0], ROOT.RooFit.RecycleConflictNodes())
         getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
         w.writeToFile(FileName)
 

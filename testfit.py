@@ -3,7 +3,7 @@ import constants
 from enums import *
 from extendedcounter import *
 import functools
-from getvars import discriminants, mu, fa3, pdf
+from getvars import discriminants, mu, fa3, w
 import loadlib
 import os
 import random
@@ -29,8 +29,11 @@ def testfit(nNLLs = 100,
 
     if ntoys is None:
         fa3.setVal(testfa3)
-        ntoys = pdf.expectedEvents(ROOT.RooArgSet(*vars))
+        #ntoys = pdf.expectedEvents(ROOT.RooArgSet(*vars))
 
+    print vars
+    print w.g4power0_0_2_0_HistPDF.GetName(), w.Signal_0_2_0_SumPDF.GetName()#, w.VBF_0_0_SumPDF.GetName(), w.Cat_0_0_SumPDF.GetName()
+    print w.g4power0_0_2_0_HistPDF.createIntegral(ROOT.RooArgSet(*vars)).getVal(), w.Signal_0_2_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars))#, w.VBF_0_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars)), w.Cat_0_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars))
     print "Number of toys:", ntoys
     return
 
@@ -91,7 +94,7 @@ def testfit(nNLLs = 100,
 if __name__ == '__main__':
     fa3s = sys.argv[2:]
     if not fa3s:
-        fa3s = [0, 1, .5, -.5, constants.convertfa3(.5, "VBF", "HZZ"), constants.convertfa3(-.5, "VBF", "HZZ")]
+        fa3s = [0]
     [testfit(
              testfa3=float(testfa3),
              ntoys = None
