@@ -212,7 +212,6 @@ class MakePDF(object):
 
             TemplateName = "{0}_{1}_{2}_SumPDF".format(str(category),self.channel,self.on_off) #different format, category as string goes first
             TotalPDFs[category] = ROOT.RooRealFlooredSumPdf(TemplateName, TemplateName, ROOT.RooArgList(SignalPDF,BKGhistFunc),ROOT.RooArgList(SIGnorm,BKGnorm))
-            #getattr(w, 'import')(TotalPDFs[category], ROOT.RooFit.RecycleConflictNodes())
             print "Go There", category
 
             if category == "VBF" and self.channel == "2e2mu":
@@ -231,6 +230,7 @@ class MakePDF(object):
 
 
         #getattr(w, 'import')([a for a in rootlog.objects if a.GetName() == "Signal_0_2_0_SumPDF"][0], ROOT.RooFit.RecycleConflictNodes())
+        #getattr(w, 'import')(TotalPDFs[Category("VBF")], ROOT.RooFit.RecycleConflictNodes())
         getattr(w, 'import')(CatSumPDF, ROOT.RooFit.RecycleConflictNodes())
         w.writeToFile(FileName)
 

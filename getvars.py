@@ -32,11 +32,11 @@ del channel
 
 one = ROOT.RooConstVar("one", "one", 1.0)
 TemplateName = "SumPDF"
-pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.values()), ROOT.RooArgList(*([one]*len(pdfs))))
 
 discriminants = sum((Disc[category].values() for category in categories),[])
 discriminantsargset = ROOT.RooArgSet(*discriminants)
-pdfnorm = pdf.createIntegral(discriminantsargset)
+if all(pdfs.values()):
+    pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.values()), ROOT.RooArgList(*([one]*len(pdfs))))
 
 if os.isatty(sys.stdout.fileno()):
     #to make it easier to get things from the workspace

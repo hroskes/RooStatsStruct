@@ -23,6 +23,7 @@ def testfit(nNLLs = 100,
            ):
 
     vars = []
+    print discriminants
     for var in discriminants:
         if var.GetTitle():
             vars.append(var)
@@ -32,6 +33,16 @@ def testfit(nNLLs = 100,
         #ntoys = pdf.expectedEvents(ROOT.RooArgSet(*vars))
 
     print vars
+    thingstoprint = "g4power0_0_2_0_HistPDF", "Signal_0_2_0_SumPDF", "VBF_0_0_SumPDF", "Cat_0_0_SumPDF"
+    for name in thingstoprint:
+        if hasattr(w, name):
+            print name,
+    print
+    for name in thingstoprint:
+        if hasattr(w, name):
+            print getattr(w, name).createIntegral(ROOT.RooArgSet(*vars)).getVal(),
+    print
+    """
     if not w.VBF_0_0_SumPDF:
         print w.g4power0_0_2_0_HistPDF.GetName(), w.Signal_0_2_0_SumPDF.GetName()#, w.VBF_0_0_SumPDF.GetName(), w.Cat_0_0_SumPDF.GetName()
         print w.g4power0_0_2_0_HistPDF.createIntegral(ROOT.RooArgSet(*vars)).getVal(), w.Signal_0_2_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars))#, w.VBF_0_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars)), w.Cat_0_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars))
@@ -39,6 +50,7 @@ def testfit(nNLLs = 100,
         print w.g4power0_0_2_0_HistPDF.GetName(), w.Signal_0_2_0_SumPDF.GetName(), w.VBF_0_0_SumPDF.GetName(), w.Cat_0_0_SumPDF.GetName()
         print w.g4power0_0_2_0_HistPDF.createIntegral(ROOT.RooArgSet(*vars)).getVal(), w.Signal_0_2_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars)), w.VBF_0_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars)), w.Cat_0_0_SumPDF.expectedEvents(ROOT.RooArgSet(*vars))
     print "Number of toys:", ntoys
+    """
     return
 
     ROOT.RooRandom.randomGenerator().SetSeed(config.seed)

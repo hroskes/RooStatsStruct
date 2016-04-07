@@ -38,13 +38,13 @@ sumsumsumpdf = ROOT.RooRealSumPdf("sumsumsumpdf", "sumsumsumpdf", ROOT.RooArgLis
 
 names = [a.GetName() for a in histfunc1, sumpdf1, sumsumpdf1, histfunc2, sumpdf2, sumsumpdf2, sumsumsumpdf]
 values = [
+          sumsumsumpdf.createIntegral(ROOT.RooArgSet(var1, var2)).getVal(),
           histfunc1.createIntegral(argset1).getVal(),
           sumpdf1.createIntegral(argset1).getVal(),
           sumsumpdf1.createIntegral(argset1).getVal(),
           histfunc2.createIntegral(argset2).getVal(),
           sumpdf2.createIntegral(argset2).getVal(),
           sumsumpdf2.createIntegral(argset2).getVal(),
-          sumsumsumpdf.createIntegral(ROOT.RooArgSet(var1, var2)).getVal(),
          ]
 
 
