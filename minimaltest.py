@@ -16,6 +16,7 @@ argset1 = ROOT.RooArgSet(var1)
 datahist1 = ROOT.RooDataHist("datahist1", "datahist1", arglist1, h)
 histfunc1 = ROOT.RooHistFunc("histfunc1", "histfunc1", argset1, datahist1)
 sumpdf1 = ROOT.RooRealSumPdf("sumpdf1", "sumpdf1", ROOT.RooArgList(histfunc1), ROOT.RooArgList(one))
+sumsumpdf1 = ROOT.RooRealSumPdf("sumsumpdf1", "sumsumpdf1", ROOT.RooArgList(sumpdf1), ROOT.RooArgList(one))
 
 
 var2 = ROOT.RooRealVar("var2", "var2", 0, -1, 1)
@@ -25,35 +26,38 @@ argset2 = ROOT.RooArgSet(var2)
 datahist2 = ROOT.RooDataHist("datahist2", "datahist2", arglist2, h)
 histfunc2 = ROOT.RooHistFunc("histfunc2", "histfunc2", argset2, datahist2)
 sumpdf2 = ROOT.RooRealSumPdf("sumpdf2", "sumpdf2", ROOT.RooArgList(histfunc2), ROOT.RooArgList(one))
+sumsumpdf2 = ROOT.RooRealSumPdf("sumsumpdf2", "sumsumpdf2", ROOT.RooArgList(sumpdf2), ROOT.RooArgList(one))
 
 
 
 
 
-sumsumpdf = ROOT.RooRealSumPdf("sumsumpdf", "sumsumpdf", ROOT.RooArgList(sumpdf1, sumpdf2), ROOT.RooArgList(one, one))
+sumsumsumpdf = ROOT.RooRealSumPdf("sumsumsumpdf", "sumsumsumpdf", ROOT.RooArgList(sumsumpdf1, sumsumpdf2), ROOT.RooArgList(one, one))
 
 
 
-names = [a.GetName() for a in histfunc1, sumpdf1, histfunc2, sumpdf2, sumsumpdf]
+names = [a.GetName() for a in histfunc1, sumpdf1, sumsumpdf1, histfunc2, sumpdf2, sumsumpdf2, sumsumsumpdf]
 values = [
           histfunc1.createIntegral(argset1).getVal(),
           sumpdf1.createIntegral(argset1).getVal(),
+          sumsumpdf1.createIntegral(argset1).getVal(),
           histfunc2.createIntegral(argset2).getVal(),
           sumpdf2.createIntegral(argset2).getVal(),
-          sumsumpdf.createIntegral(ROOT.RooArgSet(var1, var2)).getVal(),
+          sumsumpdf2.createIntegral(argset2).getVal(),
+          sumsumsumpdf.createIntegral(ROOT.RooArgSet(var1, var2)).getVal(),
          ]
 
 
 
 w = ROOT.RooWorkspace("workspace","workspace")
-getattr(w, 'import')(sumsumpdf, ROOT.RooFit.RecycleConflictNodes())
+getattr(w, 'import')(sumsumsumpdf, ROOT.RooFit.RecycleConflictNodes())
 w.writeToFile("tmp.root")
 
 print ("{:>12}"*len(names)).format(*names)
 print ("{:12.5f}"*len(values)).format(*values)
 #print h.Integral("width"), datahist.sum(True), histfunc.createIntegral(argset).getVal(), sumpdf.expectedEvents(argset), sumsumpdf.expectedEvents(argset) if sumsum else ""
 
-del h, one, var1, arglist1, argset1, datahist1, histfunc1, sumpdf1, var2, arglist2, argset2, datahist2, histfunc2, sumpdf2, sumsumpdf, w
+del h, one, var1, arglist1, argset1, datahist1, histfunc1, sumpdf1, sumsumpdf1, var2, arglist2, argset2, datahist2, histfunc2, sumpdf2, sumsumpdf2, sumsumsumpdf, w
 
 f = ROOT.TFile("tmp.root")
 w = f.Get("workspace")
@@ -68,9 +72,11 @@ argset2 = ROOT.RooArgSet(var2)
 values = [
           objects["histfunc1"].createIntegral(argset1).getVal(),
           objects["sumpdf1"].createIntegral(argset1).getVal(),
+          objects["sumsumpdf1"].createIntegral(argset1).getVal(),
           objects["histfunc2"].createIntegral(argset2).getVal(),
           objects["sumpdf2"].createIntegral(argset2).getVal(),
-          objects["sumsumpdf"].createIntegral(ROOT.RooArgSet(var1, var2)).getVal(),
+          objects["sumsumpdf2"].createIntegral(argset2).getVal(),
+          objects["sumsumsumpdf"].createIntegral(ROOT.RooArgSet(var1, var2)).getVal(),
          ]
 
 print ("{:12.5f}"*len(values)).format(*values)
