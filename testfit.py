@@ -27,6 +27,8 @@ def testfit(nNLLs = 100,
         if var.GetTitle():
             vars.append(var)
 
+    fa3.setVal(testfa3)
+
     if ntoys is None:
         ntoys = pdf.getNorm(ROOT.RooArgSet(*vars))
 

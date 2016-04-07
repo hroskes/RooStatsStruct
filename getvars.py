@@ -36,7 +36,6 @@ pdf = ROOT.RooRealSumPdf(TemplateName, TemplateName, ROOT.RooArgList(*pdfs.value
 
 discriminants = sum((Disc[category].values() for category in categories),[])
 discriminantsargset = ROOT.RooArgSet(*discriminants)
-pdfnorm = pdf.createIntegral(discriminantsargset)
 
 if os.isatty(sys.stdout.fileno()):
     #to make it easier to get things from the workspace
