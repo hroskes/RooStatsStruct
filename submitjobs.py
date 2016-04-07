@@ -9,8 +9,13 @@ mymap = {}
 if getpass.getuser() == "hroskes":
     setup = "cd {CMSSW} && eval $(scram ru -sh) &&"
     mymap["CMSSW"] = os.environ["CMSSW_BASE"]
-elif getpass.getuser == "chmartin":
-    "add atlas stuff here"
+    submit = "bsub -q 1nd -J {templates}"
+elif getpass.getuser() == "chmartin":
+    setup = "add atlas stuff here"
+    submit = "bsub -q 1nd -J {templates}"
+elif getpass.getuser() == "ubuntu": #circle
+    setup = ""
+    submit = "bash"
 
 job = setup + """
 cd {pwd} &&
@@ -24,5 +29,5 @@ for whichtemplates in enums.WhichTemplates.enumitems:
                   "pwd": os.getcwd(),
                   "templates": str(whichtemplates),
                  })
-    bsubcommand = "echo " + pipes.quote(job.format(**mymap)) + " | bsub -q 1nd -J " + str(whichtemplates)
-    subprocess.call(bsubcommand, shell=True)
+    bsubcommand = "echo " + pipes.quote(job.format(**mymap)) + " | " + submit.format(**mymap)
+    subprocess.check_call(bsubcommand, shell=True)

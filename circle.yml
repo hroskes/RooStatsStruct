@@ -1,0 +1,34 @@
+machine:
+  #https://circleci.com/docs/environment, at the bottom
+  pre:
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 10
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.6 10
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 20
+  environment:
+    #environment variables can only be set in this section so . bin/thisroot.sh doesn't work
+    PATH: "$(echo /home/ubuntu/root/bin:$PATH | sed s/:$//)"
+    LD_LIBRARY_PATH: "$(echo /home/ubuntu/root/lib:$LD_LIBRARY_PATH | sed s/:$//)"
+    SHLIB_PATH: "$(echo /home/ubuntu/root/lib:$SHLIB_PATH | sed s/:$//)"
+    LIBPATH: "$(echo /home/ubuntu/root/lib:$LIBPATH | sed s/:$//)"
+    PYTHONPATH: "$(echo /home/ubuntu/root/lib:$PYTHONPATH | sed s/:$//)"
+    MANPATH: "$(echo /home/ubuntu/JHUGen/JHUGenerator/root/man:$MANPATH | sed s/:$//)"
+
+dependencies:
+   override:
+     - if ! [ -d ~/root ]; then cd && wget https://root.cern.ch/download/root_v6.04.08.Linux-ubuntu14-x86_64-gcc4.8.tar.gz && tar -xvzf root_v6.04.08.Linux-ubuntu14-x86_64-gcc4.8.tar.gz; fi
+   cache_directories:
+     - ~/root
+
+test:
+  pre:
+    - python makefinaltemplates.py:
+        pwd:
+          templates/VBF/
+    - root -l -b -q normalizebkg.C:
+        pwd:
+          templates/ggH_fromMeng_normalized/
+    - root -l -b -q normalizesig.C:
+        pwd:
+          templates/ggH_fromMeng_normalized/
+  override:
+    - python submitjobs.py

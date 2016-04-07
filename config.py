@@ -19,6 +19,11 @@ elif getpass.getuser() == "chmartin":
                 WhichTemplates("ggH_4e"): "/afs/cern.ch/user/c/chmartin/www/Pheno/4e/",
                 WhichTemplates("ggH_allflavors"): "/afs/cern.ch/user/c/chmartin/www/Pheno/All/",
                }
+elif getpass.getuser() == "ubuntu": #circle
+    plotdirs = {
+                WhichTemplates(whichtemplates): "%s/%s"%(os.environ["CIRCLE_ARTIFACTS"], whichtemplates)
+                    for whichtemplates in WhichTemplates.enumitems
+               }
 else:
     raise ValueError("Who are you?  (see config.py)")
 
