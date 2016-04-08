@@ -1,7 +1,10 @@
 *.pyc
-*_cc.*
-*_cc_*
 *_C.*
 *_C_*
+*_cc.*
+*_cc_*
 plots
 plots_*
+slurm*.sh
+slurm-*.out
+
