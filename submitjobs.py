@@ -20,13 +20,15 @@ def preparetemplates():
 def bsub_CMS(job, jobname, repmap):
     repmap.update(
                   CMSSW = os.environ["CMSSW_BASE"],
-                  job = job,
                   jobname = jobname,
                  )
     job = "cd {CMSSW} && eval $(scram ru -sh) && " + job
     job = pipes.quote(job.format(**repmap))
+    repmap.update(
+                  job = job,
+                 )
 
-    command = "echo '{job}' | bsub -q 1nd -J {jobname}".format(**repmap)
+    command = "echo {job} | bsub -q 1nd -J {jobname}".format(**repmap)
     subprocess.check_call(command, shell=True)
 
 def bash(job, jobname, repmap):
@@ -87,8 +89,8 @@ elif getpass.getuser() == "ubuntu": #circle
 job = """
 cd {pwd} &&
 python MakePDF.py {templates} &&
-python testproject.py {templates} &&
-python testfit.py {templates} | grep -v "Integral below threshold: 0$" | grep -v "hobs is not found"
+( python testproject.py {templates} | grep -v "Integral below threshold: 0$" | grep -v "hobs is not found";
+python testfit.py {templates} | grep -v "Integral below threshold: 0$" | grep -v "hobs is not found" )
 """
 
 preparetemplates()

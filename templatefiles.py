@@ -239,26 +239,49 @@ TemplateGetter_VBF_g4power = {
 TemplateGetter_VBF_1D_D0minus_VBF = TemplateGetterFactory_VBF("TemplateGetter_VBF_1D_D0minus", "D_0minus_VBF")
 TemplateGetter_VBF_1D_D0minus_VBFdecay = TemplateGetterFactory_VBF("TemplateGetter_VBF_1D_D0minus_VBFdecay", "D_0minus_VBFdecay")
 TemplateGetter_VBF_1D_DCP_VBF = TemplateGetterFactory_VBF("TemplateGetter_VBF_1D_DCP", "D_CP_VBF")
+TemplateGetter_VBF_1D_DCP_VBFdecay = TemplateGetterFactory_VBF("TemplateGetter_VBF_1D_DCP_VBFdecay", "D_CP_VBFdecay")
 TemplateGetter_VBF_1D_g4power = {
                                  i:
                                     TemplateGetterFactory_VBF(
                                                               "TemplateGetter_VBF_1D_g4power%i"%i,
                                                               "D_g4power%i_VBFdecay"%i
-                                                             ) for i in (1, 2, 3)
+                                                             ) for i in (0, 1, 2, 3)
                                 }
+TemplateGetter_VBF_1D_g4power_prime = {
+                                       i:
+                                          TemplateGetterFactory_VBF(
+                                                                    "TemplateGetter_VBF_1D_g4power%i_prime"%i,
+                                                                    "D_g4power%i_VBFdecay_prime"%i
+                                                                   ) for i in (1, 2, 3)
+                                      }
+TemplateGetter_VBF_g4power_prime = {
+                                    i:
+                                       TemplateGetterFactory_VBF(
+                                                                 "TemplateGetter_VBF_g4power%i_prime"%i,
+                                                                 "template_VBF_g4power%i_prime_2D"%i
+                                                                ) for i in (1, 2, 3)
+                                   }
 
 class TemplateGetter_VBFonly_VBFdiscriminants(TemplateGetter_VBFonly, TemplateGetter_VBFdiscriminants): pass
 class TemplateGetter_VBFonly_VBFdecay(TemplateGetter_VBFonly, TemplateGetter_VBFdecay): pass
 class TemplateGetter_VBFonly_g4power1(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power[1]): pass
 class TemplateGetter_VBFonly_g4power2(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power[2]): pass
 class TemplateGetter_VBFonly_g4power3(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power[3]): pass
+class TemplateGetter_VBFonly_g4power1_prime(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power_prime[1]): pass
+class TemplateGetter_VBFonly_g4power2_prime(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power_prime[2]): pass
+class TemplateGetter_VBFonly_g4power3_prime(TemplateGetter_VBFonly, TemplateGetter_VBF_g4power_prime[3]): pass
 
 class TemplateGetter_VBFonly_1D_D0minus_VBF(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_D0minus_VBF): pass
 class TemplateGetter_VBFonly_1D_D0minus_VBFdecay(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_D0minus_VBFdecay): pass
 class TemplateGetter_VBFonly_1D_DCP_VBF(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_DCP_VBF): pass
+class TemplateGetter_VBFonly_1D_DCP_VBFdecay(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_DCP_VBFdecay): pass
+class TemplateGetter_VBFonly_1D_g4power0(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_g4power[0]): pass
 class TemplateGetter_VBFonly_1D_g4power1(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_g4power[1]): pass
 class TemplateGetter_VBFonly_1D_g4power2(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_g4power[2]): pass
 class TemplateGetter_VBFonly_1D_g4power3(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_g4power[3]): pass
+class TemplateGetter_VBFonly_1D_g4power1_prime(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_g4power_prime[1]): pass
+class TemplateGetter_VBFonly_1D_g4power2_prime(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_g4power_prime[2]): pass
+class TemplateGetter_VBFonly_1D_g4power3_prime(TemplateGetter_VBFonly, TemplateGetter_VBF_1D_g4power_prime[3]): pass
 
 templategetters = {
     WhichTemplates("ggH_2e2mu"): TemplateGetter_ggHonly_2e2mu,
@@ -275,4 +298,12 @@ templategetters = {
     WhichTemplates("VBF_1D_g4power1"): TemplateGetter_VBFonly_1D_g4power1,
     WhichTemplates("VBF_1D_g4power2"): TemplateGetter_VBFonly_1D_g4power2,
     WhichTemplates("VBF_1D_g4power3"): TemplateGetter_VBFonly_1D_g4power3,
+    WhichTemplates("VBF_1D_g4power0"): TemplateGetter_VBFonly_1D_g4power0,
+    WhichTemplates("VBF_1D_DCP_VBFdecay"): TemplateGetter_VBFonly_1D_DCP_VBFdecay,
+    WhichTemplates("VBF_1D_g4power1_prime"): TemplateGetter_VBFonly_1D_g4power1_prime,
+    WhichTemplates("VBF_1D_g4power2_prime"): TemplateGetter_VBFonly_1D_g4power2_prime,
+    WhichTemplates("VBF_1D_g4power3_prime"): TemplateGetter_VBFonly_1D_g4power3_prime,
+    WhichTemplates("VBF_g4power1_prime"): TemplateGetter_VBFonly_g4power1_prime,
+    WhichTemplates("VBF_g4power2_prime"): TemplateGetter_VBFonly_g4power2_prime,
+    WhichTemplates("VBF_g4power3_prime"): TemplateGetter_VBFonly_g4power3_prime,
 }

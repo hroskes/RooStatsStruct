@@ -97,6 +97,14 @@ class WhichTemplates(MyEnum):
                  EnumItem("VBF_1D_g4power1", 11),
                  EnumItem("VBF_1D_g4power2", 12),
                  EnumItem("VBF_1D_g4power3", 13),
+                 EnumItem("VBF_1D_g4power0", 14),
+                 EnumItem("VBF_1D_DCP_VBFdecay", 15),
+                 EnumItem("VBF_1D_g4power1_prime", 16),
+                 EnumItem("VBF_1D_g4power2_prime", 17),
+                 EnumItem("VBF_1D_g4power3_prime", 18),
+                 EnumItem("VBF_g4power1_prime", 19),
+                 EnumItem("VBF_g4power2_prime", 20),
+                 EnumItem("VBF_g4power3_prime", 21),
                 )
 
 class PDFType(MyEnum):
