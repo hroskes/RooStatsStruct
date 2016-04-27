@@ -3,6 +3,7 @@ import getpass
 import os
 import pipes
 import subprocess
+import sys
 import textwrap
 
 def preparetemplates():
@@ -96,6 +97,7 @@ python testfit.py {templates} | grep -v "Integral below threshold: 0$" | grep -v
 preparetemplates()
 
 for whichtemplates in enums.WhichTemplates.enumitems:
+    if len(sys.argv) != 1 and whichtemplates not in sys.argv[1:]: continue
     repmap = {
               "pwd": os.getcwd(),
               "templates": str(whichtemplates),
