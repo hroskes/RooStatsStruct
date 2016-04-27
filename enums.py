@@ -40,10 +40,8 @@ class MyEnum(object):
         return format(self.item, format_spec)
 
     def __eq__(self, other):
-        try:
-            return self.item == other.item
-        except AttributeError:
-            return self.item == other
+        other = type(self)(other)
+        return self.item == other.item
     def __ne__(self, other):
         return not self == other
 
@@ -122,9 +120,24 @@ class Hypothesis(MyEnum):
                  EnumItem("fa30.25", 4),
                  EnumItem("fa3-0.5", 5),
                  EnumItem("fa3-0.9", 6),
+                 EnumItem("a2", 7, "0h+"),
+                 EnumItem("fa20.5", 8),
+                 EnumItem("L1", 9, "Lambda1"),
+                 EnumItem("fL10.5", 10, "flambda10.5"),
                 )
 
-onoffshell = [OnOffShell(item) for item in OnOffShell.enumitems]
+class ProductionMode(MyEnum):
+    enumitems = (
+                 EnumItem("ggH", 0),
+                 EnumItem("VBF", 1),
+                 EnumItem("H+jj", 2, "HJJ"),
+                 EnumItem("ZH", 3),
+                 EnumItem("WH", 4),
+                )
+
 categories = [Category(item) for item in Category.enumitems]
 channels = [Channel(item) for item in Channel.enumitems]
+hypotheses = [Hypothesis(item) for item in Hypothesis.enumitems]
+onoffshell = [OnOffShell(item) for item in OnOffShell.enumitems]
+productionmodes = [ProductionMode(item) for item in ProductionMode.enumitems]
 templatetypes = [TemplateType(item) for item in TemplateType.enumitems]

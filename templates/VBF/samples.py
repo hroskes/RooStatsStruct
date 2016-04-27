@@ -1,14 +1,9 @@
 import constants
-from enums import Hypothesis
 import itertools
+from enums import Hypothesis, ProductionMode
 from math import copysign, sqrt
 import os
 import re
-
-def ProductionMode(a):
-    if a != "VBF":
-        raise ValueError
-    return a
 
 class Sample(object):
     def __init__(self, *args):
