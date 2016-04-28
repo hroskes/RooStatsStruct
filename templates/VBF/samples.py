@@ -137,13 +137,13 @@ class Sample(object):
 
     def g12g40xs(self):
         if self.productionmode == "ggH":
-            return self.__g1**2 * constants.constants.JHU_XS_a1_ggH
+            return self.__g1**2 * constants.JHU_XS_a1_ggH
         assert False
     def g11g41xs(self):
         if self.productionmode == "ggH":
-            0
+            return 0
         assert False
     def g10g42xs(self):
         if self.productionmode == "ggH":
-            return self.__g4**2 * constants.constants.JHU_XS_a3_ggH
+            return self.__g4**2 * constants.JHU_XS_a3_ggH
         assert False
