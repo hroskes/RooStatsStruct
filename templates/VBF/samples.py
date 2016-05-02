@@ -73,7 +73,7 @@ class Sample(object):
         if self.productionmode == "ggH":
             if self.hypothesis == "0-":
                 return 1.0
-            elif self.hypothesis == "0+":
+            elif self.hypothesis == "0+" or self.hypothesis == "a2" or self.hypothesis == "L1" or self.hypothesis == "fa20.5" or self.hypothesis == "fL10.5":
                 return 0.0
             elif self.hypothesis == "fa30.5":
                 return 0.5
