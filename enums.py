@@ -116,14 +116,13 @@ class Hypothesis(MyEnum):
                  EnumItem("0+", 0, "SM", "scalar"),
                  EnumItem("0-", 1, "PS", "pseudoscalar"),
                  EnumItem("fa30.5", 2, "interf", "interf", "mix"),
-                 EnumItem("qqZZ", 3, "background", "bkg"),
-                 EnumItem("fa30.25", 4),
-                 EnumItem("fa3-0.5", 5),
-                 EnumItem("fa3-0.9", 6),
-                 EnumItem("a2", 7, "0h+"),
-                 EnumItem("fa20.5", 8),
-                 EnumItem("L1", 9, "Lambda1"),
-                 EnumItem("fL10.5", 10, "flambda10.5"),
+                 EnumItem("fa30.25", 3),
+                 EnumItem("fa3-0.5", 4),
+                 EnumItem("fa3-0.9", 5),
+                 EnumItem("a2", 6, "0h+"),
+                 EnumItem("fa20.5", 7),
+                 EnumItem("L1", 8, "Lambda1"),
+                 EnumItem("fL10.5", 9, "flambda10.5"),
                 )
 
 class ProductionMode(MyEnum):
@@ -133,6 +132,8 @@ class ProductionMode(MyEnum):
                  EnumItem("H+jj", 2, "HJJ"),
                  EnumItem("ZH", 3),
                  EnumItem("WH", 4),
+                 EnumItem("qqZZ", 5),
+                 EnumItem("ggZZ", 6),
                 )
 
 categories = [Category(item) for item in Category.enumitems]

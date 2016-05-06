@@ -13,10 +13,16 @@ class Sample(object):
                 setattr(self, attr, attrtype(arg))
             except ValueError:
                 pass
+        if self.isbkg():
+            self.hypothesis = ""
         self.calcg1g4()
 
     def __str__(self):
         return "%s %s" % (self.productionmode, self.hypothesis)
+    def __repr__(self):
+        return "Sample({!s}, {!s})".format(self.productionmode, self.hypothesis)
+    def __hash__(self):
+        return hash((self.productionmode, self.hypothesis))
 
     def __eq__(self, other):
         return self.hypothesis == other.hypothesis and self.productionmode == other.productionmode
@@ -80,6 +86,7 @@ class Sample(object):
         assert False
 
     def calcg1g4(self):
+        if self.isbkg(): return
         if self.productionmode == "VBF":
             if self.hypothesis == "0-":
                 self.__g1 = 0
@@ -147,3 +154,6 @@ class Sample(object):
         if self.productionmode == "ggH":
             return self.__g4**2 * constants.JHU_XS_a3_ggH
         assert False
+
+    def isbkg(self):
+        return self.productionmode == "ggZZ" or self.productionmode == "qqZZ"
