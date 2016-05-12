@@ -40,8 +40,13 @@ class MyEnum(object):
         return format(self.item, format_spec)
 
     def __eq__(self, other):
-        other = type(self)(other)
-        return self.item == other.item
+        try:
+            other = type(self)(other)
+            return self.item == other.item
+        except ValueError:
+            if other is None or (type(other) == str and other == ""):
+                return False
+            raise
     def __ne__(self, other):
         return not self == other
 

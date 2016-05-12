@@ -1,26 +1,39 @@
 import constants
 import itertools
-from enums import Hypothesis, ProductionMode
+from enums import Hypothesis, ProductionMode, Channel
 from math import copysign, sqrt
 import os
 import re
 
 class Sample(object):
     def __init__(self, *args):
-        attrs = {"productionmode": ProductionMode, "hypothesis": Hypothesis}
+        attrs = {"productionmode": ProductionMode, "hypothesis": Hypothesis, "flavor": Channel}
         for arg, (attr, attrtype) in itertools.product(args, attrs.iteritems()):
             try:
                 setattr(self, attr, attrtype(arg))
             except ValueError:
                 pass
+
+        assert hasattr(self, "productionmode")
+
         if self.isbkg():
+            assert not hasattr(self, "hypothesis")
             self.hypothesis = ""
+        else:
+            assert hasattr(self, "hypothesis")
+
+        if self.productionmode == "ggZZ":
+            assert hasattr(self, "flavor")
+        else:
+            assert not hasattr(self, "flavor")
+            self.flavor = ""
+
         self.calcg1g4()
 
     def __str__(self):
-        return "%s %s" % (self.productionmode, self.hypothesis)
+        return "%s %s %s" % (self.productionmode, self.hypothesis, self.flavor)
     def __repr__(self):
-        return "Sample({!s}, {!s})".format(self.productionmode, self.hypothesis)
+        return "Sample({!s}, {!s}, {!s})".format(self.productionmode, self.hypothesis, self.flavor)
     def __hash__(self):
         return hash((self.productionmode, self.hypothesis))
 
@@ -30,6 +43,8 @@ class Sample(object):
         return not self == other
 
     def templatesfile(self, flavor, index):
+        if self.flavor != "" and self.flavor != flavor:
+            raise ValueError
         result = "%s%s_%s.root" % (self.productionmode, self.hypothesis, flavor)
 
         if index is not None:
