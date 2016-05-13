@@ -35,10 +35,10 @@ class Sample(object):
     def __repr__(self):
         return "Sample({!s}, {!s}, {!s})".format(self.productionmode, self.hypothesis, self.flavor)
     def __hash__(self):
-        return hash((self.productionmode, self.hypothesis))
+        return hash((self.productionmode, self.hypothesis, self.flavor))
 
     def __eq__(self, other):
-        return self.hypothesis == other.hypothesis and self.productionmode == other.productionmode
+        return self.hypothesis == other.hypothesis and self.productionmode == other.productionmode and self.flavor == other.flavor
     def __ne__(self, other):
         return not self == other
 
