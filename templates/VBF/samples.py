@@ -28,7 +28,8 @@ class Sample(object):
             assert not hasattr(self, "flavor")
             self.flavor = ""
 
-        self.calcg1g4()
+        if self.hypothesis not in ("int_g1g4", "int_g1g2", "int_g1g1prime2"):
+            self.calcg1g4()
 
     def __str__(self):
         return "%s %s %s" % (self.productionmode, self.hypothesis, self.flavor)

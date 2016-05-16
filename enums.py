@@ -128,6 +128,9 @@ class Hypothesis(MyEnum):
                  EnumItem("fa20.5", 7),
                  EnumItem("L1", 8, "Lambda1"),
                  EnumItem("fL10.5", 9, "flambda10.5"),
+                 EnumItem("int_g1g4", 10, "int_a1a3"),
+                 EnumItem("int_g1g2", 11, "int_a1a2"),
+                 EnumItem("int_g1g1prime2", 12, "int_a1L1"),
                 )
 
 class ProductionMode(MyEnum):
