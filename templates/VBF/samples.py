@@ -16,7 +16,7 @@ class Sample(object):
 
         assert hasattr(self, "productionmode")
 
-        if self.isbkg():
+        if self.isbkg() or self.isdata():
             assert not hasattr(self, "hypothesis")
             self.hypothesis = ""
         else:
@@ -28,7 +28,7 @@ class Sample(object):
             assert not hasattr(self, "flavor")
             self.flavor = ""
 
-        if self.hypothesis not in ("int_g1g4", "int_g1g2", "int_g1g1prime2"):
+        if self.hypothesis not in ("int_g1g4", "int_g1g2", "int_g1g1prime2") and not self.isdata():
             self.calcg1g4()
 
     def __str__(self):
@@ -173,3 +173,5 @@ class Sample(object):
 
     def isbkg(self):
         return self.productionmode == "ggZZ" or self.productionmode == "qqZZ"
+    def isdata(self):
+        return self.productionmode == "data"

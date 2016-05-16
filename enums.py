@@ -142,6 +142,7 @@ class ProductionMode(MyEnum):
                  EnumItem("WH", 4),
                  EnumItem("qqZZ", 5),
                  EnumItem("ggZZ", 6),
+                 EnumItem("data", 7),
                 )
 
 categories = [Category(item) for item in Category.enumitems]
