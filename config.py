@@ -51,6 +51,7 @@ else:
 #whichtemplates = WhichTemplates("VBF_g4power1_prime")
 #whichtemplates = WhichTemplates("VBF_g4power2_prime")
 #whichtemplates = WhichTemplates("VBF_g4power3_prime")
+whichtemplates = WhichTemplates("ggH_run2")
 
 try:
     if sys.argv[1]: whichtemplates = WhichTemplates(sys.argv[1])

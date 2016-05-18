@@ -18,6 +18,7 @@ def createg1g4(fa3, g4_for_fa3half, *args):
 
 basedirVBF = "templates/VBF"
 basedirggH_fromMeng = "templates/ggH_fromMeng_normalized/"
+basedirggH = "templates/ggH"
 
 class BaseTemplateGetter(object):
 
@@ -48,7 +49,7 @@ class BaseTemplateGetter(object):
             except ValueError:
                 pass
 
-            if arg == "info":
+            if isinstance(arg, basestring) and arg == "info":
                 self.templatetype = TemplateType(self.infotemplatetype)
                 found += 1
 
@@ -158,6 +159,23 @@ class TemplateGetter_ggHonly_4e(TemplateGetter_ggHonly_oneflavor):
     theflavor = "4e"
 
 
+class TemplateGetter_ggH_run2(BaseTemplateGetter):
+    infotemplatetype = "SM"
+    def fileandname_ggH(self):
+        if self.templatetype == "SM":
+            self.file = os.path.join(basedirggH, "ggH0+_%s.root" % self.channel)
+        elif self.templatetype == "PS":
+            self.file = os.path.join(basedirggH, "ggH0-_%s.root" % self.channel)
+        elif self.templatetype == "interference":
+            self.file = os.path.join(basedirggH, "ggHint_g1g4_%s.root" % self.channel)
+        elif self.templatetype == "qqZZ":
+            self.file = os.path.join(basedirggH, "qqZZ_%s.root" % self.channel)
+        else:
+            raise ValueError("Bad templatetype! %s" % self.templatetype)
+
+        self.name = "template_fa3_decay_allevents"
+
+class TemplateGetter_ggHonly_run2(TemplateGetter_ggH_run2, TemplateGetter_ggHonly): pass
 
 
 class TemplateGetter_VBFonly(BaseTemplateGetter):
@@ -306,4 +324,5 @@ templategetters = {
     WhichTemplates("VBF_g4power1_prime"): TemplateGetter_VBFonly_g4power1_prime,
     WhichTemplates("VBF_g4power2_prime"): TemplateGetter_VBFonly_g4power2_prime,
     WhichTemplates("VBF_g4power3_prime"): TemplateGetter_VBFonly_g4power3_prime,
+    WhichTemplates("ggH_run2"): TemplateGetter_ggHonly_run2,
 }

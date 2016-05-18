@@ -108,6 +108,7 @@ class WhichTemplates(MyEnum):
                  EnumItem("VBF_g4power1_prime", 19),
                  EnumItem("VBF_g4power2_prime", 20),
                  EnumItem("VBF_g4power3_prime", 21),
+                 EnumItem("ggH_run2", 22),
                 )
 
 class PDFType(MyEnum):
