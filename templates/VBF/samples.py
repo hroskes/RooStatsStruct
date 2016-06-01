@@ -66,7 +66,7 @@ class Sample(object):
 
     def JHUcrosssection(self):
         if self.productionmode == "ggH":
-             return self.g12g40xs() + self.g11g41xs() + self.g10g42xs()
+             return self.g1g1xs() + self.g1g4xs() + self.g4g4xs() + self.g1g2xs() + self.g2g2xs() + self.g1g1prime2xs() + self.g1prime2g1prime2xs()
         elif self.productionmode == "VBF":
             return self.g14g40xs() + self.g13g41xs() + self.g12g42xs() + self.g11g43xs() + self.g10g44xs()
         assert False
@@ -158,17 +158,33 @@ class Sample(object):
             return self.__g4**4 * constants.JHU_XS_a3_VBF*constants.JHU_XS_a3_ggH
         assert False
 
-    def g12g40xs(self):
+    def g1g1xs(self):
         if self.productionmode == "ggH":
             return self.__g1**2 * constants.JHU_XS_a1_ggH
         assert False
-    def g11g41xs(self):
+    def g1g4xs(self):
         if self.productionmode == "ggH":
-            return 0
+            return constants.JHU_XS_g1g4_int_ggH
         assert False
-    def g10g42xs(self):
+    def g4g4xs(self):
         if self.productionmode == "ggH":
             return self.__g4**2 * constants.JHU_XS_a3_ggH
+        assert False
+    def g1g2xs(self):
+        if self.productionmode == "ggH":
+            return self.__g1*self.__g1prime2 * constants.JHU_XS_g1g2_int_ggH
+        assert False
+    def g2g2xs(self):
+        if self.productionmode == "ggH":
+            return self.__g2**2 * constants.JHU_XS_a2_ggH
+        assert False
+    def g1g1prime2xs(self):
+        if self.productionmode == "ggH":
+            return self.__g1*self.__g1prime2 * constants.JHU_XS_g1g1prime2_int_ggH
+        assert False
+    def g1prime2g1prime2xs(self):
+        if self.productionmode == "ggH":
+            return self.__g1prime2**2 * constants.JHU_XS_L1_ggH
         assert False
 
     def isbkg(self):
