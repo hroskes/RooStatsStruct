@@ -116,16 +116,21 @@ class Sample(object):
             self.__g4 /= divideby**.25
 
         elif self.productionmode == "ggH":
-            if self.hypothesis == "0-":
-                self.__g1 = 0
-                self.__g4 = (constants.JHU_XS_a1_ggH / constants.JHU_XS_a3_ggH)**.5
-            else:
+            self.__g1 = self.__g4 = self.__g2 = self.__g1prime2 = 0
+            if self.hypothesis == "0+" or self.hypothesis == "fa30.5" or self.hypothesis == "fa20.5" or self.hypothesis == "fL10.5":
                 self.__g1 = 1
-                self.__g4 = copysign(sqrt(abs(self.fa3HZZ())*constants.JHU_XS_a1_ggH / ((1-abs(self.fa3HZZ()))*constants.JHU_XS_a3_ggH)), self.fa3HZZ())
+            if self.hypothesis == "a2" or self.hypothesis == "fa20.5":
+                self.__g2 = constants.g2_mix_ggH
+            if self.hypothesis == "0-" or self.hypothesis == "fa30.5":
+                self.__g4 = constants.g4_mix_ggH
+            if self.hypothesis == "L1" or self.hypothesis == "fL10.5":
+                self.__g4 = constants.g1prime2_mix_ggH
 
             divideby = (self.JHUcrosssection() / constants.JHU_XS_a1_ggH)
             self.__g1 /= divideby**.5
+            self.__g2 /= divideby**.5
             self.__g4 /= divideby**.5
+            self.__g1prime2 /= divideby**.5
 
         try:
             self.__g1, self.__g4
