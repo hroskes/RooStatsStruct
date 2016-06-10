@@ -124,13 +124,13 @@ class Sample(object):
             if self.hypothesis == "0-" or self.hypothesis == "fa30.5":
                 self.__g4 = constants.g4_mix_ggH
             if self.hypothesis == "L1" or self.hypothesis == "fL10.5":
-                self.__g4 = constants.g1prime2_mix_ggH
+                self.__g1prime2 = constants.g1prime2_mix_ggH
 
-            divideby = (self.JHUcrosssection() / constants.JHU_XS_a1_ggH)
-            self.__g1 /= divideby**.5
-            self.__g2 /= divideby**.5
-            self.__g4 /= divideby**.5
-            self.__g1prime2 /= divideby**.5
+            #divideby = (self.JHUcrosssection() / constants.JHU_XS_a1_ggH)
+            #self.__g1 /= divideby**.5
+            #self.__g2 /= divideby**.5
+            #self.__g4 /= divideby**.5
+            #self.__g1prime2 /= divideby**.5
 
         try:
             self.__g1, self.__g4
@@ -169,7 +169,7 @@ class Sample(object):
         assert False
     def g1g4xs(self):
         if self.productionmode == "ggH":
-            return constants.JHU_XS_g1g4_int_ggH
+            return self.__g1*self.__g4 * constants.JHU_XS_g1g4_int_ggH
         assert False
     def g4g4xs(self):
         if self.productionmode == "ggH":
@@ -177,7 +177,7 @@ class Sample(object):
         assert False
     def g1g2xs(self):
         if self.productionmode == "ggH":
-            return self.__g1*self.__g1prime2 * constants.JHU_XS_g1g2_int_ggH
+            return self.__g1*self.__g2 * constants.JHU_XS_g1g2_int_ggH
         assert False
     def g2g2xs(self):
         if self.productionmode == "ggH":

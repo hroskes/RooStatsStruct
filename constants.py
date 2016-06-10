@@ -24,7 +24,6 @@ JHU_XS_g1g4_int_ggH = (JHU_XS_g1g4_ggH - JHU_XS_a1_ggH - JHU_XS_a3_ggH*g4_mix_gg
 JHU_XS_g1g1prime2_int_ggH = (JHU_XS_g1g1prime2_ggH - JHU_XS_a1_ggH - JHU_XS_L1_ggH*g1prime2_mix_ggH**2) / g1prime2_mix_ggH
 
 
-
 JHU_XS_a1_VBF = 968.674284006 #+/- 0.075115702763
 JHU_XS_a2_VBF = 13102.7106117 #+/- 0.522399748272
 JHU_XS_a3_VBF = 10909.5390002 #+/- 0.50975030067
